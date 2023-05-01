@@ -8,18 +8,15 @@
 #include "Definitions.hpp"
 
 
-class InputSystem
+class InputSystem : public System<InputSystem>
 {
 
-	Scene* m_scene;
 
 public:
 
-	InputSystem(Scene& scene)
-	{
-		m_scene = &scene;
-	}
-	void On_Update_Input()
+	using System::System;
+
+	void On_Update()
 	{
 		for (int i = 0; i < m_scene->GetIdCount(); i++)
 		{
@@ -27,13 +24,14 @@ public:
 
 			InputComponent& input = m_scene->GetComponentById<InputComponent>(i);
 
-			
+
 			input.GetScript()->ProcessInput(input.GetMappings(), m_scene->GetEntity(i));
-			
+
 
 		}
-		
+
 	}
+	
 };
 
 #endif // !INPUT_SYSTEM_HPP

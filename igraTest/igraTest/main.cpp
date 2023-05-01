@@ -48,8 +48,8 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 
 	//test
 	
-	animationSystem.On_Update_Animate();
-	inputSystem.On_Update_Input();
+	animationSystem.On_Update();
+	inputSystem.On_Update();
 	
 	//!test
 	

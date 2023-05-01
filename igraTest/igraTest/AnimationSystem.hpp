@@ -2,23 +2,19 @@
 
 #define ANIMATION_SYSTEM_HPP
 
-#include "Entity.hpp"
-#include "Components.h"
+
 #include <vector>
 #include "Definitions.hpp"
+#include "System.hpp"
 
-class AnimationSystem
+class AnimationSystem : public System<AnimationSystem>
 {
-
-	Scene* m_scene;
 
 public:
 
-	AnimationSystem(Scene& scene)
-	{
-		m_scene = &scene;
-	}
-	void On_Update_Animate()
+	using System::System;
+
+	void On_Update()
 	{
 		for (int i = 0; i < m_scene->GetIdCount(); i++)
 		{
@@ -33,8 +29,8 @@ public:
 			//
 
 		}
-		
 	}
+
 };
 
 
