@@ -7,30 +7,32 @@
 #include <vector>
 #include "Definitions.hpp"
 
+
 class EntityDrawer
 {
 
-	std::vector<std::shared_ptr<Entity>> mem_entities;
+	Scene* m_scene;
 
 public:
-	EntityDrawer(const std::vector<std::shared_ptr<Entity>> &entities)
+	EntityDrawer(Scene& scene)
 	{
-		mem_entities = entities;
+		m_scene = &scene;
 	}
 	void On_Update_Draw()
 	{
-		for (std::shared_ptr<Entity> e: mem_entities)
+		for (int i = 0; i<m_scene->GetIdCount(); i++)
 		{
-			if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
+			//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
+			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) return;
 			
-			std::shared_ptr<SpriteComponent> sprite = e->GetComponent<SpriteComponent>();
-			std::shared_ptr<TransformComponent> transform = e->GetComponent<TransformComponent>();
+			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
+			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 
 
 
-			DrawTexturePro(sprite->mem_texture, sprite->mem_currentFrameRectangle,
-				{ transform->mem_position.x, transform->mem_position.y, sprite->mem_currentFrameRectangle.width * sprite->mem_textureScale, sprite->mem_currentFrameRectangle.height * sprite->mem_textureScale },
-				{ sprite->mem_currentFrameRectangle.width* SQRT2, sprite->mem_currentFrameRectangle.height* SQRT2 }, transform->mem_rotation, WHITE);
+			DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle,
+				{ transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale },
+				{ sprite.m_currentFrameRectangle.width* SQRT2, sprite.m_currentFrameRectangle.height* SQRT2 }, transform.m_rotation, WHITE);
 			
 		}
 	}

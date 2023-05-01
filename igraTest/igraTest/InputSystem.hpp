@@ -7,30 +7,32 @@
 #include <vector>
 #include "Definitions.hpp"
 
+
 class InputSystem
 {
 
-	std::vector<std::shared_ptr<Entity>> mem_entities;
+	Scene* m_scene;
 
 public:
 
-	InputSystem(const std::vector<std::shared_ptr<Entity>>& entities)
+	InputSystem(Scene& scene)
 	{
-		mem_entities = entities;
+		m_scene = &scene;
 	}
 	void On_Update_Input()
 	{
-		for (std::shared_ptr<Entity>& e : mem_entities)
+		for (int i = 0; i < m_scene->GetIdCount(); i++)
 		{
-			if (!(e->HasComponent<InputComponent>())) return;
+			if (!(m_scene->HasComponentById<InputComponent>(i))) return;
 
+			InputComponent& input = m_scene->GetComponentById<InputComponent>(i);
 
-			std::shared_ptr<InputComponent> input = e->GetComponent<InputComponent>();
-
-
-			input->On_Update();
+			
+			input.GetScript()->ProcessInput(input.GetMappings(), m_scene->GetEntity(i));
+			
 
 		}
+		
 	}
 };
 

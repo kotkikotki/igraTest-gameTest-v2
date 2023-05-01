@@ -2,42 +2,192 @@
 
 #define SCENE_HPP
 
-#include "Entity.hpp"
+
 #include <vector>
+#include<stdexcept>
+#include<cassert>
+
+#include "Definitions.hpp"
+
+#include "Entity.hpp"
 
 class Scene
 {
 	
 private:
 
-	std::vector<std::shared_ptr<Entity>> entities;
+	std::vector<std::shared_ptr<Entity>> m_entities;
+	std::vector<std::map<int, std::shared_ptr<component_var_t>>> m_components;
+
+protected:
+
+	template<class T, typename = enable_if_t<is_base_of_v<Component, T>>>
+	T& AddComponent(int id)
+	{
+		ComponentType componentType = componentIndexes[typeid(T)];
+		const int& component_id = componentType;
+
+		component_var_t component;
+		
+
+		switch (componentType)
+		{
+		case Animation:
+			component = AnimationComponent();
+			break;
+		case Input:
+			component = InputComponent();
+			break;
+		case Sprite:
+			component = SpriteComponent();
+			break;
+		case Transform:
+			component = TransformComponent();
+			break;
+		case END:
+			throw std::invalid_argument("END is not a component.");
+			break;
+		default:
+			break;
+		}
+		
+		m_components[component_id].emplace(id, std::make_shared<component_var_t>(component));
+
+
+
+		std::cout << "added comp"<<typeid(T).name();
+
+		return std::get<T>(*m_components[component_id][id]);
+
+	}
+
+
+	template<class T, typename = enable_if_t<is_base_of_v<Component, T>>>
+	T& GetComponent(int id)
+	{
+		const int& component_id = componentIndexes[typeid(T)];
+		return std::get<T>(*m_components[component_id][id]);
+	}
+
+	template<class T, typename = enable_if_t<is_base_of_v<Component, T>>>
+	std::shared_ptr<component_var_t> GetComponentPtr(int id)
+	{
+		const int& component_id = componentIndexes[typeid(T)];
+		return m_components[component_id][id];
+	}
+
+	template<class T, typename = enable_if_t<is_base_of_v<Component, T>>>
+	void RemoveComponent(int id)
+	{
+		const int& component_id = componentIndexes[typeid(T)];
+
+		m_components[component_id].erase(id);
+	}
+
+	std::shared_ptr<Entity>& GetEntityPtr(int id)
+	{
+		return m_entities[id];
+
+	}
+
+	friend class Entity;
 
 public:
 
-
-	void AddEntity(const Entity& entity)
+	Scene()
 	{
-		entities.push_back(std::make_shared<Entity>(entity));
+		for (int i = 0; i < ComponentType::END; i++)
+		{
+			m_components.push_back(std::map<int, std::shared_ptr<component_var_t>>());
+		}
 	}
 
-	std::shared_ptr<Entity>& GetEntity(int id)
+	Entity& AddEntity()
 	{
-		return entities[id];
+		//std::shared_ptr<Entity> entityPtr = std::make_shared<Entity>(Entity(m_entities.size(), *this));
+		m_entities.push_back(std::make_shared<Entity>(Entity(m_entities.size(), *this)));
+		return **(m_entities.end()-1);
+		
+	}
+
+	bool HasEntityById(int id)
+	{
+		//static_assert(is_base_of_v<Component, T>);
+		return !(GetEntityPtr(id) == nullptr);
+	}
+
+	int GetIdCount()
+	{
+		return m_entities.size();
+	}
+
+	Entity& GetEntity(int id)
+	{
+		if (!HasEntityById(id))throw std::invalid_argument("Entity does not exist.");
+		return *m_entities[id];
 
 	}
 
 	void RemoveEntity(int id)
 	{
-		entities.erase(entities.begin() + id);
+		m_entities.erase(m_entities.begin() + id);
 
 	}
 
 	const std::vector<std::shared_ptr<Entity>>& GetVector()
 	{
-		return entities;
+		return m_entities;
 	}
 
+	//
+
+	std::map<int, std::shared_ptr<component_var_t>>& GetComponentsOfType(ComponentType componentType)
+	{
+		return m_components[componentType];
+	}
+	template<typename T>
+	T& GetComponentById(int id)
+	{
+		//static_assert(is_base_of_v<Component, T>);
+		return GetComponent<T>(id);
+	}
+	/*
+	template<typename T>
+	std::shared_ptr<component_var_t>& GetComponentPtrById(int id)
+	{
+		//static_assert(is_base_of_v<Component, T>);
+		return GetComponentPtr<T>(id);
+	}*/
+	template<typename T>
+	bool HasComponentById(int id)
+	{
+		//static_assert(is_base_of_v<Component, T>);
+		return !(GetComponentPtr<T>(id)==nullptr);
+	}
 };
+
+template<typename T>
+T& Entity::AddComponent()
+{
+	//static_assert(is_base_of_v<Component, T>);
+	return this->GetOwner().AddComponent<T>(this->GetId());
+}
+template<typename T>
+T& Entity::GetComponent()
+{
+	//static_assert(is_base_of_v<Component, T>);
+	return this->GetOwner().GetComponent<T>(this->GetId());
+}
+template<typename T>
+void Entity::RemoveComponent()
+{
+	this->GetOwner().RemoveComponent(this->GetId());
+}
+template<typename T>
+bool Entity::HasComponent()
+{
+	return this->GetOwner().HasComponentById<T>(this->GetId());
+}
 
 #endif // !SCENE_HPP
 

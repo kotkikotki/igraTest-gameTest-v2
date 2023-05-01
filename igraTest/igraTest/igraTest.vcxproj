@@ -148,6 +148,7 @@
     <ClInclude Include="EntityDrawer.hpp" />
     <ClInclude Include="InputComponent.hpp" />
     <ClInclude Include="InputSystem.hpp" />
+    <ClInclude Include="Scripts.hpp" />
     <ClInclude Include="SpriteComponent.hpp" />
     <ClInclude Include="Systems.h" />
     <ClInclude Include="TransformComponent.hpp" />

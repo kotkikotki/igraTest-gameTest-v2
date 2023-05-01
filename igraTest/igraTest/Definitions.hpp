@@ -7,6 +7,8 @@
 #include "raylib.h"
 #include<memory>
 #include<any>
+#include<variant>
+#include<typeindex>
 
 #define SQRT2 1.41421356f
 
@@ -168,6 +170,30 @@ inline constexpr bool is_base_of_v = std::is_base_of<Base, Derived>::value;
 
 template< bool B, class T = void >
 using enable_if_t = typename std::enable_if<B, T>::type;
+
+//
+#include "Components.h"
+using component_var_t = std::variant<AnimationComponent, InputComponent, SpriteComponent, TransformComponent>;
+
+enum ComponentType
+{
+	Animation,
+	Input,
+	Sprite,
+	Transform,
+
+	END
+};
+
+std::map<std::type_index, ComponentType> componentIndexes
+{
+	{typeid(AnimationComponent), Animation},
+	{typeid(InputComponent), Input},
+	{typeid(SpriteComponent), Sprite},
+	{typeid(TransformComponent), Transform}
+};
+
+//
 
 #endif // !DEFINITIONS_HPP
 

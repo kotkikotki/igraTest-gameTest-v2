@@ -7,22 +7,23 @@
 class TransformComponent : public Component
 {
 public:
-	Vector2 mem_position = {0};
-	float mem_rotation = 0.f;
-	bool mem_flipVertical = false;
-	bool mem_flipHorizontal = false;
-	float mem_scale = 1.f;
+
+	Vector2 m_position = {0};
+	float m_rotation = 0.f;
+	bool m_flipVertical = false;
+	bool m_flipHorizontal = false;
+	float m_scale = 1.f;
 
 	//using Component::Component;
-
+	
 
 	void Initialize(const Vector2& position, float rotation, bool flipVertical, bool flipHorizontal, float scale)
 	{
-		mem_position = position;
-		mem_rotation = rotation;
-		mem_flipVertical = flipVertical;
-		mem_flipHorizontal = flipHorizontal;
-		mem_scale = scale;
+		m_position = position;
+		m_rotation = rotation;
+		m_flipVertical = flipVertical;
+		m_flipHorizontal = flipHorizontal;
+		m_scale = scale;
 	}
 };
 

@@ -11,10 +11,12 @@
 
 #include "Components.h"
 #include "Systems.h"
+#include "EntityDrawer.hpp"
 
 
-void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundManagerV, Scene &scene, EntityDrawer &entityDrawer, 
-			AnimationSystem &animationSystem, InputSystem &inputSystem)
+
+void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundManagerV, Scene &scene, 
+	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem)
 {	
 	if(IsKeyPressed(KEY_P))
 	{
@@ -57,7 +59,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		ClearBackground(WHITE);
 
 		backgroundManagerV.UpdateTexturePositions();
-		scene.GetEntity(0)->GetComponent<TransformComponent>()->mem_position.x = GetMouseX();
+		//scene.GetEntity(0)->GetComponent<TransformComponent>()->mem_position.x = GetMouseX();
 
 		//test
 		
@@ -74,6 +76,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 
 int main()
 {
+	
 	//initialize
 
 	//window
@@ -109,30 +112,28 @@ int main()
 	//sprite
 
 	std::shared_ptr<InputMappings> mappings= std::make_shared<InputMappings>(InputMappings{});
-	mappings->mem_Map.AddAction("rotate_right", KEY_D, Down);
-	mappings->mem_Map.AddAction("rotate_left", KEY_A, Down);
+	mappings->m_Map.AddAction("rotate_right", KEY_D, Down);
+	mappings->m_Map.AddAction("rotate_left", KEY_A, Down);
 
 
 	Scene s1;
+	Entity& e1 = s1.AddEntity();
 
-	Entity e1;
-
-	e1.AddComponent<TransformComponent>()->Initialize({ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
-
-	e1.AddComponent<SpriteComponent>()->Initialize(
-		LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
-	e1.AddComponent<AnimationComponent>()->Initialize(std::make_shared<AdvancedLoopAnimationScript>(AdvancedLoopAnimationScript({}, {})));
-	
-	e1.GetComponent<AnimationComponent>()->GetScript()->mem_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-	
-	e1.AddComponent<InputComponent>()->Initialize(std::make_shared<RotateInputScript>(RotateInputScript()), mappings);
-
-	s1.AddEntity(e1);
+	e1.AddComponent<TransformComponent>().
+		Initialize({ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
+	e1.AddComponent<SpriteComponent>().
+		Initialize(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
+	e1.AddComponent<AnimationComponent>().
+		Initialize(std::make_shared<AdvancedLoopAnimationScript>(AdvancedLoopAnimationScript({}, {})));
+	e1.GetComponent<AnimationComponent>().
+		GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+	e1.AddComponent<InputComponent>().
+		Initialize(std::make_shared<RotateInputScript>(RotateInputScript()), mappings);
 
 
-	EntityDrawer entityDrawer(s1.GetVector());
-	AnimationSystem animationSystem(s1.GetVector());
-	InputSystem inputSystem(s1.GetVector());
+	EntityDrawer entityDrawer(s1);
+	AnimationSystem animationSystem(s1);
+	InputSystem inputSystem(s1);
 	//!sprite
 
 	//!initialize
@@ -141,6 +142,7 @@ int main()
 	//game loop
 	while (!WindowShouldClose())
 	{
+		//Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem);
 		Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem);
 	}
 	//!game loop

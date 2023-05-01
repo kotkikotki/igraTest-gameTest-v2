@@ -10,27 +10,30 @@
 class AnimationSystem
 {
 
-	std::vector<std::shared_ptr<Entity>> mem_entities;
+	Scene* m_scene;
 
 public:
 
-	AnimationSystem(const std::vector<std::shared_ptr<Entity>>& entities)
+	AnimationSystem(Scene& scene)
 	{
-		mem_entities = entities;
+		m_scene = &scene;
 	}
 	void On_Update_Animate()
 	{
-		for (std::shared_ptr<Entity>& e : mem_entities)
+		for (int i = 0; i < m_scene->GetIdCount(); i++)
 		{
-			if (!(e->HasComponent<AnimationComponent>())) return;
+			if (!(m_scene->HasComponentById<AnimationComponent>(i) && m_scene->HasComponentById<SpriteComponent>(i))) return;
 
-			
-			std::shared_ptr<AnimationComponent> animation = e->GetComponent<AnimationComponent>();
+			AnimationComponent& animation = m_scene->GetComponentById<AnimationComponent>(i);
+			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
 
-
-			animation->On_Update();
+			//
+			animation.GetScript()->UpdateProperties();
+			animation.GetScript()->Animate(sprite);
+			//
 
 		}
+		
 	}
 };
 
