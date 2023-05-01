@@ -24,7 +24,7 @@ public:
 
 			InputComponent& input = m_scene->GetComponentById<InputComponent>(i);
 
-
+			input.GetScript()->UpdateProperties();
 			input.GetScript()->ProcessInput(input.GetMappings(), m_scene->GetEntity(i));
 
 

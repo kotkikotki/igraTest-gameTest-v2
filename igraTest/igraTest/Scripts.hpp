@@ -6,16 +6,14 @@
 
 //Animation
 
-class AnimationScript
+class Script
 {
-
 public:
 
 	Name_Variable_Tuple_Map m_Properties;
 	Name_LinkedVariable_Tuple_Map m_LinkedProperties;
 
-	//Rectangle mem_currentFrameRectangle = {};
-	explicit AnimationScript(const std::initializer_list < std::pair<std::string, std::any>>& properties, const std::initializer_list < std::pair<std::string, std::shared_ptr<std::any>>>& linkedProperties)
+	explicit Script(const std::initializer_list < std::pair<std::string, std::any>>& properties, const std::initializer_list < std::pair<std::string, std::shared_ptr<std::any>>>& linkedProperties)
 	{
 		for (auto pair : properties)
 		{
@@ -27,8 +25,6 @@ public:
 		}
 
 	}
-
-	virtual void Animate(SpriteComponent& sprite) {}
 
 	virtual void UpdateProperties() {}
 
@@ -44,7 +40,16 @@ public:
 		}
 
 	}
+};
 
+class AnimationScript : public Script
+{
+
+public:
+
+	using Script::Script;
+
+	virtual void Animate(SpriteComponent& sprite) {}
 
 };
 
@@ -52,7 +57,7 @@ class LoopAnimationScript : public AnimationScript
 {
 public:
 
-	float m_frameSpeed = 1.f;
+	float m_frameSpeed = 0.f;
 	int m_currentFrame = 0;
 	int m_frameCounter = 0;
 
@@ -93,30 +98,30 @@ class AdvancedLoopAnimationScript : public AnimationScript
 public:
 
 
-	int mem_currentFrame = 0;
-	int mem_frameCounter = 0;
+	int m_currentFrame = 0;
+	int m_frameCounter = 0;
 
 	//
-	float mem_frameSpeed = 1.f;
+	float m_frameSpeed = 0.f;
 
 	using AnimationScript::AnimationScript;
 
 
 	void Animate(SpriteComponent& sprite) override
 	{
-		int currentFrameMin = (mem_frameSpeed >= 4.f) ? sprite.m_frameCountX : 0;
-		int currentFrameMax = (mem_frameSpeed >= 4.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
-		mem_frameCounter++;
-		if (mem_frameCounter >= (GetFPS() / mem_frameSpeed))
+		int currentFrameMin = (m_frameSpeed >= 4.f) ? sprite.m_frameCountX : 0;
+		int currentFrameMax = (m_frameSpeed >= 4.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
+		m_frameCounter++;
+		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
 		{
-			mem_frameCounter = 0;
-			mem_currentFrame++;
+			m_frameCounter = 0;
+			m_currentFrame++;
 
-			if (mem_currentFrame >= currentFrameMax) mem_currentFrame = currentFrameMin;
+			if (m_currentFrame >= currentFrameMax) m_currentFrame = currentFrameMin;
 		}
 
-		int currentFrameX = mem_currentFrame % sprite.m_frameCountX,
-			currentFrameY = mem_currentFrame / sprite.m_frameCountX;
+		int currentFrameX = m_currentFrame % sprite.m_frameCountX,
+			currentFrameY = m_currentFrame / sprite.m_frameCountX;
 
 
 		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
@@ -128,7 +133,7 @@ public:
 		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
 
 		//mem_frameSpeed = mem_LinkedProperties.GetVariable<float>("frameSpeed");
-		mem_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
+		m_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
 
 	}
 
@@ -136,21 +141,22 @@ public:
 
 //Input
 #include "Entity.hpp"
-class InputScript
+class InputScript : public Script
 {
 
 public:
 
-	virtual void ProcessInput(const std::shared_ptr<InputMappings>& mappings, Entity& entity)
-	{
+	using Script::Script;
 
-	}
+	virtual void ProcessInput(const std::shared_ptr<InputMappings>& mappings, Entity& entity) {}
 
 };
 
 class RotateInputScript : public InputScript
 {
 public:
+
+	using InputScript::InputScript;
 
 	void ProcessInput(const std::shared_ptr<InputMappings>& mappings, Entity& entity)
 	{
@@ -162,6 +168,37 @@ public:
 			transform.m_rotation += 2.f;
 		if (mappings->m_Map.GetActionState("rotate_left"))
 			transform.m_rotation -= 2.f;
+	}
+
+};
+
+class MoveInputScript : public InputScript
+{
+
+	float m_frameSpeed = 0.f;
+
+public:
+
+	using InputScript::InputScript;
+
+	void ProcessInput(const std::shared_ptr<InputMappings>& mappings, Entity& entity)
+	{
+		if (!entity.HasComponent<TransformComponent>()) return;
+
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+
+		if (mappings->m_Map.GetActionState("move_right"))
+			transform.m_position.x += m_frameSpeed;
+		if (mappings->m_Map.GetActionState("move_left"))
+			transform.m_position.x -= m_frameSpeed;
+	}
+
+	void UpdateProperties() override
+	{
+		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
+		
+		m_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
+
 	}
 
 };
