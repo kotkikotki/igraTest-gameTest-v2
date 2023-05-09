@@ -3,12 +3,14 @@
 #define DEFINITIONS_HPP
 
 #include<string>
-#include<map>
+
+#include<unordered_map>
 #include "raylib.h"
 #include<memory>
 #include<any>
 #include<variant>
 #include<typeindex>
+#include<utility>
 
 #define SQRT2 1.41421356f
 
@@ -39,7 +41,7 @@ struct Name_Variable_Tuple_Map
 {
 public:
 
-	std::map<std::string, std::any> pairs;
+	std::unordered_map<std::string, std::any> pairs;
 
 	bool HasVariable(const std::string& name)
 	{
@@ -67,7 +69,7 @@ struct Name_LinkedVariable_Tuple_Map
 {
 public:
 
-	std::map<std::string, std::shared_ptr<void>> pairs;
+	std::unordered_map<std::string, std::shared_ptr<void>> pairs;
 
 	bool HasVariable(const std::string& name)
 	{
@@ -99,6 +101,33 @@ public:
 	{
 		return std::any_cast<T>(*std::static_pointer_cast<std::any>(pairs[name]));
 	}*/
+};
+
+template<typename T>
+struct SparseArray
+{
+private:
+	std::vector<T> vector;
+	std::unordered_map<int, int> keys;
+public:
+	void Insert(int id, const T& element)
+	{
+		vector.emplace_back(element);
+		keys.emplace(std::make_pair(id, vector.size() - 1));
+	}
+	void Remove(int id)
+	{
+		vector.erase(keys[id]);
+	}
+	T& operator[](int id)
+	{
+		return vector[keys[id]];
+	}
+	const std::vector<T> &GetVector()
+	{
+		return vector;
+	}
+	
 };
 
 enum KeyCondition
@@ -134,7 +163,7 @@ public:
 		}
 	}
 
-	std::map<std::string, std::pair<int, KeyCondition>> pairs;
+	std::unordered_map<std::string, std::pair<int, KeyCondition>> pairs;
 
 	bool HasAction(const std::string& action)
 	{
@@ -185,7 +214,7 @@ enum ComponentType
 	END
 };
 
-std::map<std::type_index, ComponentType> componentIndexes
+std::unordered_map<std::type_index, ComponentType> componentIndexes
 {
 	{typeid(AnimationComponent), Animation},
 	{typeid(InputComponent), Input},
@@ -193,6 +222,11 @@ std::map<std::type_index, ComponentType> componentIndexes
 	{typeid(TransformComponent), Transform}
 };
 
+template<typename T, typename ...Args>
+T Create(Args&& ...args)
+{
+	return T(std::forward<Args>(args)...);
+}
 //
 
 #endif // !DEFINITIONS_HPP

@@ -153,7 +153,7 @@ int main()
 		Initialize(std::make_shared<MoveInputScript>(MoveInputScript({}, {})), mappings2);
 	e2.GetComponent<InputComponent>().
 		GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-
+	
 	EntityDrawer entityDrawer(s1);
 	AnimationSystem animationSystem(s1);
 	InputSystem inputSystem(s1);

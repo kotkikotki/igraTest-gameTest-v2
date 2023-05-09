@@ -17,7 +17,7 @@ class Scene
 private:
 
 	std::vector<std::shared_ptr<Entity>> m_entities;
-	std::vector<std::map<int, std::shared_ptr<component_var_t>>> m_components;
+	std::vector<SparseArray<std::shared_ptr<component_var_t>>> m_components;
 
 protected:
 
@@ -29,7 +29,7 @@ protected:
 
 		component_var_t component;
 		
-
+		/*
 		switch (componentType)
 		{
 		case Animation:
@@ -50,8 +50,9 @@ protected:
 		default:
 			break;
 		}
-		
-		m_components[component_id].emplace(id, std::make_shared<component_var_t>(component));
+		*/
+		component = Create<T>();
+		m_components[component_id].Insert(id, std::make_shared<component_var_t>(component));
 
 
 
@@ -81,7 +82,7 @@ protected:
 	{
 		const int& component_id = componentIndexes[typeid(T)];
 
-		m_components[component_id].erase(id);
+		m_components[component_id].Remove(id);
 	}
 
 	std::shared_ptr<Entity>& GetEntityPtr(int id)
@@ -98,7 +99,7 @@ public:
 	{
 		for (int i = 0; i < ComponentType::END; i++)
 		{
-			m_components.push_back(std::map<int, std::shared_ptr<component_var_t>>());
+			m_components.push_back(SparseArray<std::shared_ptr<component_var_t>>());
 		}
 	}
 
@@ -141,9 +142,9 @@ public:
 
 	//
 
-	std::map<int, std::shared_ptr<component_var_t>>& GetComponentsOfType(ComponentType componentType)
+	const std::vector<std::shared_ptr<component_var_t>>& GetComponentsOfType(ComponentType componentType)
 	{
-		return m_components[componentType];
+		return m_components[componentType].GetVector();
 	}
 	template<typename T>
 	T& GetComponentById(int id)
