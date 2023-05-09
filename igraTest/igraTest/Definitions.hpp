@@ -206,20 +206,20 @@ using component_var_t = std::variant<AnimationComponent, InputComponent, SpriteC
 
 enum ComponentType
 {
-	Animation,
-	Input,
-	Sprite,
-	Transform,
+	ANIMATION,
+	INPUT,
+	SPRITE,
+	TRANSFORM,
 
 	END
 };
 
 std::unordered_map<std::type_index, ComponentType> componentIndexes
 {
-	{typeid(AnimationComponent), Animation},
-	{typeid(InputComponent), Input},
-	{typeid(SpriteComponent), Sprite},
-	{typeid(TransformComponent), Transform}
+	{typeid(AnimationComponent), ANIMATION},
+	{typeid(InputComponent), INPUT},
+	{typeid(SpriteComponent), SPRITE},
+	{typeid(TransformComponent), TRANSFORM}
 };
 
 template<typename T, typename ...Args>

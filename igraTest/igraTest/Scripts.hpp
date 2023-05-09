@@ -13,6 +13,9 @@ public:
 	Name_Variable_Tuple_Map m_Properties;
 	Name_LinkedVariable_Tuple_Map m_LinkedProperties;
 
+	explicit Script() : Script({}, {})
+	{
+	}
 	explicit Script(const std::initializer_list < std::pair<std::string, std::any>>& properties, const std::initializer_list < std::pair<std::string, std::shared_ptr<std::any>>>& linkedProperties)
 	{
 		for (auto pair : properties)

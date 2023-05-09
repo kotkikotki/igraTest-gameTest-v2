@@ -14,9 +14,20 @@ public:
 	bool m_flipHorizontal = false;
 	float m_scale = 1.f;
 
-	//using Component::Component;
+	using Component::Component;
 	
-
+	TransformComponent(const Vector2& position, float rotation, bool flipVertical, bool flipHorizontal, float scale) :
+		m_position(position),
+		m_rotation(rotation),
+		m_flipVertical(flipVertical),
+		m_flipHorizontal(flipHorizontal),
+		m_scale(scale) {}
+	/*
+	TransformComponent(const Vector2& position, float rotation, bool flipVertical, bool flipHorizontal, float scale)
+	{
+		Initialize(position, rotation, flipVertical, flipHorizontal, scale);
+	}
+	
 	void Initialize(const Vector2& position, float rotation, bool flipVertical, bool flipHorizontal, float scale)
 	{
 		m_position = position;
@@ -25,6 +36,7 @@ public:
 		m_flipHorizontal = flipHorizontal;
 		m_scale = scale;
 	}
+	*/
 };
 
 

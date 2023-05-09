@@ -33,14 +33,23 @@ class InputComponent : public Component
 
 public:
 
+	using Component::Component;
 
-
+	InputComponent(const std::shared_ptr<InputScript>& script, const std::shared_ptr<InputMappings>& mappings): 
+		m_InputScript(script),
+		m_InputMappings(mappings) {}
+	/*
+	InputComponent(const std::shared_ptr<InputScript>& script, const std::shared_ptr<InputMappings>& mappings)
+	{
+		Initialize(script, mappings);
+	}
+	
 	void Initialize(const std::shared_ptr<InputScript>& script, const std::shared_ptr<InputMappings>& mappings)
 	{
 		m_InputScript = script;
 		m_InputMappings = mappings;
 	}
-
+	*/
 
 	std::shared_ptr<InputScript>& GetScript()
 	{

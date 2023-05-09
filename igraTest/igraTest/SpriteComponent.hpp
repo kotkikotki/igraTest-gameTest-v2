@@ -20,18 +20,29 @@ public:
 
 	Rectangle m_currentFrameRectangle = {};
 
-	//using Component::Component;
+	using Component::Component;
 	
+	SpriteComponent(const Texture2D& texture, int frameCountX, int frameCountY, float textureScale) :
+		m_texture(texture),
+		m_frameCountX(frameCountX),
+		m_frameCountY(frameCountY),
+		m_textureScale(textureScale)
+	{
+		m_currentFrameRectangle = { 0.f, 0.f, (float)m_texture.width / (float)m_frameCountX, (float)m_texture.height / (float)m_frameCountY };
+	}
+	/*
+	SpriteComponent(const Texture2D& texture, int frameCountX, int frameCountY, float textureScale)
+	{
+		Initialize(texture, frameCountX, frameCountY, textureScale);
+	}
 
 	void Initialize(const Texture2D& texture, int frameCountX, int frameCountY, float textureScale)
 	{
-		m_texture = texture;
-		m_frameCountX = frameCountX;
-		m_frameCountY = frameCountY;
-		m_textureScale = textureScale;
+		
 
 		m_currentFrameRectangle = { 0.f, 0.f, (float)m_texture.width / (float)m_frameCountX, (float)m_texture.height / (float)m_frameCountY};
 	}
+	*/
 };
 
 

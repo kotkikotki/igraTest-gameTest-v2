@@ -11,9 +11,11 @@ public:
 
     //virtual ~Component() = default;
     //Component(const Component& r) = delete;
-
+    Component() = default;
+    
 
 protected:
+    
     //Component() = default;
     
 };

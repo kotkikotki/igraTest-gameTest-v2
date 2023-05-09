@@ -21,45 +21,19 @@ private:
 
 protected:
 
-	template<class T, typename = enable_if_t<is_base_of_v<Component, T>>>
-	T& AddComponent(int id)
+	template<class T, typename = enable_if_t<is_base_of_v<Component, T>>, typename ...Args>
+	T& AddComponent(int id, Args&&... args)
 	{
 		ComponentType componentType = componentIndexes[typeid(T)];
 		const int& component_id = componentType;
 
-		component_var_t component;
-		
-		/*
-		switch (componentType)
-		{
-		case Animation:
-			component = AnimationComponent();
-			break;
-		case Input:
-			component = InputComponent();
-			break;
-		case Sprite:
-			component = SpriteComponent();
-			break;
-		case Transform:
-			component = TransformComponent();
-			break;
-		case END:
-			throw std::invalid_argument("END is not a component.");
-			break;
-		default:
-			break;
-		}
-		*/
-		component = Create<T>();
+		component_var_t component = Create<T>(args... );;
+
 		m_components[component_id].Insert(id, std::make_shared<component_var_t>(component));
-
-
 
 		std::cout << "added comp"<<typeid(T).name();
 
 		return std::get<T>(*m_components[component_id][id]);
-
 	}
 
 
@@ -152,13 +126,6 @@ public:
 		//static_assert(is_base_of_v<Component, T>);
 		return GetComponent<T>(id);
 	}
-	/*
-	template<typename T>
-	std::shared_ptr<component_var_t>& GetComponentPtrById(int id)
-	{
-		//static_assert(is_base_of_v<Component, T>);
-		return GetComponentPtr<T>(id);
-	}*/
 	template<typename T>
 	bool HasComponentById(int id)
 	{
@@ -167,11 +134,11 @@ public:
 	}
 };
 
-template<typename T>
-T& Entity::AddComponent()
+template<typename T, typename ...Args>
+T& Entity::AddComponent(Args&& ...args)
 {
 	//static_assert(is_base_of_v<Component, T>);
-	return this->GetOwner().AddComponent<T>(this->GetId());
+	return this->GetOwner().AddComponent<T>(this->GetId(), args...);
 }
 template<typename T>
 T& Entity::GetComponent()
