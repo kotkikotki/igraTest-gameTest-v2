@@ -20,17 +20,7 @@ public:
 
 	AnimationComponent(const std::shared_ptr<AnimationScript>& script) :
 		m_AnimationScript(script) {}
-	/*
-	AnimationComponent(const std::shared_ptr<AnimationScript>& script)
-	{
-		Initialize(script);
-	}
 	
-	void Initialize(const std::shared_ptr<AnimationScript>& script)
-	{
-		m_AnimationScript = script;
-	}
-	*/
 	std::shared_ptr<AnimationScript>& GetScript()
 	{
 		return m_AnimationScript;

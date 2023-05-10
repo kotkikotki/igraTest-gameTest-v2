@@ -111,10 +111,6 @@ int main()
 
 	//sprite
 
-	/*std::shared_ptr<InputMappings> mappings = std::make_shared<InputMappings>(InputMappings{});
-	mappings->m_Map.AddAction("rotate_right", KEY_D, Down);
-	mappings->m_Map.AddAction("rotate_left", KEY_A, Down);
-	*/
 	std::shared_ptr<InputMappings> mappings1 = std::make_shared<InputMappings>(InputMappings{});
 	mappings1->m_Map.AddAction("move_right", KEY_D, Down);
 	mappings1->m_Map.AddAction("move_left", KEY_A, Down);
@@ -126,32 +122,32 @@ int main()
 	Scene s1;
 	Entity& e1 = s1.AddEntity();
 
+	{
+		e1.AddComponent<TransformComponent>
+			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
+		e1.AddComponent<SpriteComponent>
+			(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
+		e1.AddComponent<AnimationComponent>
+			(std::make_shared<AdvancedLoopAnimationScript>(AdvancedLoopAnimationScript()));
+		e1.GetComponent<AnimationComponent>().
+			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+		e1.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings1);
+		e1.GetComponent<InputComponent>().
+			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 
-	e1.AddComponent<TransformComponent>
-		(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
-	e1.AddComponent<SpriteComponent>
-		(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
-	e1.AddComponent<AnimationComponent>
-		(std::make_shared<AdvancedLoopAnimationScript>(AdvancedLoopAnimationScript()));
-	e1.GetComponent<AnimationComponent>().
-		GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-	e1.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings1);
-	e1.GetComponent<InputComponent>().
-		GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+		Entity& e2 = s1.AddEntity();
 
-	Entity& e2 = s1.AddEntity();
-
-	e2.AddComponent<TransformComponent>
-		(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 2.25f }, 0.f, false, false, 1.f);
-	e2.AddComponent<SpriteComponent>(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
-	e2.AddComponent<AnimationComponent>
-		(std::make_shared<AdvancedLoopAnimationScript>(AdvancedLoopAnimationScript()));
-	e2.GetComponent<AnimationComponent>().
-		GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-	e2.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings2);
-	e2.GetComponent<InputComponent>().
-		GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-	
+		e2.AddComponent<TransformComponent>
+			(Vector2{ GetScreenWidth() / 2.5f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
+		e2.AddComponent<SpriteComponent>(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
+		e2.AddComponent<AnimationComponent>
+			(std::make_shared<AdvancedLoopAnimationScript>(AdvancedLoopAnimationScript()));
+		e2.GetComponent<AnimationComponent>().
+			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+		e2.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings2);
+		e2.GetComponent<InputComponent>().
+			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+	}
 	EntityDrawer entityDrawer(s1);
 	AnimationSystem animationSystem(s1);
 	InputSystem inputSystem(s1);

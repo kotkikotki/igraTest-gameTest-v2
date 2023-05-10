@@ -22,21 +22,7 @@ public:
 		m_flipVertical(flipVertical),
 		m_flipHorizontal(flipHorizontal),
 		m_scale(scale) {}
-	/*
-	TransformComponent(const Vector2& position, float rotation, bool flipVertical, bool flipHorizontal, float scale)
-	{
-		Initialize(position, rotation, flipVertical, flipHorizontal, scale);
-	}
 	
-	void Initialize(const Vector2& position, float rotation, bool flipVertical, bool flipHorizontal, float scale)
-	{
-		m_position = position;
-		m_rotation = rotation;
-		m_flipVertical = flipVertical;
-		m_flipHorizontal = flipHorizontal;
-		m_scale = scale;
-	}
-	*/
 };
 
 
