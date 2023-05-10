@@ -25,6 +25,39 @@ T min(T a, T b)
 	return (a <= b) ? a : b;
 }
 
+struct Circle
+{
+	Vector2 point = {};
+	float radius = 0.f;
+	Circle(const Vector2& point, float radius)
+	{
+		this->point = point;
+		this->radius = radius;
+	}
+};
+
+//
+struct Collision_Rectangle
+{
+	float width = 0.f;
+	float height = 0.f;
+	Collision_Rectangle(float width, float height)
+	{
+		this->width = width;
+		this->height = height;
+	}
+};
+
+struct  Collision_Circle
+{
+	float radius = 0.f;
+	Collision_Circle(float radius)
+	{
+		this->radius = radius;
+	}
+};
+//
+
 struct TextureFilePath_ScrollingSpeed_Tuple
 {
 	std::string filePath = "";
@@ -207,6 +240,7 @@ using component_var_t = std::variant<AnimationComponent, InputComponent, SpriteC
 enum ComponentType
 {
 	ANIMATION,
+	COLLISION,
 	INPUT,
 	SPRITE,
 	TRANSFORM,
@@ -217,6 +251,7 @@ enum ComponentType
 std::unordered_map<std::type_index, ComponentType> componentIndexes
 {
 	{typeid(AnimationComponent), ANIMATION},
+	{typeid(AnimationComponent), COLLISION},
 	{typeid(InputComponent), INPUT},
 	{typeid(SpriteComponent), SPRITE},
 	{typeid(TransformComponent), TRANSFORM}

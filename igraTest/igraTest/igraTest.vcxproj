@@ -142,6 +142,8 @@
     <ClInclude Include="AnimationSystem.hpp" />
     <ClInclude Include="BackgroundManager_Horizontal.hpp" />
     <ClInclude Include="BackgroundManager_Vertical.hpp" />
+    <ClInclude Include="CollisionComponent.hpp" />
+    <ClInclude Include="CollisionSystem.hpp" />
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Entity.hpp" />
