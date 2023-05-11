@@ -18,7 +18,7 @@ public:
 
 	void On_Update()
 	{
-		for (int i = 0; i < m_scene->GetIdCount(); i++)
+		for (int i : m_scene->GetIds())
 		{
 			if (!(m_scene->HasComponentById<InputComponent>(i))) return;
 

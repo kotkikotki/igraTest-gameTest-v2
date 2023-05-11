@@ -3,7 +3,9 @@
 #define SCENE_HPP
 
 
-#include <vector>
+#include<vector>
+#include<queue>
+#include<set>
 #include<stdexcept>
 #include<cassert>
 
@@ -16,8 +18,10 @@ class Scene
 	
 private:
 
-	std::vector<std::shared_ptr<Entity>> m_entities;
+	SparseArray<std::shared_ptr<Entity>> m_entities;
 	std::vector<SparseArray<std::shared_ptr<component_var_t>>> m_components;
+	std::priority_queue<int, std::vector<int>, std::greater<int>> m_free_Ids;
+	std::set<int> m_used_Ids;
 
 protected:
 
@@ -27,9 +31,7 @@ protected:
 		ComponentType componentType = componentIndexes[typeid(T)];
 		const int& component_id = componentType;
 
-		component_var_t component = Create<T>(args... );;
-
-		m_components[component_id].Insert(id, std::make_shared<component_var_t>(component));
+		m_components[component_id].Emplace(id, std::make_shared<component_var_t>(Create<T>(args...)));
 
 		std::cout << "added comp"<<typeid(T).name();
 
@@ -61,6 +63,7 @@ protected:
 
 	std::shared_ptr<Entity>& GetEntityPtr(int id)
 	{
+		if (!HasEntityById(id))throw std::invalid_argument("Entity does not exist.");
 		return m_entities[id];
 
 	}
@@ -71,29 +74,45 @@ public:
 
 	Scene()
 	{
-		for (int i = 0; i < ComponentType::END; i++)
-		{
-			m_components.push_back(SparseArray<std::shared_ptr<component_var_t>>());
-		}
+		m_components = std::vector <SparseArray<std::shared_ptr<component_var_t>>>(END);
 	}
 
 	Entity& AddEntity()
 	{
-		//std::shared_ptr<Entity> entityPtr = std::make_shared<Entity>(Entity(m_entities.size(), *this));
-		m_entities.push_back(std::make_shared<Entity>(Entity(m_entities.size(), *this)));
-		return **(m_entities.end()-1);
-		
+		int id;
+		if (m_free_Ids.empty())
+		{
+			id = m_entities.size();
+		}
+		else
+		{
+			id = m_free_Ids.top();
+			m_free_Ids.pop();
+		}
+
+		m_entities.Emplace(id, std::make_shared<Entity>(Entity(id, *this)));
+
+		m_used_Ids.emplace(id);
+
+		std::cout<<std::endl << "Added" << id << std::endl;
+		return *m_entities[id];
+
 	}
+
 
 	bool HasEntityById(int id)
 	{
-		//static_assert(is_base_of_v<Component, T>);
-		return !(GetEntityPtr(id) == nullptr);
+		return m_entities.HasId(id);
 	}
 
-	int GetIdCount()
+	int GetEntityCount()
 	{
-		return m_entities.size();
+		return m_used_Ids.size();
+	}
+
+	const std::set<int>& GetIds()
+	{
+		return m_used_Ids;
 	}
 
 	Entity& GetEntity(int id)
@@ -105,13 +124,26 @@ public:
 
 	void RemoveEntity(int id)
 	{
-		m_entities.erase(m_entities.begin() + id);
 
+		if (!HasEntityById(id))throw std::invalid_argument("Entity does not exist.");
+		//m_entities.erase(m_entities.begin() + id);
+		
+		for (auto& pair : componentIndexes)
+		{
+			if(m_components[pair.second].HasId(id))
+				m_components[pair.second].Remove(id);
+
+		}
+		m_entities.Remove(id);
+		m_free_Ids.push(id);
+		m_used_Ids.erase(id);
+
+		std::cout <<std::endl<< "Removed" << id << std::endl;
 	}
 
 	const std::vector<std::shared_ptr<Entity>>& GetVector()
 	{
-		return m_entities;
+		return m_entities.GetVector();
 	}
 
 	//
@@ -123,13 +155,11 @@ public:
 	template<typename T>
 	T& GetComponentById(int id)
 	{
-		//static_assert(is_base_of_v<Component, T>);
 		return GetComponent<T>(id);
 	}
 	template<typename T>
 	bool HasComponentById(int id)
 	{
-		//static_assert(is_base_of_v<Component, T>);
 		return !(GetComponentPtr<T>(id)==nullptr);
 	}
 };
@@ -137,13 +167,11 @@ public:
 template<typename T, typename ...Args>
 T& Entity::AddComponent(Args&& ...args)
 {
-	//static_assert(is_base_of_v<Component, T>);
 	return this->GetOwner().AddComponent<T>(this->GetId(), args...);
 }
 template<typename T>
 T& Entity::GetComponent()
 {
-	//static_assert(is_base_of_v<Component, T>);
 	return this->GetOwner().GetComponent<T>(this->GetId());
 }
 template<typename T>

@@ -30,14 +30,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	{
 		backgroundManagerV.SetCurrentSpeed(min(backgroundManagerV.GetCurrentSpeed() + 3.f*GetFrameTime(), 20.f));
 	}
-	/*if (IsKeyDown(KEY_D))
-	{
-		scene.GetEntity(0)->GetComponent<TransformComponent>()->mem_rotation += 2.f;
-	}
-	if (IsKeyDown(KEY_A))
-	{
-		scene.GetEntity(0)->GetComponent<TransformComponent>()->mem_rotation -= 2.f;
-	}*/
+	
 	
 	
 	//audio
@@ -120,9 +113,11 @@ int main()
 
 
 	Scene s1;
-	Entity& e1 = s1.AddEntity();
+	
 
 	{
+		Entity& e1 = s1.AddEntity();
+
 		e1.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
 		e1.AddComponent<SpriteComponent>
@@ -134,7 +129,7 @@ int main()
 		e1.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings1);
 		e1.GetComponent<InputComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-
+		//
 		Entity& e2 = s1.AddEntity();
 
 		e2.AddComponent<TransformComponent>

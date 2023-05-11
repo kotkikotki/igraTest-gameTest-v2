@@ -16,7 +16,8 @@ public:
 
 	void On_Update()
 	{
-		for (int i = 0; i < m_scene->GetIdCount(); i++)
+		//for (int i = 0; i < m_scene->GetEntityCount(); i++)
+		for(int i: m_scene->GetIds())
 		{
 			if (!(m_scene->HasComponentById<AnimationComponent>(i) && m_scene->HasComponentById<SpriteComponent>(i))) return;
 

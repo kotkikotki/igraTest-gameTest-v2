@@ -18,7 +18,7 @@ public:
 
 	void On_Update_Draw()
 	{
-		for (int i = 0; i < m_scene->GetIdCount(); i++)
+		for (int i : m_scene->GetIds())
 		{
 			//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
 			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) return;

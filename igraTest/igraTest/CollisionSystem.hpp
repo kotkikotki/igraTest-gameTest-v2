@@ -18,20 +18,15 @@ public:
 
 	void On_Update()
 	{
-		//
-		
-		//
-		for (int i = 0; i < m_scene->GetIdCount(); i++)
+		//updating collision positions
+		for (int i : m_scene->GetIds())
 		{
 			if (!(m_scene->HasComponentById<CollisionComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) return;
 
 			CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 
-			//
-			animation.GetScript()->UpdateProperties();
-			animation.GetScript()->Animate(sprite);
-			//
+			collision.UpdatePosition(transform.m_position);
 
 		}
 	}

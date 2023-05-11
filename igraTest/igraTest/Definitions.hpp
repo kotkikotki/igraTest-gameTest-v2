@@ -14,6 +14,12 @@
 
 #define SQRT2 1.41421356f
 
+template<typename T, typename ...Args>
+T Create(Args&& ...args)
+{
+	return T(std::forward<Args>(args)...);
+}
+
 template<typename T> 
 T max(T a, T b)
 {
@@ -24,7 +30,7 @@ T min(T a, T b)
 {
 	return (a <= b) ? a : b;
 }
-
+/*
 struct Circle
 {
 	Vector2 point = {};
@@ -35,24 +41,48 @@ struct Circle
 		this->radius = radius;
 	}
 };
-
+*/
 //
-struct Collision_Rectangle
+
+struct Collision_Base
 {
+	Vector2 postition = {};
+	Collision_Base() = default;
+};
+
+struct Collision_Box : Collision_Base
+{
+	using Collision_Base::Collision_Base;
+
 	float width = 0.f;
 	float height = 0.f;
-	Collision_Rectangle(float width, float height)
+
+	Collision_Box(float width, float height)
 	{
+		this->width = width;
+		this->height = height;
+	}
+	Collision_Box(Vector2 position, float width, float height)
+	{
+		this->Collision_Base::postition = position;
 		this->width = width;
 		this->height = height;
 	}
 };
 
-struct  Collision_Circle
+struct  Collision_Circle : Collision_Base
 {
+	using Collision_Base::Collision_Base;
+
 	float radius = 0.f;
+
 	Collision_Circle(float radius)
 	{
+		this->radius = radius;
+	}
+	Collision_Circle(Vector2 position, float radius)
+	{
+		this->Collision_Base::postition = position;
 		this->radius = radius;
 	}
 };
@@ -143,14 +173,50 @@ private:
 	std::vector<T> vector;
 	std::unordered_map<int, int> keys;
 public:
+
+	size_t size()
+	{
+		return vector.size();
+	}
+
+	bool HasId(int id)
+	{
+		return (keys.find(id) != keys.end());
+	}
 	void Insert(int id, const T& element)
 	{
 		vector.emplace_back(element);
 		keys.emplace(std::make_pair(id, vector.size() - 1));
 	}
+	
+	template<typename ...Args>
+	void Emplace(int id, Args&& ...args)
+	{
+		vector.emplace_back(args...);
+		keys.emplace(std::make_pair(id, vector.size() - 1));
+	}
 	void Remove(int id)
 	{
-		vector.erase(keys[id]);
+		std::cout << "Bef" << std::endl;
+		for (auto& pair : keys)
+		{
+			std::cout << pair.first << " " << pair.second << std::endl;
+		}
+		vector.erase(vector.begin()+keys[id]);
+
+		for (auto& pair : keys)
+		{
+			if (pair.second > keys[id])
+				pair.second--;
+		}
+
+		keys.erase(id);
+		std::cout << "Aft" << std::endl;
+
+		for (auto& pair : keys)
+		{
+			std::cout<<pair.first<<" "<<pair.second<< std::endl;
+		}
 	}
 	T& operator[](int id)
 	{
@@ -235,11 +301,11 @@ using enable_if_t = typename std::enable_if<B, T>::type;
 
 //
 #include "Components.h"
-using component_var_t = std::variant<AnimationComponent, InputComponent, SpriteComponent, TransformComponent>;
+using component_var_t = std::variant<AnimationComponent,CollisionComponent, InputComponent, SpriteComponent, TransformComponent>;
 
 enum ComponentType
 {
-	ANIMATION,
+	ANIMATION = 0,
 	COLLISION,
 	INPUT,
 	SPRITE,
@@ -251,17 +317,13 @@ enum ComponentType
 std::unordered_map<std::type_index, ComponentType> componentIndexes
 {
 	{typeid(AnimationComponent), ANIMATION},
-	{typeid(AnimationComponent), COLLISION},
+	{typeid(CollisionComponent), COLLISION},
 	{typeid(InputComponent), INPUT},
 	{typeid(SpriteComponent), SPRITE},
 	{typeid(TransformComponent), TRANSFORM}
 };
 
-template<typename T, typename ...Args>
-T Create(Args&& ...args)
-{
-	return T(std::forward<Args>(args)...);
-}
+
 //
 
 #endif // !DEFINITIONS_HPP

@@ -4,24 +4,52 @@
 
 #include "Component.hpp"
 
+using collision_area_var_t = std::variant<Collision_Box, Collision_Circle>;
+
+enum CollisionStates
+{
+	ENTERING,
+	STAYING,
+	NOT_COLLIDING
+};
+
+
 class CollisionComponent : public Component
 {
+	collision_area_var_t collision_Area;
 
 public:
 
-	Vector2 m_position;
-
-	Collision_Rectangle m_CollisionBox;
-	Collision_Circle m_CollisionCircle;
+	
 
 	using Component::Component;
 
-	CollisionComponent(float width, float height) :
-		m_CollisionBox(width, height),
-		m_CollisionCircle(0.f){ }
-	CollisionComponent(float radius) :
-		m_CollisionBox(0.f, 0.f),
-		m_CollisionCircle(radius) { }
+	CollisionComponent(float width, float height)
+	{
+		collision_Area = Collision_Box{ width, height };
+	}
+	CollisionComponent(float radius)
+	{
+		collision_Area = Collision_Circle{radius};
+	}
+
+	void UpdatePosition(Vector2 position)
+	{
+		if (auto area = std::get_if<Collision_Box>(&collision_Area))
+		{
+			area->postition = position;
+		}
+		if (auto area = std::get_if<Collision_Circle>(&collision_Area))
+		{
+			area->postition = position;
+		}
+	}
+
+	const collision_area_var_t& GetAreaRef()
+	{
+		return collision_Area;
+	}
+
 
 };
 
