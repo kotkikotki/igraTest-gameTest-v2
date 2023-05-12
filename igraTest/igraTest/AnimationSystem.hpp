@@ -19,7 +19,7 @@ public:
 		//for (int i = 0; i < m_scene->GetEntityCount(); i++)
 		for(int i: m_scene->GetIds())
 		{
-			if (!(m_scene->HasComponentById<AnimationComponent>(i) && m_scene->HasComponentById<SpriteComponent>(i))) return;
+			if (!(m_scene->HasComponentById<AnimationComponent>(i) && m_scene->HasComponentById<SpriteComponent>(i))) continue;
 
 			AnimationComponent& animation = m_scene->GetComponentById<AnimationComponent>(i);
 			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);

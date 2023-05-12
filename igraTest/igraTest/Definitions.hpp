@@ -301,7 +301,8 @@ using enable_if_t = typename std::enable_if<B, T>::type;
 
 //
 #include "Components.h"
-using component_var_t = std::variant<AnimationComponent,CollisionComponent, InputComponent, SpriteComponent, TransformComponent>;
+using component_var_t = std::variant
+<AnimationComponent, CollisionComponent, InputComponent, SpriteComponent, TransformComponent>;
 
 enum ComponentType
 {

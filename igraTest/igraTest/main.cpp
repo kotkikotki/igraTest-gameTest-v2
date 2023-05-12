@@ -16,7 +16,8 @@
 
 
 void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundManagerV, Scene &scene, 
-	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem)
+	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem,
+	CollisionSystem &collisionSystem)
 {	
 	if(IsKeyPressed(KEY_P))
 	{
@@ -30,7 +31,10 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	{
 		backgroundManagerV.SetCurrentSpeed(min(backgroundManagerV.GetCurrentSpeed() + 3.f*GetFrameTime(), 20.f));
 	}
-	
+	if (IsKeyReleased(KEY_K))
+	{
+		collisionSystem.PrintCurrent();
+	}
 	
 	
 	//audio
@@ -40,7 +44,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	backgroundManagerV.UpdateTexturePositionValues();
 
 	//test
-	
+	collisionSystem.On_Update();
 	animationSystem.On_Update();
 	inputSystem.On_Update();
 	
@@ -57,7 +61,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		//test
 		
 		entityDrawer.On_Update_Draw();
-		
+		collisionSystem.On_UpdateDrawTest();
 		
 		//!test
 		
@@ -129,6 +133,8 @@ int main()
 		e1.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings1);
 		e1.GetComponent<InputComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+		e1.AddComponent<CollisionComponent>
+			(10.f);
 		//
 		Entity& e2 = s1.AddEntity();
 
@@ -146,6 +152,7 @@ int main()
 	EntityDrawer entityDrawer(s1);
 	AnimationSystem animationSystem(s1);
 	InputSystem inputSystem(s1);
+	CollisionSystem collisionSystem(s1);
 	//!sprite
 
 	//!initialize
@@ -155,7 +162,7 @@ int main()
 	while (!WindowShouldClose())
 	{
 		//Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem);
-		Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem);
+		Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem, collisionSystem);
 	}
 	//!game loop
 

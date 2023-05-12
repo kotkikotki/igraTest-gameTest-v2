@@ -30,7 +30,6 @@ public:
 	{
 		m_currentFrameRectangle = { 0.f, 0.f, (float)m_texture.width / (float)m_frameCountX, (float)m_texture.height / (float)m_frameCountY };
 	}
-	
 };
 
 

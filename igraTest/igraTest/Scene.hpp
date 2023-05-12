@@ -15,7 +15,7 @@
 
 class Scene
 {
-	
+
 private:
 
 	SparseArray<std::shared_ptr<Entity>> m_entities;
@@ -31,9 +31,10 @@ protected:
 		ComponentType componentType = componentIndexes[typeid(T)];
 		const int& component_id = componentType;
 
-		m_components[component_id].Emplace(id, std::make_shared<component_var_t>(Create<T>(args...)));
+		m_components[component_id].Emplace(id, std::move(std::make_shared<component_var_t>(Create<T>(args...))));
+		//m_components[component_id].Emplace(id, args...));
 
-		std::cout << "added comp"<<typeid(T).name();
+		std::cout << "added comp" << typeid(T).name();
 
 		return std::get<T>(*m_components[component_id][id]);
 	}
@@ -77,6 +78,17 @@ public:
 		m_components = std::vector <SparseArray<std::shared_ptr<component_var_t>>>(END);
 	}
 
+	~Scene()
+	{
+		//texture_unload
+		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponent)]].GetVector())
+		{
+			SpriteComponent& sprite = std::get<SpriteComponent>(*comp);
+
+			UnloadTexture(sprite.m_texture);
+		}
+	}
+
 	Entity& AddEntity()
 	{
 		int id;
@@ -90,11 +102,11 @@ public:
 			m_free_Ids.pop();
 		}
 
-		m_entities.Emplace(id, std::make_shared<Entity>(Entity(id, *this)));
+		m_entities.Emplace(id, std::move(std::make_shared<Entity>(Entity(id, *this))));
 
 		m_used_Ids.emplace(id);
 
-		std::cout<<std::endl << "Added" << id << std::endl;
+		std::cout << std::endl << "Added" << id << std::endl;
 		return *m_entities[id];
 
 	}

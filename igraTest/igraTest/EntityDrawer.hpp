@@ -7,7 +7,6 @@
 #include <vector>
 #include "Definitions.hpp"
 
-
 class EntityDrawer : System<EntityDrawer>
 {
 
@@ -21,7 +20,7 @@ public:
 		for (int i : m_scene->GetIds())
 		{
 			//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
-			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) return;
+			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
 
 			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);

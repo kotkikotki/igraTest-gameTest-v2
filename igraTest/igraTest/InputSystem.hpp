@@ -20,7 +20,7 @@ public:
 	{
 		for (int i : m_scene->GetIds())
 		{
-			if (!(m_scene->HasComponentById<InputComponent>(i))) return;
+			if (!(m_scene->HasComponentById<InputComponent>(i))) continue;
 
 			InputComponent& input = m_scene->GetComponentById<InputComponent>(i);
 

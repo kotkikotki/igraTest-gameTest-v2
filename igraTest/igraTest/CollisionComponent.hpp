@@ -6,7 +6,7 @@
 
 using collision_area_var_t = std::variant<Collision_Box, Collision_Circle>;
 
-enum CollisionStates
+enum CollisionState
 {
 	ENTERING,
 	STAYING,
@@ -33,6 +33,7 @@ public:
 		collision_Area = Collision_Circle{radius};
 	}
 
+	//helper method, not a real functionality
 	void UpdatePosition(Vector2 position)
 	{
 		if (auto area = std::get_if<Collision_Box>(&collision_Area))
