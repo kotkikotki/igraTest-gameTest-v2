@@ -22,10 +22,11 @@ class CollisionSystem : public System<CollisionSystem>
 
 		if (auto area1 = std::get_if<Collision_Box>(&collision1.GetAreaRef()))
 		{
-			Rectangle rect1 = { area1->width, area1->height };
+			Rectangle rect1 = { area1->postition.x, area1->postition.y, area1->width, area1->height};
 			if (auto area2 = std::get_if<Collision_Box>(&collision2.GetAreaRef()))
 			{
-				return CheckCollisionRecs(rect1, { area2->width, area2->height });
+				Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
+				return CheckCollisionRecs(rect1, rect2);
 			}
 			if (auto area2 = std::get_if<Collision_Circle>(&collision2.GetAreaRef()))
 			{
@@ -36,7 +37,8 @@ class CollisionSystem : public System<CollisionSystem>
 		{
 			if (auto area2 = std::get_if<Collision_Box>(&collision2.GetAreaRef()))
 			{
-				return CheckCollisionCircleRec(area1->postition, area1->radius, {area2->width, area2->height});
+				Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
+				return CheckCollisionCircleRec(area1->postition, area1->radius, rect2);
 			}
 			if (auto area2 = std::get_if<Collision_Circle>(&collision2.GetAreaRef()))
 			{
@@ -63,30 +65,10 @@ public:
 			CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 
-			Vector2 position;
-			if (!(m_scene->HasComponentById<SpriteComponent>(i)))
-			{
-
-			}
-
-
 			collision.UpdatePosition(transform.m_position);
 
 		}
-		
-		/*
-		//updating collision positions
-		for (int i : m_scene->GetIds())
-		{
-			if (!(m_scene->HasComponentById<CollisionComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) return;
-
-			CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
-			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
-
-			collision.UpdatePosition(transform.m_position);
-
-		}
-		
+	
 		SparseArray<SparseArray<CollisionState>> newMatrix;
 
 		for (int i : m_scene->GetIds())
@@ -122,43 +104,36 @@ public:
 		}
 		//m_collisionMatrix = std::move(newMatrix);
 		m_collisionMatrix = newMatrix;
-		*/
+		
 	}
-	void On_UpdateDrawTest()
-	{
-		for (int i : m_scene->GetIds())
-		{
-			//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
-			if (!(m_scene->HasComponentById<CollisionComponent>(i))) continue;
-			CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
-
-
-
-
-			if (auto area1 = std::get_if<Collision_Box>(&collision.GetAreaRef()))
-			{
-				DrawRectangle(area1->postition.x, area1->postition.y, area1->width, area1->height, RED);
-			}
-			if (auto area1 = std::get_if<Collision_Circle>(&collision.GetAreaRef()))
-			{
-				DrawCircle(area1->postition.x, area1->postition.y, area1->radius, RED);
-			}
-
-		}
-	}
+	
 	//helper method
 	void PrintCurrent()
 	{
-		/*
+		std::cout << std::endl << "Collision test" << std::endl;
 		for (int i: m_scene->GetIds())
 		{
 			for (int j : m_scene->GetIds())
 			{
-				std::cout << m_collisionMatrix[i][j] << " ";
+				std::string outp;
+				switch (m_collisionMatrix[i][j])
+				{
+				case NOT_COLLIDING:
+					outp = "NOT_COLLIDING";
+					break;
+				case ENTERING:
+					outp = "ENTERING";
+					break;
+				case STAYING:
+					outp = "STAYING";
+					break;
+				}
+				//std::cout << m_collisionMatrix[i][j] << " ";
+				std::cout << outp << " ";
 			}
 			std::cout << std::endl;
 		}
-		*/
+		std::cout << std::endl << "-----------" << std::endl;
 	}
 
 };

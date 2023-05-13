@@ -44,6 +44,12 @@ struct Circle
 */
 //
 
+enum Collision_Area_Type
+{
+	COLLISION_BOX,
+	COLLISION_CIRCLE
+};
+
 struct Collision_Base
 {
 	Vector2 postition = {};

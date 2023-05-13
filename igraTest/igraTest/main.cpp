@@ -44,10 +44,11 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	backgroundManagerV.UpdateTexturePositionValues();
 
 	//test
+	
+	
+	inputSystem.On_Update();
 	collisionSystem.On_Update();
 	animationSystem.On_Update();
-	inputSystem.On_Update();
-	
 	//!test
 	
 	//video
@@ -61,7 +62,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		//test
 		
 		entityDrawer.On_Update_Draw();
-		collisionSystem.On_UpdateDrawTest();
+		//collisionSystem.On_UpdateDrawTest();
 		
 		//!test
 		
@@ -133,8 +134,9 @@ int main()
 		e1.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings1);
 		e1.GetComponent<InputComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-		e1.AddComponent<CollisionComponent>
-			(10.f);
+		e1.AddComponent<CollisionComponent>(e1.GetComponent<SpriteComponent>().m_currentFrameRectangle,
+			e1.GetComponent<SpriteComponent>().m_textureScale/1.25f, COLLISION_CIRCLE);
+			
 		//
 		Entity& e2 = s1.AddEntity();
 
@@ -148,8 +150,11 @@ int main()
 		e2.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings2);
 		e2.GetComponent<InputComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+		e2.AddComponent<CollisionComponent>(e2.GetComponent<SpriteComponent>().m_currentFrameRectangle,
+			e2.GetComponent<SpriteComponent>().m_textureScale / 1.25f, COLLISION_BOX);
 	}
 	EntityDrawer entityDrawer(s1);
+	entityDrawer.drawCollision = true;
 	AnimationSystem animationSystem(s1);
 	InputSystem inputSystem(s1);
 	CollisionSystem collisionSystem(s1);

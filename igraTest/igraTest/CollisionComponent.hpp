@@ -8,9 +8,9 @@ using collision_area_var_t = std::variant<Collision_Box, Collision_Circle>;
 
 enum CollisionState
 {
+	NOT_COLLIDING,
 	ENTERING,
-	STAYING,
-	NOT_COLLIDING
+	STAYING
 };
 
 
@@ -28,6 +28,12 @@ public:
 	{
 		collision_Area = Collision_Box{ width, height };
 	}
+	CollisionComponent(Rectangle frameBox, float scale, Collision_Area_Type type)
+	{
+		if (type == COLLISION_BOX)
+			collision_Area = Collision_Box{ frameBox.width * scale, frameBox.height * scale };
+		else collision_Area = Collision_Circle{ sqrt(frameBox.width * frameBox.height / 4.f) * scale };
+	}
 	CollisionComponent(float radius)
 	{
 		collision_Area = Collision_Circle{radius};
@@ -38,7 +44,8 @@ public:
 	{
 		if (auto area = std::get_if<Collision_Box>(&collision_Area))
 		{
-			area->postition = position;
+			//DrawRectangle(area1->postition.x - area1->width / 2.f, area1->postition.y - area1->height / 2.f
+			area->postition = {position.x - area->width / 2.f, position.y - area->height / 2.f};
 		}
 		if (auto area = std::get_if<Collision_Circle>(&collision_Area))
 		{
