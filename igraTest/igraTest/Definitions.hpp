@@ -122,7 +122,8 @@ public:
 	}
 	void AddVariable(const std::string &name, const std::any  &value)
 	{
-		pairs.insert(std::make_pair(name, value));
+		//pairs.insert(std::make_pair(name, value));
+		pairs.emplace(name, value);
 	}
 	void RemoveVariable(const std::string &name)
 	{
@@ -131,6 +132,11 @@ public:
 	const std::any& GetVariable(const std::string& name)
 	{
 		return pairs[name];
+	}
+	template<typename T>
+	const T& GetVariableT(const std::string& name)
+	{
+		return std::any_cast<T>(pairs[name]);
 	}
 };
 
@@ -153,7 +159,8 @@ public:
 
 	void AddVariable(const std::string& name, const std::shared_ptr<void> &s_ptr)
 	{
-		pairs.insert(std::make_pair(name, s_ptr));
+		//pairs.insert(std::make_pair(name, s_ptr));
+		pairs.emplace(name, s_ptr);
 	}
 	void RemoveVariable(const std::string& name)
 	{
@@ -280,7 +287,8 @@ public:
 	}
 	void AddAction(const std::string& action, int key, KeyCondition condition)
 	{
-		pairs.insert(std::make_pair(action, std::make_pair(key, condition)));
+		//pairs.insert(std::make_pair(action, std::make_pair(key, condition)));
+		pairs.emplace(action, std::make_pair(key, condition));
 	}
 	void RemoveAction(const std::string& action)
 	{
@@ -308,11 +316,12 @@ using enable_if_t = typename std::enable_if<B, T>::type;
 //
 #include "Components.h"
 using component_var_t = std::variant
-<AnimationComponent, CollisionComponent, InputComponent, SpriteComponent, TransformComponent>;
+<AnimationComponent, BehaviourComponent, CollisionComponent, InputComponent, SpriteComponent, TransformComponent>;
 
 enum ComponentType
 {
 	ANIMATION = 0,
+	BEHAVIOUR,
 	COLLISION,
 	INPUT,
 	SPRITE,
@@ -324,6 +333,7 @@ enum ComponentType
 std::unordered_map<std::type_index, ComponentType> componentIndexes
 {
 	{typeid(AnimationComponent), ANIMATION},
+	{typeid(BehaviourComponent), BEHAVIOUR},
 	{typeid(CollisionComponent), COLLISION},
 	{typeid(InputComponent), INPUT},
 	{typeid(SpriteComponent), SPRITE},

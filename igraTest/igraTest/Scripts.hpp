@@ -2,9 +2,10 @@
 
 #define SCRIPTS_HPP
 
+#include<functional>
 #include "Definitions.hpp"
+#include "Entity.hpp"
 
-//Animation
 
 class Script
 {
@@ -18,11 +19,11 @@ public:
 	}
 	explicit Script(const std::initializer_list < std::pair<std::string, std::any>>& properties, const std::initializer_list < std::pair<std::string, std::shared_ptr<std::any>>>& linkedProperties)
 	{
-		for (auto pair : properties)
+		for (auto &pair : properties)
 		{
 			m_Properties.AddVariable(pair.first, pair.second);
 		}
-		for (auto pair : linkedProperties)
+		for (auto &pair : linkedProperties)
 		{
 			m_LinkedProperties.AddVariable(pair.first, pair.second);
 		}
@@ -33,11 +34,11 @@ public:
 
 	virtual void AddProperties(const std::initializer_list < std::pair<std::string, std::string>>& properties, const std::initializer_list < std::pair<std::string, std::shared_ptr<std::any>>>& linkedProperties)
 	{
-		for (auto pair : properties)
+		for (auto &pair : properties)
 		{
 			m_Properties.AddVariable(pair.first, pair.second);
 		}
-		for (auto pair : linkedProperties)
+		for (auto &pair : linkedProperties)
 		{
 			m_LinkedProperties.AddVariable(pair.first, pair.second);
 		}
@@ -45,6 +46,79 @@ public:
 	}
 };
 
+//Behaviour
+
+class BehaviourScript : public Script
+{
+	
+
+protected:
+	
+	std::unordered_map<std::string, std::function<void(Entity& entity)>> m_actions;
+
+public:
+
+	using Script::Script;
+
+	BehaviourScript() : Script()
+	{
+	}
+
+	virtual void On_Action(Entity& entity, const std::string& action)
+	{
+		if (m_actions.find(action) == m_actions.end()) return;
+		m_actions[action](entity);
+	}
+};
+
+class SpaceShipScript : public BehaviourScript
+{
+
+
+
+public:
+
+	using BehaviourScript::BehaviourScript;
+
+	
+	
+	void UpdateProperties() override
+	{
+		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
+
+		m_Properties.ChangeVariableByName("frameSpeed", *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed")));
+	}
+	std::function<void(Entity& entity)> MoveRight = [&](Entity& entity) ->void
+	{
+		if (!entity.HasComponent<TransformComponent>()) return;
+
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+		BehaviourScript& behaviourScript = *entity.GetComponent<BehaviourComponent>().GetScript();
+
+		transform.m_position.x += behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
+	};
+	std::function<void(Entity& entity)> MoveLeft = [&](Entity& entity) ->void
+	{
+		if (!entity.HasComponent<TransformComponent>()) return;
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+		BehaviourScript& behaviourScript = *entity.GetComponent<BehaviourComponent>().GetScript();
+
+		transform.m_position.x -= behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
+	};
+	SpaceShipScript() : BehaviourScript()
+	{
+		m_Properties.AddVariable("frameSpeed", 0.f);
+
+		//emplace functions
+		m_actions.emplace("move_left", MoveLeft);
+		m_actions.emplace("move_right", MoveRight);
+	}
+
+
+
+};
+
+// Animation
 class AnimationScript : public Script
 {
 
@@ -143,7 +217,7 @@ public:
 };
 
 //Input
-#include "Entity.hpp"
+
 class InputScript : public Script
 {
 
@@ -154,7 +228,7 @@ public:
 	virtual void ProcessInput(const std::shared_ptr<InputMappings>& mappings, Entity& entity) {}
 
 };
-
+/*
 class RotateInputScript : public InputScript
 {
 public:
@@ -175,10 +249,9 @@ public:
 
 };
 
+*/
 class MoveInputScript : public InputScript
 {
-
-	float m_frameSpeed = 0.f;
 
 public:
 
@@ -186,25 +259,22 @@ public:
 
 	void ProcessInput(const std::shared_ptr<InputMappings>& mappings, Entity& entity)
 	{
-		if (!entity.HasComponent<TransformComponent>()) return;
+		if (!entity.HasComponent<BehaviourComponent>()) return;
 
-		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+		BehaviourComponent& behaviour = entity.GetComponent<BehaviourComponent>();
 
 		if (mappings->m_Map.GetActionState("move_right"))
-			transform.m_position.x += m_frameSpeed;
+			behaviour.GetScript()->On_Action(entity, "move_right");
+			//std::cout << "lol" << std::endl;
 		if (mappings->m_Map.GetActionState("move_left"))
-			transform.m_position.x -= m_frameSpeed;
+			behaviour.GetScript()->On_Action(entity, "move_left");
+
+			
 	}
 
-	void UpdateProperties() override
-	{
-		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
-		
-		m_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
-
-	}
 
 };
+
 
 
 

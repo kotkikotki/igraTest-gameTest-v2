@@ -51,6 +51,7 @@ protected:
 	std::shared_ptr<component_var_t> GetComponentPtr(int id)
 	{
 		const int& component_id = componentIndexes[typeid(T)];
+		if (m_components[component_id].size() == 0) return nullptr;
 		return m_components[component_id][id];
 	}
 

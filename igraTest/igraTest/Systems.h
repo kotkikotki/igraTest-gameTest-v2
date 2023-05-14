@@ -1,4 +1,5 @@
 #include "AnimationSystem.hpp"
+#include "BehaviourSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "InputSystem.hpp"
 #include "EntityDrawer.hpp"

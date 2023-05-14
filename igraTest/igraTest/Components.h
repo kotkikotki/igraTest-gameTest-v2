@@ -1,4 +1,5 @@
 #include "AnimationComponent.hpp"
+#include "BehaviourComponent.hpp"
 #include "CollisionComponent.hpp"
 #include "InputComponent.hpp"
 #include "SpriteComponent.hpp"

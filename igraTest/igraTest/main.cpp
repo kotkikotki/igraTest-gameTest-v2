@@ -17,7 +17,7 @@
 
 void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundManagerV, Scene &scene, 
 	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem,
-	CollisionSystem &collisionSystem)
+	CollisionSystem &collisionSystem, BehaviourSystem &behaviourSystem)
 {	
 	if(IsKeyPressed(KEY_P))
 	{
@@ -45,7 +45,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 
 	//test
 	
-	
+	behaviourSystem.On_Update();
 	inputSystem.On_Update();
 	collisionSystem.On_Update();
 	animationSystem.On_Update();
@@ -132,11 +132,12 @@ int main()
 		e1.GetComponent<AnimationComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 		e1.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings1);
-		e1.GetComponent<InputComponent>().
-			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+		
 		e1.AddComponent<CollisionComponent>(e1.GetComponent<SpriteComponent>().m_currentFrameRectangle,
 			e1.GetComponent<SpriteComponent>().m_textureScale/1.25f, COLLISION_CIRCLE);
-			
+		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>(SpaceShipScript()));
+		e1.GetComponent<BehaviourComponent>().
+			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 		//
 		Entity& e2 = s1.AddEntity();
 
@@ -148,16 +149,18 @@ int main()
 		e2.GetComponent<AnimationComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 		e2.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings2);
-		e2.GetComponent<InputComponent>().
-			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 		e2.AddComponent<CollisionComponent>(e2.GetComponent<SpriteComponent>().m_currentFrameRectangle,
 			e2.GetComponent<SpriteComponent>().m_textureScale / 1.25f, COLLISION_BOX);
+		e2.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>(SpaceShipScript()));
+		e2.GetComponent<BehaviourComponent>().
+			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 	}
 	EntityDrawer entityDrawer(s1);
 	entityDrawer.drawCollision = true;
 	AnimationSystem animationSystem(s1);
 	InputSystem inputSystem(s1);
 	CollisionSystem collisionSystem(s1);
+	BehaviourSystem behaviourSystem(s1);
 	//!sprite
 
 	//!initialize
@@ -167,7 +170,7 @@ int main()
 	while (!WindowShouldClose())
 	{
 		//Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem);
-		Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem, collisionSystem);
+		Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem, collisionSystem, behaviourSystem);
 	}
 	//!game loop
 
