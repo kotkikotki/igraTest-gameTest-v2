@@ -2,7 +2,7 @@
 
 #define COLLISION_SYSTEM_HPP
 
-
+#include<cassert>
 #include <vector>
 #include "Definitions.hpp"
 #include "System.hpp"
@@ -86,6 +86,7 @@ public:
 				if (m_collisionMatrix.HasId(i) && m_collisionMatrix[i].HasId(j))
 					currentState = m_collisionMatrix[i][j];
 
+				CollisionState previousState = currentState;
 				bool areColliding = AreColliding(i, j);
 
 				if (areColliding)
@@ -100,6 +101,20 @@ public:
 					currentState = NOT_COLLIDING;
 				}
 				newMatrix[i].Emplace(j, currentState);
+				
+				Entity& e = m_scene->GetEntity(i);
+				if (!e.HasComponent<BehaviourComponent>()) continue;
+
+				//BehaviourScript* behaviourScript = &*e.GetComponent<BehaviourComponent>().GetScript();
+				
+				CollisionFunctions& collisionFunctions = *std::static_pointer_cast<CollisionFunctions, BehaviourScript>(e.GetComponent<BehaviourComponent>().GetScript());
+				if (currentState == ENTERING)
+					collisionFunctions.On_Enter();
+				if (currentState == STAYING)
+					collisionFunctions.On_Stay();
+				if (currentState == NOT_COLLIDING && previousState != NOT_COLLIDING)
+					collisionFunctions.On_Exit();
+				
 			}
 		}
 		//m_collisionMatrix = std::move(newMatrix);

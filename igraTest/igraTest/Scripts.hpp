@@ -47,8 +47,23 @@ public:
 };
 
 //Behaviour
+class CollisionFunctions
+{
 
-class BehaviourScript : public Script
+public:
+
+	virtual void On_Enter()
+	{
+	}
+	virtual void On_Stay()
+	{
+	}
+	virtual void On_Exit()
+	{
+	}
+};
+
+class BehaviourScript : public Script, public CollisionFunctions
 {
 	
 
@@ -60,7 +75,7 @@ public:
 
 	using Script::Script;
 
-	BehaviourScript() : Script()
+	BehaviourScript() : Script() , CollisionFunctions()
 	{
 	}
 
@@ -70,6 +85,8 @@ public:
 		m_actions[action](entity);
 	}
 };
+
+
 
 class SpaceShipScript : public BehaviourScript
 {
@@ -113,10 +130,25 @@ public:
 		m_actions.emplace("move_left", MoveLeft);
 		m_actions.emplace("move_right", MoveRight);
 	}
-
+	//
+	//colision
+	void On_Enter() override
+	{
+		std::cout << "enter" << std::endl;
+	}
+	void On_Stay()
+	{
+		std::cout << "stay" << std::endl;
+	}
+	void On_Exit()
+	{
+		std::cout << "exit" << std::endl;
+	}
 
 
 };
+
+
 
 // Animation
 class AnimationScript : public Script

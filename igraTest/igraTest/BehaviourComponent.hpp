@@ -26,10 +26,6 @@ public:
 	{
 		return m_BehaviourScript;
 	}
-	std::shared_ptr<BehaviourScript>& GetMappings()
-	{
-		return m_BehaviourScript;
-	}
 };
 
 
