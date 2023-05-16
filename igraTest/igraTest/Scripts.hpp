@@ -47,7 +47,7 @@ public:
 };
 
 //Behaviour
-class CollisionFunctions
+class CollisionEvents
 {
 
 public:

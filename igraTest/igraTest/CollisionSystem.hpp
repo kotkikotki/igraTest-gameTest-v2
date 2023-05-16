@@ -107,13 +107,15 @@ public:
 
 				//BehaviourScript* behaviourScript = &*e.GetComponent<BehaviourComponent>().GetScript();
 				
-				CollisionFunctions& collisionFunctions = *std::static_pointer_cast<CollisionFunctions, BehaviourScript>(e.GetComponent<BehaviourComponent>().GetScript());
+				CollisionEvents& collisionEvents = 
+					*std::static_pointer_cast<CollisionEvents, BehaviourScript>
+					(e.GetComponent<BehaviourComponent>().GetScript());
 				if (currentState == ENTERING)
-					collisionFunctions.On_Enter();
+					collisionEvents.On_Enter();
 				if (currentState == STAYING)
-					collisionFunctions.On_Stay();
+					collisionEvents.On_Stay();
 				if (currentState == NOT_COLLIDING && previousState != NOT_COLLIDING)
-					collisionFunctions.On_Exit();
+					collisionEvents.On_Exit();
 				
 			}
 		}
