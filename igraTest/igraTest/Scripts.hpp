@@ -52,13 +52,13 @@ class CollisionEvents
 
 public:
 
-	virtual void On_Enter()
+	virtual void On_Enter(Entity& owner, Entity& hit)
 	{
 	}
-	virtual void On_Stay()
+	virtual void On_Stay(Entity& owner, Entity& hit)
 	{
 	}
-	virtual void On_Exit()
+	virtual void On_Exit(Entity& owner, Entity& hit)
 	{
 	}
 };
@@ -132,17 +132,17 @@ public:
 	}
 	//
 	//colision
-	void On_Enter() override
+	void On_Enter(Entity& owner, Entity& hit) override
 	{
-		std::cout << "enter" << std::endl;
+		std::cout << "enter" <<owner.GetId()<<"-"<<hit.GetId()<< std::endl;
 	}
-	void On_Stay()
+	void On_Stay(Entity& owner, Entity& hit)
 	{
-		std::cout << "stay" << std::endl;
+		std::cout << "stay" << owner.GetId() << "-" << hit.GetId()<<std::endl;
 	}
-	void On_Exit()
+	void On_Exit(Entity& owner, Entity& hit)
 	{
-		std::cout << "exit" << std::endl;
+		std::cout << "exit" << owner.GetId() << "-" << hit.GetId()<<std::endl;
 	}
 
 

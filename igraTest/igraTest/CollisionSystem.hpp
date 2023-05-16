@@ -111,11 +111,11 @@ public:
 					*std::static_pointer_cast<CollisionEvents, BehaviourScript>
 					(e.GetComponent<BehaviourComponent>().GetScript());
 				if (currentState == ENTERING)
-					collisionEvents.On_Enter();
+					collisionEvents.On_Enter(e, m_scene->GetEntity(j));
 				if (currentState == STAYING)
-					collisionEvents.On_Stay();
+					collisionEvents.On_Stay(e, m_scene->GetEntity(j));
 				if (currentState == NOT_COLLIDING && previousState != NOT_COLLIDING)
-					collisionEvents.On_Exit();
+					collisionEvents.On_Exit(e, m_scene->GetEntity(j));
 				
 			}
 		}
