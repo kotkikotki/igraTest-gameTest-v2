@@ -63,7 +63,7 @@ public:
 	}
 };
 
-class BehaviourScript : public Script, public CollisionFunctions
+class BehaviourScript : public Script, public CollisionEvents
 {
 	
 
@@ -75,7 +75,7 @@ public:
 
 	using Script::Script;
 
-	BehaviourScript() : Script() , CollisionFunctions()
+	BehaviourScript() : Script() , CollisionEvents()
 	{
 	}
 
