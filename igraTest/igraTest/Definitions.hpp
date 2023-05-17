@@ -52,8 +52,21 @@ enum Collision_Area_Type
 
 struct Collision_Base
 {
-	Vector2 postition = {};
+	Vector2 postition = {0.f, 0.f};
+	float rotation = 0.f;
+	float scale = 1.f;
+	//
+	Vector2 postition_r = { 0.f, 0.f };
+	float rotation_r = 0.f;
+	float scale_r = 1.f;
+
 	Collision_Base() = default;
+	void UpdateArea(const Vector2& position = {0.f, 0.f}, float rotation = 0.f, float scale = 1.f)
+	{
+		this->postition = position;
+		this->rotation = rotation;
+		this->scale = scale;
+	}
 };
 
 struct Collision_Box : Collision_Base
@@ -63,17 +76,16 @@ struct Collision_Box : Collision_Base
 	float width = 0.f;
 	float height = 0.f;
 
-	Collision_Box(float width, float height)
+	Collision_Box(float width, float height, const Vector2& position = { 0.f, 0.f }, float rotation = 0.f, float scale = 1.f)
 	{
 		this->width = width;
 		this->height = height;
+		this->postition_r = position;
+		this->rotation_r = rotation;
+		this->scale_r = scale;
 	}
-	Collision_Box(Vector2 position, float width, float height)
-	{
-		this->Collision_Base::postition = position;
-		this->width = width;
-		this->height = height;
-	}
+	
+	
 };
 
 struct  Collision_Circle : Collision_Base
@@ -82,17 +94,81 @@ struct  Collision_Circle : Collision_Base
 
 	float radius = 0.f;
 
-	Collision_Circle(float radius)
+	Collision_Circle(float radius, const Vector2& position = { 0.f, 0.f }, float rotation = 0.f, float scale = 1.f)
 	{
 		this->radius = radius;
+		this->postition_r = position;
+		this->rotation_r = rotation;
+		this->scale_r = scale;
 	}
-	Collision_Circle(Vector2 position, float radius)
-	{
-		this->Collision_Base::postition = position;
-		this->radius = radius;
-	}
+	
 };
 //
+Vector2 GetRotatedPoint(const Vector2& point, const Vector2& centerOfRotation, float rotation)
+{
+
+	//
+	int angle = rotation;
+	angle %= 360;
+	rotation = (float)(angle * 2) - rotation;
+	//
+	rotation = rotation * PI / 180.f;
+	
+	
+	return { centerOfRotation.x + (point.x - centerOfRotation.x) * cosf(rotation) - (point.y - centerOfRotation.y) * sinf(rotation),
+			centerOfRotation.y + (point.x - centerOfRotation.x) * sinf(rotation) + (point.y - centerOfRotation.y) * cosf(rotation) };
+	
+	
+
+	
+}
+//
+bool CheckCollisionBoxes(const Collision_Box& box1, const Collision_Box& box2)
+{
+	Vector2 box1points[4] = {
+		GetRotatedPoint({box1.postition.x - box1.width * box1.scale / 2.f, box1.postition.y + box1.height * box1.scale / 2.f}, box1.postition, box1.rotation),
+		GetRotatedPoint({box1.postition.x + box1.width * box1.scale / 2.f, box1.postition.y + box1.height * box1.scale / 2.f}, box1.postition, box1.rotation),
+		GetRotatedPoint({box1.postition.x + box1.width * box1.scale / 2.f, box1.postition.y - box1.height * box1.scale / 2.f}, box1.postition, box1.rotation),
+		GetRotatedPoint({box1.postition.x - box1.width * box1.scale / 2.f, box1.postition.y - box1.height * box1.scale / 2.f}, box1.postition, box1.rotation)
+	};
+	Vector2 box2points[4] = {
+		GetRotatedPoint({box2.postition.x - box2.width * box2.scale / 2.f, box2.postition.y + box2.height * box2.scale / 2.f}, box2.postition, box2.rotation),
+		GetRotatedPoint({box2.postition.x + box2.width * box2.scale / 2.f, box2.postition.y + box2.height * box2.scale / 2.f}, box2.postition, box2.rotation),
+		GetRotatedPoint({box2.postition.x + box2.width * box2.scale / 2.f, box2.postition.y - box2.height * box2.scale / 2.f}, box2.postition, box2.rotation),
+		GetRotatedPoint({box2.postition.x - box2.width * box2.scale / 2.f, box2.postition.y - box2.height * box2.scale / 2.f}, box2.postition, box2.rotation)
+	};
+	for (int i = 0; i<4; i++)
+	{
+		if(CheckCollisionPointPoly(box2points[i], box1points, 4))
+			return true;
+	}
+	return false;
+}
+bool CheckCollisionBoxCircle(const Collision_Box& box, const Collision_Circle& circle)
+{
+
+	Vector2 boxpoints[4] = {
+		GetRotatedPoint({box.postition.x - box.width * box.scale / 2.f, box.postition.y + box.height * box.scale / 2.f}, box.postition, box.rotation),
+		GetRotatedPoint({box.postition.x + box.width * box.scale / 2.f, box.postition.y + box.height * box.scale / 2.f}, box.postition, box.rotation),
+		GetRotatedPoint({box.postition.x + box.width * box.scale / 2.f, box.postition.y - box.height * box.scale / 2.f}, box.postition, box.rotation),
+		GetRotatedPoint({box.postition.x - box.width * box.scale / 2.f, box.postition.y - box.height * box.scale / 2.f}, box.postition, box.rotation)
+	};
+	
+	for (int i = 0; i < 4; i++)
+	{
+		BeginDrawing();
+		DrawCircle(boxpoints[i].x, boxpoints[i].y, 5.f, GREEN);
+		DrawCircle(box.postition.x, box.postition.y, 5.f, GREEN);
+		EndDrawing();
+	}
+	
+	for (int i = 0; i < 4; i++)
+	{
+		if (CheckCollisionPointCircle(boxpoints[i], circle.postition, circle.radius * circle.scale))
+			return true;
+	}
+	return false;
+}
 
 struct TextureFilePath_ScrollingSpeed_Tuple
 {

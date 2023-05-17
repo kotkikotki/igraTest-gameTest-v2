@@ -22,27 +22,31 @@ class CollisionSystem : public System<CollisionSystem>
 
 		if (auto area1 = std::get_if<Collision_Box>(&collision1.GetAreaRef()))
 		{
-			Rectangle rect1 = { area1->postition.x, area1->postition.y, area1->width, area1->height};
+			//Rectangle rect1 = { area1->postition.x, area1->postition.y, area1->width, area1->height};
 			if (auto area2 = std::get_if<Collision_Box>(&collision2.GetAreaRef()))
 			{
-				Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
-				return CheckCollisionRecs(rect1, rect2);
+				//Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
+				//return CheckCollisionRecs(rect1, rect2);
+				return CheckCollisionBoxes(*area1, *area2);
 			}
 			if (auto area2 = std::get_if<Collision_Circle>(&collision2.GetAreaRef()))
 			{
-				return CheckCollisionCircleRec(area2->postition, area2->radius, rect1);
+				//return CheckCollisionCircleRec(area2->postition, area2->radius, rect1);
+				return CheckCollisionBoxCircle(*area1, *area2);
 			}
 		}
 		if (auto area1 = std::get_if<Collision_Circle>(&collision1.GetAreaRef()))
 		{
 			if (auto area2 = std::get_if<Collision_Box>(&collision2.GetAreaRef()))
 			{
-				Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
-				return CheckCollisionCircleRec(area1->postition, area1->radius, rect2);
+				//Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
+				//return CheckCollisionCircleRec(area1->postition, area1->radius, rect2);
+				return CheckCollisionBoxCircle(*area2, *area1);
 			}
 			if (auto area2 = std::get_if<Collision_Circle>(&collision2.GetAreaRef()))
 			{
-				return CheckCollisionCircles(area1->postition, area1->radius, area2->postition, area2->radius);
+				return CheckCollisionCircles(area1->postition, area1->radius*area1->scale, area2->postition,
+					area2->radius*area2->scale);
 
 			}
 		}
@@ -65,7 +69,7 @@ public:
 			CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 
-			collision.UpdatePosition(transform.m_position);
+			collision.UpdateMembers(transform.m_position, transform.m_rotation, transform.m_scale);
 
 		}
 	

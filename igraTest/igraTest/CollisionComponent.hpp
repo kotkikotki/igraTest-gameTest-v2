@@ -24,32 +24,37 @@ public:
 
 	using Component::Component;
 
-	CollisionComponent(float width, float height)
+	CollisionComponent(float width, float height, const Vector2& position_r = { 0.f, 0.f }, float rotation_r  = 0.f, float scale_r = 1.f)
 	{
-		collision_Area = Collision_Box{ width, height };
+		collision_Area = Collision_Box( width, height, position_r, rotation_r, scale_r);
 	}
-	CollisionComponent(Rectangle frameBox, float scale, Collision_Area_Type type)
+	CollisionComponent(Rectangle frameBox, float frameBoxScale, Collision_Area_Type type, const Vector2& position_r = { 0.f, 0.f }, float rotation_r = 0.f, float scale_r = 1.f)
 	{
 		if (type == COLLISION_BOX)
-			collision_Area = Collision_Box{ frameBox.width * scale, frameBox.height * scale };
-		else collision_Area = Collision_Circle{ sqrt(frameBox.width * frameBox.height / 4.f) * scale };
+			collision_Area = Collision_Box( frameBox.width * frameBoxScale, frameBox.height * frameBoxScale, position_r, rotation_r, scale_r);
+		else collision_Area = Collision_Circle( sqrt(frameBox.width * frameBox.height)/2.f* frameBoxScale, position_r, rotation_r, scale_r);
 	}
-	CollisionComponent(float radius)
+	CollisionComponent(float radius, const Vector2& position_r = { 0.f, 0.f }, float rotation_r = 0.f, float scale_r = 1.f)
 	{
-		collision_Area = Collision_Circle{radius};
+		collision_Area = Collision_Circle(radius, position_r, rotation_r, scale_r);
 	}
 
 	//helper method, not a real functionality
-	void UpdatePosition(Vector2 position)
+	void UpdateMembers(const Vector2& position, float rotation, float scale)
 	{
 		if (auto area = std::get_if<Collision_Box>(&collision_Area))
 		{
 			//DrawRectangle(area1->postition.x - area1->width / 2.f, area1->postition.y - area1->height / 2.f
-			area->postition = {position.x - area->width / 2.f, position.y - area->height / 2.f};
+			area->postition = { position.x + area->postition_r.x, position.y + area->postition_r.y };
+			area->rotation = rotation + area->rotation_r;
+			area->scale = scale * area->scale_r;
+			
 		}
 		if (auto area = std::get_if<Collision_Circle>(&collision_Area))
 		{
-			area->postition = position;
+			area->postition = { position.x + area->postition_r.x, position.y + area->postition_r.y };
+			area->rotation = rotation + area->rotation_r;
+			area->scale = scale * area->scale_r;
 		}
 	}
 

@@ -34,12 +34,15 @@ public:
 				if (auto area1 = std::get_if<Collision_Box>(&collision.GetAreaRef()))
 				{
 					//DrawRectangle(area1->postition.x - area1->width / 2.f, area1->postition.y - area1->height / 2.f, area1->width, area1->height, RED);
-					DrawRectangle(area1->postition.x, area1->postition.y, area1->width, area1->height, RED);
-
+					//DrawRectangle(area1->postition.x, area1->postition.y, area1->width, area1->height, RED);
+					Rectangle dest = { area1->postition.x, area1->postition.y, area1->width * area1->scale, area1->height * area1->scale };
+					Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
+					DrawRectanglePro(dest, origin, area1->rotation, RED);
+					
 				}
 				if (auto area1 = std::get_if<Collision_Circle>(&collision.GetAreaRef()))
 				{
-					DrawCircle(area1->postition.x, area1->postition.y, area1->radius, RED);
+					DrawCircle(area1->postition.x, area1->postition.y, area1->radius*area1->scale, RED);
 				}
 			}
 
@@ -54,12 +57,13 @@ public:
 
 			DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle, dest, origin, transform.m_rotation, WHITE);
 
+			//std::cout << transform.m_rotation << std::endl;
 			/*DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle,
 				{ transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale },
 				{ sprite.m_currentFrameRectangle.width * SQRT2, sprite.m_currentFrameRectangle.height * SQRT2 }, transform.m_rotation, WHITE);
 			*/
 			
-			//DrawCircle(transform.m_position.x, transform.m_position.y, 10.f, BLUE);
+			//DrawCircle(transform.m_position.x, transform.m_position.y, 70.f, BLUE);
 		}
 	}
 	

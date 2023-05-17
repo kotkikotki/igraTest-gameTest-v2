@@ -122,6 +122,22 @@ public:
 
 		transform.m_position.x -= behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
 	};
+	std::function<void(Entity& entity)> RotateRight = [&](Entity& entity) ->void
+	{
+		if (!entity.HasComponent<TransformComponent>()) return;
+
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+		
+		transform.m_rotation += 3.f;
+	};
+	std::function<void(Entity& entity)> RotateLeft = [&](Entity& entity) ->void
+	{
+		if (!entity.HasComponent<TransformComponent>()) return;
+
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+
+		transform.m_rotation -= 3.f;
+	};
 	SpaceShipScript() : BehaviourScript()
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
@@ -129,6 +145,8 @@ public:
 		//emplace functions
 		m_actions.emplace("move_left", MoveLeft);
 		m_actions.emplace("move_right", MoveRight);
+		m_actions.emplace("rotate_left", RotateLeft);
+		m_actions.emplace("rotate_right", RotateRight);
 	}
 	//
 	//colision
@@ -300,6 +318,11 @@ public:
 			//std::cout << "lol" << std::endl;
 		if (mappings->m_Map.GetActionState("move_left"))
 			behaviour.GetScript()->On_Action(entity, "move_left");
+		if (mappings->m_Map.GetActionState("rotate_right"))
+			behaviour.GetScript()->On_Action(entity, "rotate_right");
+		//std::cout << "lol" << std::endl;
+		if (mappings->m_Map.GetActionState("rotate_left"))
+			behaviour.GetScript()->On_Action(entity, "rotate_left");
 
 			
 	}
