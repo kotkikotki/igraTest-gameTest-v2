@@ -164,6 +164,8 @@ bool CheckCollisionBoxCircle(const Collision_Box& box, const Collision_Circle& c
 	
 	for (int i = 0; i < 4; i++)
 	{
+		//!
+		//if(CheckCollisionCir)
 		if (CheckCollisionPointCircle(boxpoints[i], circle.postition, circle.radius * circle.scale))
 			return true;
 	}
