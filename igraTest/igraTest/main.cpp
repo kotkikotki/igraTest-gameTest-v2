@@ -11,7 +11,9 @@
 
 #include "Components.h"
 #include "Systems.h"
-#include "EntityDrawer.hpp"
+
+#include "UsedScripts.h"
+#include "UsedEntities.h"
 
 
 

@@ -142,6 +142,8 @@
     <ClInclude Include="AnimationSystem.hpp" />
     <ClInclude Include="BackgroundManager_Horizontal.hpp" />
     <ClInclude Include="BackgroundManager_Vertical.hpp" />
+    <ClInclude Include="BasicAnimationScripts.hpp" />
+    <ClInclude Include="BasicInputScripts.hpp" />
     <ClInclude Include="BehaviourComponent.hpp" />
     <ClInclude Include="BehaviourSystem.hpp" />
     <ClInclude Include="CollisionComponent.hpp" />
@@ -153,6 +155,7 @@
     <ClInclude Include="InputComponent.hpp" />
     <ClInclude Include="InputSystem.hpp" />
     <ClInclude Include="Scripts.hpp" />
+    <ClInclude Include="SpaceShip.hpp" />
     <ClInclude Include="SpriteComponent.hpp" />
     <ClInclude Include="System.hpp" />
     <ClInclude Include="Systems.h" />
@@ -160,6 +163,8 @@
     <ClInclude Include="MusicSystem.hpp" />
     <ClInclude Include="Definitions.hpp" />
     <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="UsedEntities.h" />
+    <ClInclude Include="UsedScripts.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\res\assets\used\Blue_Nebula_02-1024x1024.png" />

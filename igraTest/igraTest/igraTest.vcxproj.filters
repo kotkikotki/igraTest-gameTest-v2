@@ -40,6 +40,21 @@
     <Filter Include="Resource Files\dep">
       <UniqueIdentifier>{6535dfa6-85d3-4349-9dac-9e7244aaed19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Entities">
+      <UniqueIdentifier>{2bfa8534-01d9-4af3-8b23-bc251428709f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\SpaceShipPlayer">
+      <UniqueIdentifier>{9aa8d353-5664-4077-bb40-63a3d8e6777d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{22fcbdd1-3ca2-4fef-ac29-d9407788e9af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Animation">
+      <UniqueIdentifier>{f68827f9-c304-4182-a470-f2c9a8bba444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Input">
+      <UniqueIdentifier>{9761f75d-3f6f-4c5f-a808-f2d063bdd2f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -129,6 +144,21 @@
     </ClInclude>
     <ClInclude Include="BehaviourSystem.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceShip.hpp">
+      <Filter>Entities\SpaceShipPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="UsedEntities.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="UsedScripts.h">
+      <Filter>Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicAnimationScripts.hpp">
+      <Filter>Scripts\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicInputScripts.hpp">
+      <Filter>Scripts\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
