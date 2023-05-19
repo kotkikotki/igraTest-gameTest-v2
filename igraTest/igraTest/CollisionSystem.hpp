@@ -156,12 +156,21 @@ public:
 					*std::static_pointer_cast<CollisionEvents, BehaviourScript>
 					(e.GetComponent<BehaviourComponent>().GetScript());
 				if (currentState == ENTERING)
-					collisionEvents.On_Enter(e, m_scene->GetEntity(j));
+					collisionEvents.On_Enter(e, m_scene->GetEntity(j), info);
 				if (currentState == STAYING)
-					collisionEvents.On_Stay(e, m_scene->GetEntity(j));
+					collisionEvents.On_Stay(e, m_scene->GetEntity(j), info);
 				if (currentState == NOT_COLLIDING && previousState != NOT_COLLIDING)
-					collisionEvents.On_Exit(e, m_scene->GetEntity(j));
+					collisionEvents.On_Exit(e, m_scene->GetEntity(j), info );
 				
+				CollisionComponent& collision1 = m_scene->GetComponentById<CollisionComponent>(i);
+				TransformComponent& transform1 = m_scene->GetComponentById<TransformComponent>(i);
+
+				collision1.UpdateMembers(transform1.m_position, transform1.m_rotation, transform1.m_scale);
+
+				CollisionComponent& collision2 = m_scene->GetComponentById<CollisionComponent>(j);
+				TransformComponent& transform2 = m_scene->GetComponentById<TransformComponent>(j);
+
+				collision2.UpdateMembers(transform2.m_position, transform2.m_rotation, transform2.m_scale);
 			}
 		}
 		//m_collisionMatrix = std::move(newMatrix);

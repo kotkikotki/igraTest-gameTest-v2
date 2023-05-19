@@ -150,15 +150,7 @@ Vector2 GetPerpendicularAxis(const Vector2* points, int index, float magnitude =
 		-(p2.y - p1.y),
 		p2.x - p1.x
 	};
-	/*
-	float len = sqrtf(axis.x * axis.x + axis.y * axis.y);
-	if (len == 0.f)
-		return axis;
 
-	float ratio = magnitude / len;
-	axis.x *= ratio;
-	axis.y *= ratio;
-	*/
 	Normalize(axis, magnitude);
 	return axis;
 }
@@ -178,7 +170,6 @@ std::pair<float, float> ProjectPointsMinMax(const Vector2& axis, const Vector2* 
 	return { min, max };
 }
 std::pair<float, float> ProjectPointsMinMaxCircle(const Vector2& axis, const Vector2& center, float radius) {
-	//float projection = DotProduct(axis, {0.f, 0.f});
 	float projection = DotProduct(axis, center);
 	return {
 		projection - radius,
@@ -209,7 +200,7 @@ struct CollisionInfo
 	{}
 
 };
-std::optional<CollisionInfo> CheckCollisionBoxes(const Collision_Box& box1, const Collision_Box& box2)
+std::optional<CollisionInfo> CheckCollisionBoxes(const Collision_Box& box1, const Collision_Box& box2, float separationScale = 2.f)
 {
 
 	Vector2 box1points[4] = {
@@ -233,7 +224,6 @@ std::optional<CollisionInfo> CheckCollisionBoxes(const Collision_Box& box1, cons
 	collisionInfo.hitContained = true;
 	collisionInfo.ownerContained = true;
 
-	//Vector2 vOffset = { box1.postition.x - box2.postition.x, box1.postition.y - box2.postition.y };
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -242,10 +232,6 @@ std::optional<CollisionInfo> CheckCollisionBoxes(const Collision_Box& box1, cons
 		std::pair<float, float> box1Range = ProjectPointsMinMax(axis, box1points);
 		std::pair<float, float> box2Range = ProjectPointsMinMax(axis, box2points);
 
-		//float scalerOffset = DotProduct(axis, vOffset);
-		
-		//box1Range.first += scalerOffset;
-		//box1Range.second += scalerOffset;
 
 
 		
@@ -272,12 +258,12 @@ std::optional<CollisionInfo> CheckCollisionBoxes(const Collision_Box& box1, cons
 		}
 	}
 	
-	collisionInfo.separation = { collisionInfo.unit_vector.x * collisionInfo.distance,
-		collisionInfo.unit_vector.y * collisionInfo.distance };
+	collisionInfo.separation = { collisionInfo.unit_vector.x * collisionInfo.distance * separationScale,
+		collisionInfo.unit_vector.y * collisionInfo.distance * separationScale};
 
 	return collisionInfo;
 }
-std::optional<CollisionInfo> CheckCollisionBoxCircle(const Collision_Box& box, const Collision_Circle& circle)
+std::optional<CollisionInfo> CheckCollisionBoxCircle(const Collision_Box& box, const Collision_Circle& circle, float separationScale = 2.f)
 {
 	Vector2 boxpoints[4] = {
 		GetRotatedPoint({box.position.x - box.width * box.scale / 2.f, box.position.y - box.height * box.scale / 2.f}, box.position, box.rotation),
@@ -294,7 +280,6 @@ std::optional<CollisionInfo> CheckCollisionBoxCircle(const Collision_Box& box, c
 	collisionInfo.hitContained = true;
 	collisionInfo.ownerContained = true;
 
-	//Vector2 vOffset = { box.position.x - circle.position.x, box.position.y - circle.position.y };
 
 	Vector2 closestPoint = {};
 	for (Vector2 &point: boxpoints)
@@ -312,17 +297,8 @@ std::optional<CollisionInfo> CheckCollisionBoxCircle(const Collision_Box& box, c
 	Normalize(axis);
 
 	std::pair<float, float> boxRange = ProjectPointsMinMax(axis, boxpoints);
-	//
-	//float scalerOffset = DotProduct(axis, vOffset);
-	//boxRange.first += scalerOffset;
-	//boxRange.second += scalerOffset;
-	//
+	
 	std::pair<float, float> circleRange = ProjectPointsMinMaxCircle(axis, circle.position, circle.radius*circle.scale);
-
-	//float scalerOffset = DotProduct(axis, vOffset);
-
-	//box1Range.first += scalerOffset;
-	//box1Range.second += scalerOffset;
 
 
 	if ((boxRange.first - circleRange.second > 0.f) || (circleRange.first - boxRange.second > 0.f))
@@ -340,7 +316,6 @@ std::optional<CollisionInfo> CheckCollisionBoxCircle(const Collision_Box& box, c
 	collisionInfo.distance = distanceMin;
 	collisionInfo.unit_vector = axis;
 
-	// check for containment
 	if (boxRange.second > circleRange.second || boxRange.first < circleRange.first) collisionInfo.ownerContained = false;
 	if (circleRange.second > boxRange.second || circleRange.first < boxRange.first) collisionInfo.hitContained = false;
 
@@ -351,11 +326,6 @@ std::optional<CollisionInfo> CheckCollisionBoxCircle(const Collision_Box& box, c
 		Vector2 axis_l = GetPerpendicularAxis(boxpoints, i, 1.f);
 		
 		std::pair<float, float> boxRange_l = ProjectPointsMinMax(axis_l, boxpoints);
-		//
-		//float scalerOffset_l = DotProduct(axis, vOffset);
-		//boxRange_l.first += scalerOffset_l;
-		//boxRange_l.second += scalerOffset_l;
-		//
 		std::pair<float, float> circleRange_l = ProjectPointsMinMaxCircle(axis_l, circle.position, circle.radius*circle.scale);
 
 		if ((boxRange_l.first - circleRange_l.second > 0.f) || (circleRange_l.first - boxRange_l.second > 0.f))
@@ -366,7 +336,7 @@ std::optional<CollisionInfo> CheckCollisionBoxCircle(const Collision_Box& box, c
 		if (boxRange_l.second > circleRange_l.second || boxRange_l.first < circleRange_l.first) collisionInfo.ownerContained = false;
 		if (circleRange_l.second > boxRange_l.second || circleRange_l.first < boxRange_l.first) collisionInfo.hitContained = false;
 
-		distanceMin = (circleRange_l.second - boxRange_l.first);// * -1;
+		distanceMin = (circleRange_l.second - boxRange_l.first)*-1.f;
 
 		float distanceMinAbs_l = abs(distanceMin);
 		if (distanceMinAbs_l < shortestDistance)
@@ -378,15 +348,15 @@ std::optional<CollisionInfo> CheckCollisionBoxCircle(const Collision_Box& box, c
 		}
 	}
 
-	collisionInfo.separation = { collisionInfo.unit_vector.x * collisionInfo.distance,
-		collisionInfo.unit_vector.y * collisionInfo.distance };
+	collisionInfo.separation = { collisionInfo.unit_vector.x * collisionInfo.distance * separationScale,
+		collisionInfo.unit_vector.y * collisionInfo.distance * separationScale };
 
-	// if you make it here then no gaps were found
+
 	return collisionInfo;
 
 
 }
-std::optional<CollisionInfo> CheckCollisionCircles(const Collision_Circle& circle1, const Collision_Circle& circle2)
+std::optional<CollisionInfo> CheckCollisionCircles(const Collision_Circle& circle1, const Collision_Circle& circle2, float separationScale = 2.f)
 {
 
 	float radiusTotal = circle1.radius * circle1.scale + circle2.radius * circle2.scale;
@@ -398,14 +368,14 @@ std::optional<CollisionInfo> CheckCollisionCircles(const Collision_Circle& circl
 	CollisionInfo collisionInfo;
 
 	collisionInfo.unit_vector = { circle2.position.x - circle1.position.x, circle2.position.y - circle1.position.y };
-	Normalize(collisionInfo.unit_vector);  // turn it into a unit vector
+	Normalize(collisionInfo.unit_vector); 
 
 	collisionInfo.distance = distanceBetween;
 
 	float difference = radiusTotal - distanceBetween;
-	collisionInfo.separation = { collisionInfo.unit_vector.x * difference, collisionInfo.unit_vector.y * difference };
+	collisionInfo.separation = { collisionInfo.unit_vector.x * difference * separationScale, 
+		collisionInfo.unit_vector.y * difference  * separationScale};
 
-	//  calc if they are contained based on if the shape is smaller and too close
 	float radiusA = circle1.radius * circle1.scale;
 	float radiusB = circle2.radius * circle2.scale;
 	collisionInfo.ownerContained = radiusA <= radiusB && distanceBetween <= radiusB - radiusA;

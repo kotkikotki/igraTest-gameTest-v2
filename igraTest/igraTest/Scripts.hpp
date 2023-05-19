@@ -52,13 +52,13 @@ class CollisionEvents
 
 public:
 
-	virtual void On_Enter(Entity& owner, Entity& hit)
+	virtual void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo)
 	{
 	}
-	virtual void On_Stay(Entity& owner, Entity& hit)
+	virtual void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo)
 	{
 	}
-	virtual void On_Exit(Entity& owner, Entity& hit)
+	virtual void On_Exit(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo)
 	{
 	}
 };
@@ -122,6 +122,23 @@ public:
 
 		transform.m_position.x -= behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
 	};
+	std::function<void(Entity& entity)> MoveUp = [&](Entity& entity) ->void
+	{
+		if (!entity.HasComponent<TransformComponent>()) return;
+
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+		BehaviourScript& behaviourScript = *entity.GetComponent<BehaviourComponent>().GetScript();
+
+		transform.m_position.y -= behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
+	};
+	std::function<void(Entity& entity)> MoveDown = [&](Entity& entity) ->void
+	{
+		if (!entity.HasComponent<TransformComponent>()) return;
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+		BehaviourScript& behaviourScript = *entity.GetComponent<BehaviourComponent>().GetScript();
+
+		transform.m_position.y += behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
+	};
 	std::function<void(Entity& entity)> RotateRight = [&](Entity& entity) ->void
 	{
 		if (!entity.HasComponent<TransformComponent>()) return;
@@ -145,22 +162,48 @@ public:
 		//emplace functions
 		m_actions.emplace("move_left", MoveLeft);
 		m_actions.emplace("move_right", MoveRight);
+		m_actions.emplace("move_up", MoveUp);
+		m_actions.emplace("move_down", MoveDown);
 		m_actions.emplace("rotate_left", RotateLeft);
 		m_actions.emplace("rotate_right", RotateRight);
 	}
 	//
 	//colision
-	void On_Enter(Entity& owner, Entity& hit) override
+	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
 		std::cout << "enter" <<owner.GetId()<<"-"<<hit.GetId()<< std::endl;
+		TransformComponent& ownerTransform = owner.GetComponent<TransformComponent>();
+
+		ownerTransform.m_position.x += collisionInfo.separation.x;
+		ownerTransform.m_position.y += collisionInfo.separation.y;
+
+		/*
+		TransformComponent& hitTransform = hit.GetComponent<TransformComponent>();
+
+		hitTransform.m_position.x += collisionInfo.separation.x;
+		hitTransform.m_position.y += collisionInfo.separation.y;
+		*/
 	}
-	void On_Stay(Entity& owner, Entity& hit)
+	void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
 		std::cout << "stay" << owner.GetId() << "-" << hit.GetId()<<std::endl;
+		TransformComponent& ownerTransform = owner.GetComponent<TransformComponent>();
+
+		ownerTransform.m_position.x += collisionInfo.separation.x;
+		ownerTransform.m_position.y += collisionInfo.separation.y;
+
+		/*
+		TransformComponent& hitTransform = hit.GetComponent<TransformComponent>();
+
+		hitTransform.m_position.x += collisionInfo.separation.x;
+		hitTransform.m_position.y += collisionInfo.separation.y;
+		*/
 	}
-	void On_Exit(Entity& owner, Entity& hit)
+	void On_Exit(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
 		std::cout << "exit" << owner.GetId() << "-" << hit.GetId()<<std::endl;
+		//hit.GetComponent<TransformComponent>().m_position = collisionInfo.separation;
+		
 	}
 
 
@@ -278,28 +321,7 @@ public:
 	virtual void ProcessInput(const std::shared_ptr<InputMappings>& mappings, Entity& entity) {}
 
 };
-/*
-class RotateInputScript : public InputScript
-{
-public:
 
-	using InputScript::InputScript;
-
-	void ProcessInput(const std::shared_ptr<InputMappings>& mappings, Entity& entity)
-	{
-		if (!entity.HasComponent<TransformComponent>()) return;
-
-		TransformComponent& transform = entity.GetComponent<TransformComponent>();
-
-		if (mappings->m_Map.GetActionState("rotate_right"))
-			transform.m_rotation += 2.f;
-		if (mappings->m_Map.GetActionState("rotate_left"))
-			transform.m_rotation -= 2.f;
-	}
-
-};
-
-*/
 class MoveInputScript : public InputScript
 {
 
@@ -315,12 +337,19 @@ public:
 
 		if (mappings->m_Map.GetActionState("move_right"))
 			behaviour.GetScript()->On_Action(entity, "move_right");
-			//std::cout << "lol" << std::endl;
+		
 		if (mappings->m_Map.GetActionState("move_left"))
 			behaviour.GetScript()->On_Action(entity, "move_left");
+
+		if (mappings->m_Map.GetActionState("move_up"))
+			behaviour.GetScript()->On_Action(entity, "move_up");
+
+		if (mappings->m_Map.GetActionState("move_down"))
+			behaviour.GetScript()->On_Action(entity, "move_down");
+		
 		if (mappings->m_Map.GetActionState("rotate_right"))
 			behaviour.GetScript()->On_Action(entity, "rotate_right");
-		//std::cout << "lol" << std::endl;
+		
 		if (mappings->m_Map.GetActionState("rotate_left"))
 			behaviour.GetScript()->On_Action(entity, "rotate_left");
 
