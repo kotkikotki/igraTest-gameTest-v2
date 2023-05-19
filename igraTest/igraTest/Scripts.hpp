@@ -81,13 +81,15 @@ public:
 	{
 	}
 
+	virtual void On_Update(Entity& owner)
+	{}
+
 	virtual void On_Action(Entity& entity, const std::string& action)
 	{
 		if (m_actions.find(action) == m_actions.end()) return;
 		m_actions[action](entity);
 	}
 };
-
 
 // Animation
 class AnimationScript : public Script

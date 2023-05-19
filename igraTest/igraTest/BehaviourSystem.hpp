@@ -25,7 +25,7 @@ public:
 			BehaviourComponent& behaviour = m_scene->GetComponentById<BehaviourComponent>(i);
 
 			behaviour.GetScript()->UpdateProperties();
-
+			behaviour.GetScript()->On_Update(m_scene->GetEntity(i));
 
 		}
 

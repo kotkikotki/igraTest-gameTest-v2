@@ -160,6 +160,12 @@
     <ClInclude Include="BasicInputScripts.hpp">
       <Filter>Scripts\Input</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsComponent.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\res\assets\used\plx-1.png">

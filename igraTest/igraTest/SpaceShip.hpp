@@ -21,7 +21,21 @@ public:
 		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
 
 		m_Properties.ChangeVariableByName("frameSpeed", *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed")));
+		
+		
+
 	}
+
+	void On_Update(Entity& owner) override
+	{
+		/*
+		if (!owner.HasComponent<PhysicsComponent>()) return;
+
+		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
+		physics.m_velocity += m_Properties.GetVariableT<float>("frameSpeed");
+		*/
+	}
+
 	std::function<void(Entity& entity)> MoveRight = [&](Entity& entity) ->void
 	{
 		if (!entity.HasComponent<TransformComponent>()) return;

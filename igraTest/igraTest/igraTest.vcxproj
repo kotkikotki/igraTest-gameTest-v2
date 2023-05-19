@@ -154,6 +154,8 @@
     <ClInclude Include="EntityDrawer.hpp" />
     <ClInclude Include="InputComponent.hpp" />
     <ClInclude Include="InputSystem.hpp" />
+    <ClInclude Include="PhysicsComponent.hpp" />
+    <ClInclude Include="PhysicsSystem.hpp" />
     <ClInclude Include="Scripts.hpp" />
     <ClInclude Include="SpaceShip.hpp" />
     <ClInclude Include="SpriteComponent.hpp" />

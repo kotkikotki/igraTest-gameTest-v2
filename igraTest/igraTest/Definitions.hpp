@@ -15,6 +15,7 @@
 #include<limits>
 
 #define SQRT2 1.41421356f
+#define G_CONST 9.78033f
 
 template<typename T, typename ...Args>
 T Create(Args&& ...args)
@@ -594,7 +595,7 @@ using enable_if_t = typename std::enable_if<B, T>::type;
 //
 #include "Components.h"
 using component_var_t = std::variant
-<AnimationComponent, BehaviourComponent, CollisionComponent, InputComponent, SpriteComponent, TransformComponent>;
+<AnimationComponent, BehaviourComponent, CollisionComponent, InputComponent, PhysicsComponent, SpriteComponent, TransformComponent>;
 
 enum ComponentType
 {
@@ -602,6 +603,7 @@ enum ComponentType
 	BEHAVIOUR,
 	COLLISION,
 	INPUT,
+	PHYSICS,
 	SPRITE,
 	TRANSFORM,
 
@@ -614,6 +616,7 @@ std::unordered_map<std::type_index, ComponentType> componentIndexes
 	{typeid(BehaviourComponent), BEHAVIOUR},
 	{typeid(CollisionComponent), COLLISION},
 	{typeid(InputComponent), INPUT},
+	{typeid(PhysicsComponent), PHYSICS},
 	{typeid(SpriteComponent), SPRITE},
 	{typeid(TransformComponent), TRANSFORM}
 };

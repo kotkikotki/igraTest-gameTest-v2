@@ -19,7 +19,7 @@
 
 void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundManagerV, Scene &scene, 
 	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem,
-	CollisionSystem &collisionSystem, BehaviourSystem &behaviourSystem)
+	CollisionSystem &collisionSystem, BehaviourSystem &behaviourSystem, PhysicsSystem &physicsSystem)
 {	
 	if(IsKeyPressed(KEY_P))
 	{
@@ -49,8 +49,10 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	
 	behaviourSystem.On_Update();
 	inputSystem.On_Update();
+	physicsSystem.On_Update();
 	collisionSystem.On_Update();
 	animationSystem.On_Update();
+	
 	//!test
 	
 	//video
@@ -118,6 +120,7 @@ int main()
 	mappings1->m_Map.AddAction("move_down", KEY_S, Down);
 	mappings1->m_Map.AddAction("rotate_right", KEY_T, Down);
 	mappings1->m_Map.AddAction("rotate_left", KEY_R, Down);
+	/*
 	std::shared_ptr<InputMappings> mappings2 = std::make_shared<InputMappings>(InputMappings{});
 	mappings2->m_Map.AddAction("move_right", KEY_RIGHT, Down);
 	mappings2->m_Map.AddAction("move_left", KEY_LEFT, Down);
@@ -125,13 +128,13 @@ int main()
 	mappings2->m_Map.AddAction("move_down", KEY_DOWN, Down);
 	mappings2->m_Map.AddAction("rotate_right", KEY_KP_6, Down);
 	mappings2->m_Map.AddAction("rotate_left", KEY_KP_4, Down);
-
+	*/
 	Scene s1;
 	
 
 	{
 		Entity& e1 = s1.AddEntity();
-
+		
 		e1.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
 		e1.AddComponent<SpriteComponent>
@@ -147,7 +150,8 @@ int main()
 		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
 		e1.GetComponent<BehaviourComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-		//
+		e1.AddComponent<PhysicsComponent>(40000.f, 0.f, true);
+		/*
 		Entity& e2 = s1.AddEntity();
 
 		e2.AddComponent<TransformComponent>
@@ -164,6 +168,7 @@ int main()
 		e2.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
 		e2.GetComponent<BehaviourComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+			*/
 	}
 	EntityDrawer entityDrawer(s1);
 	entityDrawer.drawCollision = true;
@@ -171,6 +176,7 @@ int main()
 	InputSystem inputSystem(s1);
 	CollisionSystem collisionSystem(s1);
 	BehaviourSystem behaviourSystem(s1);
+	PhysicsSystem physicsSystem(s1);
 	//!sprite
 
 	//!initialize
@@ -180,7 +186,8 @@ int main()
 	while (!WindowShouldClose())
 	{
 		//Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem);
-		Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem, collisionSystem, behaviourSystem);
+		Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem,
+			inputSystem, collisionSystem, behaviourSystem, physicsSystem);
 	}
 	//!game loop
 
