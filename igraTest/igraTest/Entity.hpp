@@ -2,6 +2,7 @@
 
 #define ENTITY_HPP
 
+#include<unordered_set>
 #include "Components.h"
 #include "Definitions.hpp"
 
@@ -28,6 +29,8 @@ protected:
 
 public:
 
+    std::unordered_set<std::string> m_tags;
+
     Entity() = delete;
     //Entity(const Entity& r) = delete;
 
@@ -47,6 +50,11 @@ public:
     Scene& GetOwner()
     {
         return *m_owner_ptr;
+    }
+
+    bool HasTag(const std::string& tag)
+    {
+        return m_tags.find(tag) != m_tags.end();
     }
 
     template<typename T, typename ...Args>
