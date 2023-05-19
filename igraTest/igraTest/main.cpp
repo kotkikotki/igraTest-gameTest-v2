@@ -153,7 +153,7 @@ int main()
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 		e2.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(MoveInputScript()), mappings2);
 		e2.AddComponent<CollisionComponent>(e2.GetComponent<SpriteComponent>().m_currentFrameRectangle,
-			e1.GetComponent<SpriteComponent>().m_textureScale, COLLISION_BOX,
+			e1.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.81f);
 		e2.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>(SpaceShipScript()));
 		e2.GetComponent<BehaviourComponent>().

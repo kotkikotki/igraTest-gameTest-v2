@@ -10,12 +10,14 @@
 class CollisionSystem : public System<CollisionSystem>
 {
 
-	SparseArray<SparseArray<CollisionState>> m_collisionMatrix;
+	SparseArray<SparseArray<std::pair<CollisionState, CollisionInfo>>> m_collisionMatrix;
 
-	bool AreColliding(int id1, int id2)
+	std::optional<CollisionInfo> AreColliding(int id1, int id2)
 	{
-		if (!(m_scene->HasComponentById<CollisionComponent>(id1) && m_scene->HasComponentById<TransformComponent>(id1))) return false;
-		if (!(m_scene->HasComponentById<CollisionComponent>(id2) && m_scene->HasComponentById<TransformComponent>(id2))) return false;
+		if (!(m_scene->HasComponentById<CollisionComponent>(id1) && m_scene->HasComponentById<TransformComponent>(id1))) 
+			return std::optional<CollisionInfo>{};
+		if (!(m_scene->HasComponentById<CollisionComponent>(id2) && m_scene->HasComponentById<TransformComponent>(id2))) 
+			return std::optional<CollisionInfo>{};
 
 		CollisionComponent& collision1 = m_scene->GetComponentById<CollisionComponent>(id1);
 		CollisionComponent& collision2 = m_scene->GetComponentById<CollisionComponent>(id2);
@@ -25,14 +27,31 @@ class CollisionSystem : public System<CollisionSystem>
 			//Rectangle rect1 = { area1->postition.x, area1->postition.y, area1->width, area1->height};
 			if (auto area2 = std::get_if<Collision_Box>(&collision2.GetAreaRef()))
 			{
-				//Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
-				//return CheckCollisionRecs(rect1, rect2);
-				return CheckCollisionBoxes(*area1, *area2);
+				std::optional<CollisionInfo> collision1check = CheckCollisionBoxes(*area1, *area2);
+				std::optional<CollisionInfo> collision2check = CheckCollisionBoxes(*area2, *area1);
+
+				if (!(collision1check.has_value() && collision2check.has_value())) return std::optional<CollisionInfo>{};
+
+				CollisionInfo collision1 = *collision1check;
+				CollisionInfo collision2 = *collision2check;
+
+				CollisionInfo result = abs(collision1.distance) < abs(collision2.distance) ? collision1 : collision2;
+
+				// hack the contained flag to be the union of the two
+				result.ownerContained = collision1.ownerContained && collision2.ownerContained;
+				result.hitContained = collision1.hitContained && collision2.hitContained;
+
+				return result;
 			}
 			if (auto area2 = std::get_if<Collision_Circle>(&collision2.GetAreaRef()))
 			{
-				//return CheckCollisionCircleRec(area2->postition, area2->radius, rect1);
-				return CheckCollisionBoxCircle(*area1, *area2);
+				std::optional<CollisionInfo> collisionCheck = CheckCollisionBoxCircle(*area1, *area2);
+
+				if (!collisionCheck.has_value()) return std::optional<CollisionInfo>{};
+
+				CollisionInfo result = *collisionCheck;
+
+				return result;
 			}
 		}
 		if (auto area1 = std::get_if<Collision_Circle>(&collision1.GetAreaRef()))
@@ -41,17 +60,32 @@ class CollisionSystem : public System<CollisionSystem>
 			{
 				//Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
 				//return CheckCollisionCircleRec(area1->postition, area1->radius, rect2);
-				return CheckCollisionBoxCircle(*area2, *area1);
+				//return CheckCollisionBoxCircle(*area2, *area1);
+
+				std::optional<CollisionInfo> collisionCheck = CheckCollisionBoxCircle(*area2, *area1);
+
+				if (!collisionCheck.has_value()) return std::optional<CollisionInfo>{};
+
+				CollisionInfo result = *collisionCheck;
+
+				return result;
 			}
 			if (auto area2 = std::get_if<Collision_Circle>(&collision2.GetAreaRef()))
 			{
-				return CheckCollisionCircles(area1->postition, area1->radius*area1->scale, area2->postition,
-					area2->radius*area2->scale);
+				//return CheckCollisionCircles(area1->postition, area1->radius*area1->scale, area2->postition,
+				//	area2->radius*area2->scale);
+				std::optional<CollisionInfo> collisionCheck = CheckCollisionCircles(*area2, *area1);
+
+				if (!collisionCheck.has_value()) return std::optional<CollisionInfo>{};
+
+				CollisionInfo result = *collisionCheck;
+
+				return result;
 
 			}
 		}
 
-		return false;
+		return std::optional<CollisionInfo>{};
 
 	}
 
@@ -73,7 +107,7 @@ public:
 
 		}
 	
-		SparseArray<SparseArray<CollisionState>> newMatrix;
+		SparseArray<SparseArray<std::pair<CollisionState, CollisionInfo>>> newMatrix;
 
 		for (int i : m_scene->GetIds())
 		{
@@ -83,15 +117,22 @@ public:
 			{
 				if (i == j)
 				{
-					newMatrix[i].Emplace(j, NOT_COLLIDING);
+					newMatrix[i].Emplace(j, NOT_COLLIDING, CollisionInfo{});
 					continue;
 				}
 				CollisionState currentState = NOT_COLLIDING;
 				if (m_collisionMatrix.HasId(i) && m_collisionMatrix[i].HasId(j))
-					currentState = m_collisionMatrix[i][j];
+					currentState = m_collisionMatrix[i][j].first;
 
 				CollisionState previousState = currentState;
-				bool areColliding = AreColliding(i, j);
+				//bool areColliding = AreColliding(i, j);
+				bool areColliding = false;
+
+				std::optional<CollisionInfo> collisionCheck = AreColliding(i, j);
+
+				if (collisionCheck.has_value()) areColliding = true;
+
+				CollisionInfo info = (areColliding) ? *collisionCheck : CollisionInfo{};
 
 				if (areColliding)
 				{
@@ -104,7 +145,7 @@ public:
 				{
 					currentState = NOT_COLLIDING;
 				}
-				newMatrix[i].Emplace(j, currentState);
+				newMatrix[i].Emplace(j, currentState, info);
 				
 				Entity& e = m_scene->GetEntity(i);
 				if (!e.HasComponent<BehaviourComponent>()) continue;
@@ -137,7 +178,7 @@ public:
 			for (int j : m_scene->GetIds())
 			{
 				std::string outp;
-				switch (m_collisionMatrix[i][j])
+				switch (m_collisionMatrix[i][j].first)
 				{
 				case NOT_COLLIDING:
 					outp = "NOT_COLLIDING";

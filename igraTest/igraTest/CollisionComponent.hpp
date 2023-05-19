@@ -45,14 +45,14 @@ public:
 		if (auto area = std::get_if<Collision_Box>(&collision_Area))
 		{
 			//DrawRectangle(area1->postition.x - area1->width / 2.f, area1->postition.y - area1->height / 2.f
-			area->postition = { position.x + area->postition_r.x, position.y + area->postition_r.y };
+			area->position = { position.x + area->position_r.x, position.y + area->position_r.y };
 			area->rotation = rotation + area->rotation_r;
 			area->scale = scale * area->scale_r;
 			
 		}
 		if (auto area = std::get_if<Collision_Circle>(&collision_Area))
 		{
-			area->postition = { position.x + area->postition_r.x, position.y + area->postition_r.y };
+			area->position = { position.x + area->position_r.x, position.y + area->position_r.y };
 			area->rotation = rotation + area->rotation_r;
 			area->scale = scale * area->scale_r;
 		}
