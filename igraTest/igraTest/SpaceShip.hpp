@@ -22,7 +22,7 @@ public:
 
 		m_Properties.ChangeVariableByName("frameSpeed", *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed")));
 		
-		
+		//
 
 	}
 
