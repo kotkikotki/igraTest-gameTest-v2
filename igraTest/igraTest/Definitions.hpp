@@ -32,19 +32,7 @@ T min(T a, T b)
 {
 	return (a <= b) ? a : b;
 }
-/*
-struct Circle
-{
-	Vector2 point = {};
-	float radius = 0.f;
-	Circle(const Vector2& point, float radius)
-	{
-		this->point = point;
-		this->radius = radius;
-	}
-};
-*/
-//
+
 
 enum Collision_Area_Type
 {

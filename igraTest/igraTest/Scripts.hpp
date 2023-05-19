@@ -73,6 +73,8 @@ protected:
 
 public:
 
+	static inline std::unordered_set<std::string> tags;
+
 	using Script::Script;
 
 	BehaviourScript() : Script() , CollisionEvents()
@@ -96,7 +98,6 @@ class SpaceShipScript : public BehaviourScript
 public:
 
 	using BehaviourScript::BehaviourScript;
-
 	
 	
 	void UpdateProperties() override
@@ -157,6 +158,8 @@ public:
 	};
 	SpaceShipScript() : BehaviourScript()
 	{
+		tags = { "player" };
+
 		m_Properties.AddVariable("frameSpeed", 0.f);
 
 		//emplace functions

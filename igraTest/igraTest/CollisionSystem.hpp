@@ -173,8 +173,8 @@ public:
 				collision2.UpdateMembers(transform2.m_position, transform2.m_rotation, transform2.m_scale);
 			}
 		}
-		//m_collisionMatrix = std::move(newMatrix);
-		m_collisionMatrix = newMatrix;
+		m_collisionMatrix = std::move(newMatrix);
+		//m_collisionMatrix = newMatrix;
 		
 	}
 	
