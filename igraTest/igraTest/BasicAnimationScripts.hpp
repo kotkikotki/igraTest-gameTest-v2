@@ -16,6 +16,11 @@ public:
 
 	using AnimationScript::AnimationScript;
 
+	LoopAnimationScript() : AnimationScript()
+	{
+		m_Properties.AddVariable("frameSpeed", 0.f);
+	}
+
 	void Animate(SpriteComponent& sprite) override
 	{
 		m_frameCounter++;
@@ -37,11 +42,14 @@ public:
 
 	void UpdateProperties() override
 	{
+		/*
 		//frameSpeed
 		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
 
 		//mem_frameSpeed = mem_LinkedProperties.GetVariablePtr<float>("frameSpeed");
 		m_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
+		*/
+		m_frameSpeed = m_Properties.GetVariableT<float>("frameSpeed");
 	}
 
 };
@@ -59,11 +67,16 @@ public:
 
 	using AnimationScript::AnimationScript;
 
+	AdvancedLoopAnimationScript() : AnimationScript()
+	{
+		m_Properties.AddVariable("frameSpeed", 0.f);
+	}
 
 	void Animate(SpriteComponent& sprite) override
 	{
-		int currentFrameMin = (m_frameSpeed >= 4.f) ? sprite.m_frameCountX : 0;
-		int currentFrameMax = (m_frameSpeed >= 4.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
+		if (m_frameSpeed < 0.f) m_frameSpeed = 5.f;
+		int currentFrameMin = (m_frameSpeed >= 10.f) ? sprite.m_frameCountX : 0;
+		int currentFrameMax = (m_frameSpeed >= 10.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
 		m_frameCounter++;
 		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
 		{
@@ -83,11 +96,13 @@ public:
 
 	void UpdateProperties() override
 	{
+		/*
 		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
 
 		//mem_frameSpeed = mem_LinkedProperties.GetVariable<float>("frameSpeed");
 		m_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
-
+		*/
+		m_frameSpeed = m_Properties.GetVariableT<float>("frameSpeed");
 	}
 
 };

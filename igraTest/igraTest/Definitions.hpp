@@ -15,7 +15,9 @@
 #include<limits>
 
 #define SQRT2 1.41421356f
-#define G_CONST 9.78033f
+//#define G_CONST 9.78033f / 1000.f
+#define G_CONST 0.00978033f
+#define GRAVITY_CONST 0.0420f
 
 template<typename T, typename ...Args>
 T Create(Args&& ...args)
@@ -423,7 +425,7 @@ struct Name_LinkedVariable_Tuple_Map
 {
 public:
 
-	std::unordered_map<std::string, std::shared_ptr<void>> pairs;
+	std::unordered_map<std::string, std::shared_ptr<std::any>> pairs;
 
 	bool HasVariable(const std::string& name)
 	{
@@ -431,12 +433,18 @@ public:
 	}
 
 	template<typename T>
-	void ChangeVariableByName(const std::string& name, const std::shared_ptr<void>& s_ptr)
+	void ChangeVariablePtrByName(const std::string& name, const std::shared_ptr<T>& s_ptr)
 	{
 		pairs[name] = s_ptr;
 	}
-
-	void AddVariable(const std::string& name, const std::shared_ptr<void> &s_ptr)
+	
+	template<typename T>
+	void ChangeVariableByName(const std::string& name, const T& value)
+	{
+		(*pairs[name]) = value;
+	}
+	
+	void AddVariable(const std::string& name, const std::shared_ptr<std::any> &s_ptr)
 	{
 		//pairs.insert(std::make_pair(name, s_ptr));
 		pairs.emplace(name, s_ptr);
@@ -445,17 +453,24 @@ public:
 	{
 		pairs.erase(name);
 	}
-	const std::shared_ptr<void>& GetVariablePtr(const std::string& name)
+	const std::shared_ptr<std::any>& GetVariablePtr(const std::string& name)
 	{
 		return pairs[name];
 	}
-	
 	/*
+	template<typename T>
+	const std::shared_ptr<T>& GetVariablePtrT(const std::string& name)
+	{
+		//return pairs[name];
+		return std::dynamic_pointer_cast<float>(pairs[name]);
+	}
+	*/
+	
 	template<typename T>
 	const T& GetVariable(const std::string& name)
 	{
-		return std::any_cast<T>(*std::static_pointer_cast<std::any>(pairs[name]));
-	}*/
+		return std::any_cast<T>(pairs[name]);
+	}
 };
 
 template<typename T>

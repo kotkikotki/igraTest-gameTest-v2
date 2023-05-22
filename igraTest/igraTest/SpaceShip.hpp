@@ -9,6 +9,9 @@
 class SpaceShipScript : public BehaviourScript
 {
 
+	//float acceleration = 5000.f / 1000.f;
+	float acceleration = 0.5f;
+	Vector2 maxVelocity = {1.f, 15.f};
 
 
 public:
@@ -18,22 +21,47 @@ public:
 
 	void UpdateProperties() override
 	{
-		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
-
-		m_Properties.ChangeVariableByName("frameSpeed", *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed")));
-		
-		//
-
+		m_LinkedProperties.ChangeVariableByName<float>("frameSpeed", m_Properties.GetVariableT<float>("frameSpeed"));
 	}
-
+	
 	void On_Update(Entity& owner) override
 	{
-		/*
-		if (!owner.HasComponent<PhysicsComponent>()) return;
+		
+		if (!(owner.HasComponent<TransformComponent>()&& owner.HasComponent<PhysicsComponent>())) return;
 
+		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
-		physics.m_velocity += m_Properties.GetVariableT<float>("frameSpeed");
-		*/
+
+		float newX = physics.m_velocityVector.x;
+		if (newX >= 0.f)
+		{
+			newX = min(newX, maxVelocity.x);
+		}
+		else
+		{
+			newX = max(newX, -maxVelocity.x);
+		}
+		float newY = physics.m_velocityVector.y;
+		if (newY >= 0.f)
+		{
+			newY = min(newY, maxVelocity.y);
+		}
+		else
+		{
+			newY = max(newY, -maxVelocity.y);
+		}
+
+		
+		physics.m_velocityVector = { newX, newY };
+		
+		//transform.m_position = { transform.m_position.x + physics.m_velocityVector.x, transform.m_position.y + physics.m_velocityVector.y };
+		
+		//m_Properties.ChangeVariableByName("frameSpeed", abs(physics.m_velocityVector.y));
+		m_Properties.ChangeVariableByName("frameSpeed", -(physics.m_velocityVector.y));
+
+		if (!(owner.HasComponent<AnimationComponent>())) return;
+		AnimationComponent& animation = owner.GetComponent<AnimationComponent>();
+		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", (m_Properties.GetVariableT<float>("frameSpeed")));
 	}
 
 	std::function<void(Entity& entity)> MoveRight = [&](Entity& entity) ->void
@@ -55,20 +83,27 @@ public:
 	};
 	std::function<void(Entity& entity)> MoveUp = [&](Entity& entity) ->void
 	{
-		if (!entity.HasComponent<TransformComponent>()) return;
+		if (!entity.HasComponent<PhysicsComponent>()) return;
+		PhysicsComponent& physics = entity.GetComponent<PhysicsComponent>();
+		float massAffection = sqrtf(sqrtf(physics.m_mass));
+		Vector2 v0 = physics.m_velocityVector;
+		float finalAcceleration = -acceleration * massAffection;
 
-		TransformComponent& transform = entity.GetComponent<TransformComponent>();
-		BehaviourScript& behaviourScript = *entity.GetComponent<BehaviourComponent>().GetScript();
-
-		transform.m_position.y -= behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
+		//
+		physics.m_velocityVector = { v0.x, v0.y + GetFrameTime() * finalAcceleration };
 	};
 	std::function<void(Entity& entity)> MoveDown = [&](Entity& entity) ->void
 	{
-		if (!entity.HasComponent<TransformComponent>()) return;
-		TransformComponent& transform = entity.GetComponent<TransformComponent>();
-		BehaviourScript& behaviourScript = *entity.GetComponent<BehaviourComponent>().GetScript();
+		if (!entity.HasComponent<PhysicsComponent>()) return;
 
-		transform.m_position.y += behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
+		PhysicsComponent& physics = entity.GetComponent<PhysicsComponent>();
+
+		float massAffection = sqrtf(sqrtf(physics.m_mass));
+		Vector2 v0 = physics.m_velocityVector;
+
+		float finalAcceleration = acceleration * massAffection;
+
+		physics.m_velocityVector = { v0.x, v0.y + GetFrameTime() * finalAcceleration };
 	};
 	std::function<void(Entity& entity)> RotateRight = [&](Entity& entity) ->void
 	{
@@ -91,6 +126,7 @@ public:
 		tags = { "player" };
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
+		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
 
 		//emplace functions
 		m_actions.emplace("move_left", MoveLeft);

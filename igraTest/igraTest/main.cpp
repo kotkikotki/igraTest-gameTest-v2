@@ -43,7 +43,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	musicSystem.UpdateMusic();
 	//!audio
 
-	backgroundManagerV.UpdateTexturePositionValues();
+	
 
 	//test
 	
@@ -53,6 +53,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	collisionSystem.On_Update();
 	animationSystem.On_Update();
 	
+	backgroundManagerV.UpdateTexturePositionValues();
 	//!test
 	
 	//video
@@ -141,16 +142,19 @@ int main()
 			(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
 		e1.AddComponent<AnimationComponent>
 			(std::make_shared<AdvancedLoopAnimationScript>());
+		/*
 		e1.GetComponent<AnimationComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
+		*/
 		e1.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(), mappings1);
 		e1.AddComponent<CollisionComponent>(e1.GetComponent<SpriteComponent>().m_currentFrameRectangle, 
 			e1.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
 			Vector2{0.f, 0.f}, 0.f, 0.77f);
 		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
-		e1.GetComponent<BehaviourComponent>().
+		/*e1.GetComponent<BehaviourComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-		e1.AddComponent<PhysicsComponent>(40000.f, 0.f, true);
+		*/
+		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, true);
 		/*
 		Entity& e2 = s1.AddEntity();
 
@@ -169,7 +173,11 @@ int main()
 		e2.GetComponent<BehaviourComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 			*/
+		backgorundManagerV.SetSpeedPtr
+		(e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("frameSpeed"));
 	}
+	
+
 	EntityDrawer entityDrawer(s1);
 	entityDrawer.drawCollision = true;
 	AnimationSystem animationSystem(s1);

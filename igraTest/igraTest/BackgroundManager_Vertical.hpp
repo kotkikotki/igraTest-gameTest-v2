@@ -20,7 +20,7 @@ class BackgroundManager_Vertical
 
 	//req
 	
-	std::shared_ptr<float> overallSpeedMultiplierPtr = std::make_shared<float>(overallSpeedMultiplier);
+	std::shared_ptr<std::any> overallSpeedMultiplierPtr = std::make_shared<std::any>(0.f);
 	
 	//
 	
@@ -69,6 +69,8 @@ public:
 	}
 	void UpdateTexturePositionValues()
 	{
+		SetCurrentSpeed(std::any_cast<float>(*overallSpeedMultiplierPtr));
+		
 		for (int i = 0; i < size; i++)
 		{
 
@@ -113,12 +115,17 @@ public:
 
 	void SetCurrentSpeed(float speed)
 	{
+		//std::cout << speed;
+		overallSpeedMultiplier = speed;
+		return;
+		///
 		float newSpeed = speed;
 		if (newSpeed < 0.f) newSpeed = 0.f;
 		overallSpeedMultiplier = speed;
 
 		//
-		*overallSpeedMultiplierPtr = overallSpeedMultiplier;
+		//*overallSpeedMultiplierPtr = overallSpeedMultiplier;
+		
 	}
 
 	float GetCurrentSpeed()
@@ -126,9 +133,13 @@ public:
 		return overallSpeedMultiplier;
 	}
 
-	const std::shared_ptr<float>& GetCurrentSpeedPtr()
+	const std::shared_ptr<std::any>& GetCurrentSpeedPtr()
 	{
 		return overallSpeedMultiplierPtr;
+	}
+	void SetSpeedPtr(const std::shared_ptr<std::any>& new_ptr)
+	{
+		overallSpeedMultiplierPtr = new_ptr;
 	}
 
 	

@@ -14,7 +14,7 @@ class PhysicsSystem : public System<PhysicsSystem>
 
 public:
 
-	float gravitationalConst = G_CONST; //m/s2
+	float gravitationalConst = GRAVITY_CONST; //km/s2
 
 	using System::System;
 
@@ -28,18 +28,11 @@ public:
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 			
 			if (!physics.m_gravity) continue;
-			//
-			//G = mg
+
 			float massAffection = sqrtf(sqrtf(physics.m_mass));
-			float v0 = physics.m_velocity;
-			physics.m_velocity = v0 - gravitationalConst * GetFrameTime() * massAffection;
+			Vector2 v0 = physics.m_velocityVector;
+			physics.m_velocityVector = { v0.x, v0.y + gravitationalConst * GetFrameTime() * massAffection};
 
-			//float distance = (v0 + physics.m_velocity) / 2.f * GetFrameTime();
-			float distance = (v0 + physics.m_velocity) / 2.f * GetFrameTime()/100.f;
-
-			transform.m_position.y -= distance;
-			
-			
 
 		}
 

@@ -9,15 +9,17 @@ class PhysicsComponent : public Component
 public:
 
 	float m_mass = 0.f; // in kg
-	float m_velocity = 0.f;
+	//float m_velocity = 0.f;
 
 	bool m_gravity = false;
 
+	Vector2 m_velocityVector = {0.f, 0.f};
+
 	using Component::Component;
 
-	PhysicsComponent(float mass, float velocity, bool gravity) :
+	PhysicsComponent(float mass, const Vector2& velocityVector, bool gravity) :
 		m_mass(mass),
-		m_velocity(velocity),
+		m_velocityVector(velocityVector),
 		m_gravity(gravity) {}
 
 };
