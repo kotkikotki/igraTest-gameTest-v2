@@ -11,9 +11,11 @@ class SpaceShipScript : public BehaviourScript
 
 	//float acceleration = 5000.f / 1000.f;
 	float acceleration = 0.5f;
-	Vector2 maxVelocity = {1.f, 15.f};
 
+	Vector2 maxVelocity = {-3.f, -15.f};
+	Vector2 minVelocity = { 3.f, 4.f };
 
+	Vector2 engineVelocity = { 0.f, 0.f };
 
 public:
 
@@ -33,31 +35,38 @@ public:
 		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
 
+		engineVelocity = GetRotatedPoint(engineVelocity, { 0.f, 0.f }, transform.m_rotation);
+
+		physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
+			physics.m_velocityVector.y + engineVelocity.y };
+		engineVelocity = { 0.f, 0.f };
+		//
+
 		float newX = physics.m_velocityVector.x;
 		if (newX >= 0.f)
 		{
-			newX = min(newX, maxVelocity.x);
+			newX = min(newX, minVelocity.x);
 		}
 		else
 		{
-			newX = max(newX, -maxVelocity.x);
+			newX = max(newX, maxVelocity.x);
 		}
 		float newY = physics.m_velocityVector.y;
 		if (newY >= 0.f)
 		{
-			newY = min(newY, maxVelocity.y);
+			newY = min(newY, minVelocity.y);
 		}
 		else
 		{
-			newY = max(newY, -maxVelocity.y);
+			newY = max(newY, maxVelocity.y);
 		}
 
 		
 		physics.m_velocityVector = { newX, newY };
 		
-		//transform.m_position = { transform.m_position.x + physics.m_velocityVector.x, transform.m_position.y + physics.m_velocityVector.y };
-		
-		//m_Properties.ChangeVariableByName("frameSpeed", abs(physics.m_velocityVector.y));
+		transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,transform.m_position.y };
+		//std::cout << newY << std::endl;
+
 		m_Properties.ChangeVariableByName("frameSpeed", -(physics.m_velocityVector.y));
 
 		if (!(owner.HasComponent<AnimationComponent>())) return;
@@ -67,20 +76,37 @@ public:
 
 	std::function<void(Entity& entity)> MoveRight = [&](Entity& entity) ->void
 	{
-		if (!entity.HasComponent<TransformComponent>()) return;
-
+		if (!(entity.HasComponent<PhysicsComponent>() && entity.HasComponent<TransformComponent>())) return;
+		PhysicsComponent& physics = entity.GetComponent<PhysicsComponent>();
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
-		BehaviourScript& behaviourScript = *entity.GetComponent<BehaviourComponent>().GetScript();
 
-		transform.m_position.x += behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
+		float massAffection = sqrtf(sqrtf(physics.m_mass));
+		Vector2 v0 = engineVelocity;
+		float finalAcceleration = acceleration * massAffection;
+
+		//
+		Vector2 addition = { GetFrameTime() * finalAcceleration, 0.f };
+
+
+
+		engineVelocity = { v0.x + addition.x, v0.y + addition.y };
 	};
 	std::function<void(Entity& entity)> MoveLeft = [&](Entity& entity) ->void
 	{
-		if (!entity.HasComponent<TransformComponent>()) return;
+		if (!(entity.HasComponent<PhysicsComponent>() && entity.HasComponent<TransformComponent>())) return;
+		PhysicsComponent& physics = entity.GetComponent<PhysicsComponent>();
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
-		BehaviourScript& behaviourScript = *entity.GetComponent<BehaviourComponent>().GetScript();
 
-		transform.m_position.x -= behaviourScript.m_Properties.GetVariableT<float>("frameSpeed");
+		float massAffection = sqrtf(sqrtf(physics.m_mass));
+		Vector2 v0 = engineVelocity;
+		float finalAcceleration = -acceleration * massAffection;
+
+		//
+		Vector2 addition = { GetFrameTime() * finalAcceleration, 0.f };
+
+
+
+		engineVelocity = { v0.x + addition.x, v0.y + addition.y };
 	};
 	std::function<void(Entity& entity)> MoveUp = [&](Entity& entity) ->void
 	{
@@ -89,15 +115,17 @@ public:
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
 		float massAffection = sqrtf(sqrtf(physics.m_mass));
-		Vector2 v0 = physics.m_velocityVector;
+		Vector2 v0 = engineVelocity;
 		float finalAcceleration = -acceleration * massAffection;
 
 		//
-		Vector2 rotated = { 0.f, GetFrameTime() * finalAcceleration };
-		rotated = GetRotatedPoint(rotated, { 0.f, 0.f }, transform.m_rotation);
+		Vector2 addition = { 0.f, GetFrameTime() * finalAcceleration };
+		
 
-		//physics.m_velocityVector = { v0.x, v0.y + GetFrameTime() * finalAcceleration };
-		physics.m_velocityVector = {v0.x + rotated.x, v0.y + rotated.y };
+	
+		engineVelocity = {v0.x + addition.x, v0.y + addition.y };
+
+		
 	};
 	std::function<void(Entity& entity)> MoveDown = [&](Entity& entity) ->void
 	{
@@ -106,15 +134,14 @@ public:
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
 		float massAffection = sqrtf(sqrtf(physics.m_mass));
-		Vector2 v0 = physics.m_velocityVector;
+		Vector2 v0 = engineVelocity;
 		float finalAcceleration = acceleration * massAffection;
 
 		//
-		Vector2 rotated = { 0.f, GetFrameTime() * finalAcceleration };
-		rotated = GetRotatedPoint(rotated, { 0.f, 0.f }, transform.m_rotation);
-
-		//physics.m_velocityVector = { v0.x, v0.y + GetFrameTime() * finalAcceleration };
-		physics.m_velocityVector = { v0.x + rotated.x, v0.y + rotated.y };
+		Vector2 addition = { 0.f, GetFrameTime() * finalAcceleration };
+		
+		engineVelocity = { v0.x + addition.x, v0.y + addition.y };
+		
 	};
 	std::function<void(Entity& entity)> RotateRight = [&](Entity& entity) ->void
 	{

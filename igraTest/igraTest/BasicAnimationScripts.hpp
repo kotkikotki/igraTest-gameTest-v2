@@ -74,9 +74,10 @@ public:
 
 	void Animate(SpriteComponent& sprite) override
 	{
-		if (m_frameSpeed < 0.f) m_frameSpeed = 5.f;
-		int currentFrameMin = (m_frameSpeed >= 10.f) ? sprite.m_frameCountX : 0;
-		int currentFrameMax = (m_frameSpeed >= 10.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
+		
+		m_frameSpeed = abs(m_frameSpeed);
+		int currentFrameMin = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX : 0;
+		int currentFrameMax = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
 		m_frameCounter++;
 		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
 		{
