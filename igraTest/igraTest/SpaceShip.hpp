@@ -14,6 +14,7 @@ class SpaceShipScript : public BehaviourScript
 	Vector2 maxVelocity = {1.f, 15.f};
 
 
+
 public:
 
 	using BehaviourScript::BehaviourScript;
@@ -83,27 +84,37 @@ public:
 	};
 	std::function<void(Entity& entity)> MoveUp = [&](Entity& entity) ->void
 	{
-		if (!entity.HasComponent<PhysicsComponent>()) return;
+		if (!(entity.HasComponent<PhysicsComponent>()&& entity.HasComponent<TransformComponent>())) return;
 		PhysicsComponent& physics = entity.GetComponent<PhysicsComponent>();
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+
 		float massAffection = sqrtf(sqrtf(physics.m_mass));
 		Vector2 v0 = physics.m_velocityVector;
 		float finalAcceleration = -acceleration * massAffection;
 
 		//
-		physics.m_velocityVector = { v0.x, v0.y + GetFrameTime() * finalAcceleration };
+		Vector2 rotated = { 0.f, GetFrameTime() * finalAcceleration };
+		rotated = GetRotatedPoint(rotated, { 0.f, 0.f }, transform.m_rotation);
+
+		//physics.m_velocityVector = { v0.x, v0.y + GetFrameTime() * finalAcceleration };
+		physics.m_velocityVector = {v0.x + rotated.x, v0.y + rotated.y };
 	};
 	std::function<void(Entity& entity)> MoveDown = [&](Entity& entity) ->void
 	{
-		if (!entity.HasComponent<PhysicsComponent>()) return;
-
+		if (!(entity.HasComponent<PhysicsComponent>() && entity.HasComponent<TransformComponent>())) return;
 		PhysicsComponent& physics = entity.GetComponent<PhysicsComponent>();
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
 		float massAffection = sqrtf(sqrtf(physics.m_mass));
 		Vector2 v0 = physics.m_velocityVector;
-
 		float finalAcceleration = acceleration * massAffection;
 
-		physics.m_velocityVector = { v0.x, v0.y + GetFrameTime() * finalAcceleration };
+		//
+		Vector2 rotated = { 0.f, GetFrameTime() * finalAcceleration };
+		rotated = GetRotatedPoint(rotated, { 0.f, 0.f }, transform.m_rotation);
+
+		//physics.m_velocityVector = { v0.x, v0.y + GetFrameTime() * finalAcceleration };
+		physics.m_velocityVector = { v0.x + rotated.x, v0.y + rotated.y };
 	};
 	std::function<void(Entity& entity)> RotateRight = [&](Entity& entity) ->void
 	{
@@ -111,7 +122,9 @@ public:
 
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
-		transform.m_rotation += 3.f;
+		transform.m_rotation += 1.f;
+
+		
 	};
 	std::function<void(Entity& entity)> RotateLeft = [&](Entity& entity) ->void
 	{
@@ -119,7 +132,9 @@ public:
 
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
-		transform.m_rotation -= 3.f;
+		transform.m_rotation -= 1.f;
+
+		
 	};
 	SpaceShipScript() : BehaviourScript()
 	{
