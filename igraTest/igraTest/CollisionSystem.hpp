@@ -24,7 +24,7 @@ class CollisionSystem : public System<CollisionSystem>
 
 		if (auto area1 = std::get_if<Collision_Box>(&collision1.GetAreaRef()))
 		{
-			//Rectangle rect1 = { area1->postition.x, area1->postition.y, area1->width, area1->height};
+			
 			if (auto area2 = std::get_if<Collision_Box>(&collision2.GetAreaRef()))
 			{
 				std::optional<CollisionInfo> collision1check = CheckCollisionBoxes(*area1, *area2);
@@ -37,7 +37,7 @@ class CollisionSystem : public System<CollisionSystem>
 
 				CollisionInfo result = abs(collision1.distance) < abs(collision2.distance) ? collision1 : collision2;
 
-				// hack the contained flag to be the union of the two
+			
 				result.ownerContained = collision1.ownerContained && collision2.ownerContained;
 				result.hitContained = collision1.hitContained && collision2.hitContained;
 
@@ -58,10 +58,7 @@ class CollisionSystem : public System<CollisionSystem>
 		{
 			if (auto area2 = std::get_if<Collision_Box>(&collision2.GetAreaRef()))
 			{
-				//Rectangle rect2 = { area2->postition.x, area2->postition.y, area2->width, area2->height };
-				//return CheckCollisionCircleRec(area1->postition, area1->radius, rect2);
-				//return CheckCollisionBoxCircle(*area2, *area1);
-
+				
 				std::optional<CollisionInfo> collisionCheck = CheckCollisionBoxCircle(*area2, *area1);
 
 				if (!collisionCheck.has_value()) return std::optional<CollisionInfo>{};
@@ -72,8 +69,7 @@ class CollisionSystem : public System<CollisionSystem>
 			}
 			if (auto area2 = std::get_if<Collision_Circle>(&collision2.GetAreaRef()))
 			{
-				//return CheckCollisionCircles(area1->postition, area1->radius*area1->scale, area2->postition,
-				//	area2->radius*area2->scale);
+				
 				std::optional<CollisionInfo> collisionCheck = CheckCollisionCircles(*area2, *area1);
 
 				if (!collisionCheck.has_value()) return std::optional<CollisionInfo>{};
@@ -104,17 +100,21 @@ public:
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 
 			collision.UpdateMembers(transform.m_position, transform.m_rotation, transform.m_scale);
-
+			//std::cout << i << std::endl;
 		}
 	
 		SparseArray<SparseArray<std::pair<CollisionState, CollisionInfo>>> newMatrix;
 
 		for (int i : m_scene->GetIds())
 		{
+			if (!(m_scene->HasComponentById<CollisionComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
+
 			newMatrix.Emplace(i);
 
 			for (int j : m_scene->GetIds())
 			{
+				if (!(m_scene->HasComponentById<CollisionComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
+
 				if (i == j)
 				{
 					newMatrix[i].Emplace(j, NOT_COLLIDING, CollisionInfo{});

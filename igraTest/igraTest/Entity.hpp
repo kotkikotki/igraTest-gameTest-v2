@@ -38,18 +38,19 @@ public:
     {
         m_id = r.m_id;
         m_owner_ptr = r.m_owner_ptr;
+        m_tags = r.m_tags;
     }
 
     ~Entity() = default;
 
     int GetId()
     {
-        return m_id;
+        return this->m_id;
     }
 
     Scene& GetOwner()
     {
-        return *m_owner_ptr;
+        return *this->m_owner_ptr;
     }
 
     bool HasTag(const std::string& tag)

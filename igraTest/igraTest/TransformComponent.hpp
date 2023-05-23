@@ -8,7 +8,7 @@ class TransformComponent : public Component
 {
 public:
 
-	Vector2 m_position = {0};
+	Vector2 m_position = {0.f , 0.f};
 	float m_rotation = 0.f;
 	bool m_flipVertical = false;
 	bool m_flipHorizontal = false;

@@ -37,7 +37,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	{
 		collisionSystem.PrintCurrent();
 	}
-	//scene.GetEntity(1).GetComponent<TransformComponent>().m_position = GetMousePosition();
+	
 	
 	//audio
 	musicSystem.UpdateMusic();
@@ -132,8 +132,9 @@ int main()
 	*/
 	Scene s1;
 	
-
+	
 	{
+		
 		Entity& e1 = s1.AddEntity();
 		
 		e1.AddComponent<TransformComponent>
@@ -141,20 +142,14 @@ int main()
 		e1.AddComponent<SpriteComponent>
 			(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
 		e1.AddComponent<AnimationComponent>
-			(std::make_shared<AdvancedLoopAnimationScript>());
-		/*
-		e1.GetComponent<AnimationComponent>().
-			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-		*/
-		e1.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(), mappings1);
+			(std::make_shared<SpaceShipAnimationScript>());
+		e1.AddComponent<InputComponent>(std::make_shared<SpaceShipInputScript>(), mappings1);
 		e1.AddComponent<CollisionComponent>(e1.GetComponent<SpriteComponent>().m_currentFrameRectangle, 
 			e1.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
 			Vector2{0.f, 0.f}, 0.f, 0.77f);
 		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
-		/*e1.GetComponent<BehaviourComponent>().
-			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-		*/
-		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, true);
+		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, false);
+		
 		/*
 		Entity& e2 = s1.AddEntity();
 
@@ -173,11 +168,19 @@ int main()
 		e2.GetComponent<BehaviourComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 			*/
+
+		Entity& wall_l = s1.AddEntity();
+		wall_l.AddComponent<TransformComponent>(Vector2{ -1.f, (float)GetScreenHeight()/2.f}, 0.f, false, false, 1.f);
+		wall_l.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
+		Entity& wall_r = s1.AddEntity();
+		wall_r.AddComponent<TransformComponent>(Vector2{ (float)GetScreenWidth() + 2.f, (float)GetScreenHeight() / 2.f}, 0.f, false, false, 1.f);
+		wall_r.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
+
 		backgorundManagerV.SetSpeedPtr
 		(e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("frameSpeed"));
 	}
 	
-
+	
 	EntityDrawer entityDrawer(s1);
 	entityDrawer.drawCollision = true;
 	AnimationSystem animationSystem(s1);

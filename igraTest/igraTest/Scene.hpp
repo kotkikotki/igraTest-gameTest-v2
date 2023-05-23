@@ -51,7 +51,7 @@ protected:
 	std::shared_ptr<component_var_t> GetComponentPtr(int id)
 	{
 		const int& component_id = componentIndexes[typeid(T)];
-		if (m_components[component_id].size() == 0) return nullptr;
+		if (m_components[component_id].size() == 0 || !m_components[component_id].HasId(id)) return nullptr;
 		return m_components[component_id][id];
 	}
 
@@ -175,6 +175,20 @@ public:
 	{
 		return !(GetComponentPtr<T>(id)==nullptr);
 	}
+
+	//test
+	/*
+	void PrintAll()
+	{
+		for (auto& a : m_components)
+		{
+			for (auto& b : a.GetVector())
+			{
+				std::cout <<(*b).index() << std::endl;
+			}
+		}
+	}
+	*/
 };
 
 template<typename T, typename ...Args>

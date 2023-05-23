@@ -22,32 +22,35 @@ public:
 		for (int i : m_scene->GetIds())
 		{
 			//test collision
-			if(drawCollision)
+			if (drawCollision)
 			{
 				//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
-				if (!(m_scene->HasComponentById<CollisionComponent>(i))) continue;
-				CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
-
-
-
-
-				if (auto area1 = std::get_if<Collision_Box>(&collision.GetAreaRef()))
+				if ((m_scene->HasComponentById<CollisionComponent>(i)))
 				{
-					//DrawRectangle(area1->postition.x - area1->width / 2.f, area1->postition.y - area1->height / 2.f, area1->width, area1->height, RED);
-					//DrawRectangle(area1->postition.x, area1->postition.y, area1->width, area1->height, RED);
-					Rectangle dest = { area1->position.x, area1->position.y, area1->width * area1->scale, area1->height * area1->scale };
-					Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
-					DrawRectanglePro(dest, origin, area1->rotation, RED);
-					
-				}
-				if (auto area1 = std::get_if<Collision_Circle>(&collision.GetAreaRef()))
-				{
-					DrawCircle(area1->position.x, area1->position.y, area1->radius*area1->scale, RED);
+					CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
+
+
+
+
+					if (auto area1 = std::get_if<Collision_Box>(&collision.GetAreaRef()))
+					{
+						//DrawRectangle(area1->postition.x - area1->width / 2.f, area1->postition.y - area1->height / 2.f, area1->width, area1->height, RED);
+						//DrawRectangle(area1->postition.x, area1->postition.y, area1->width, area1->height, RED);
+						Rectangle dest = { area1->position.x, area1->position.y, area1->width * area1->scale, area1->height * area1->scale };
+						Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
+						DrawRectanglePro(dest, origin, area1->rotation, RED);
+
+					}
+					if (auto area1 = std::get_if<Collision_Circle>(&collision.GetAreaRef()))
+					{
+						DrawCircle(area1->position.x, area1->position.y, area1->radius * area1->scale, RED);
+					}
 				}
 			}
 
 			//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
 			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
+			//std::cout << m_scene->HasComponentById<SpriteComponent>(i)<< std::endl;
 
 			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
@@ -64,6 +67,7 @@ public:
 			*/
 			
 			//DrawCircle(transform.m_position.x, transform.m_position.y, 70.f, BLUE);
+			
 		}
 	}
 	

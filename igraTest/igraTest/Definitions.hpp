@@ -96,6 +96,24 @@ struct  Collision_Circle : Collision_Base
 	}
 	
 };
+float DotProduct(const Vector2& p1, const Vector2& p2)
+{
+	return (p1.x * p2.x) + (p1.y * p2.y);
+}
+float Determinant(const Vector2& p1, const Vector2& p2)
+{
+	return (p1.x * p2.y) - (p1.y * p2.x);
+}
+void Normalize(Vector2& vector, float magnitude = 1.f)
+{
+	float len = sqrtf(vector.x * vector.x + vector.y * vector.y);
+	if (len == 0.f)
+		return;
+
+	float ratio = magnitude / len;
+	vector.x *= ratio;
+	vector.y *= ratio;
+}
 //
 Vector2 GetRotatedPoint(const Vector2& point, const Vector2& centerOfRotation, float rotation)
 {
@@ -114,21 +132,18 @@ Vector2 GetRotatedPoint(const Vector2& point, const Vector2& centerOfRotation, f
 	
 }
 
-float DotProduct(const Vector2& p1, const Vector2& p2)
+float GetAngleOfPoints(const Vector2& p1, const Vector2& p2)
 {
-	return (p1.x * p2.x) + (p1.y * p2.y);
+	float dot = DotProduct(p1, p2);
+	float determinant = Determinant(p1, p2);
+	float angle =  atan2f(determinant, dot);
+	angle = angle * 180.f / PI;
+	return angle;
 }
-//
-void Normalize(Vector2& vector, float magnitude = 1.f)
-{
-	float len = sqrtf(vector.x * vector.x + vector.y * vector.y);
-	if (len == 0.f)
-		return;
 
-	float ratio = magnitude / len;
-	vector.x *= ratio;
-	vector.y *= ratio;
-}
+
+//
+
 //
 Vector2 GetPerpendicularAxis(const Vector2* points, int index, float magnitude = 1.f, int length = 4)
 {
