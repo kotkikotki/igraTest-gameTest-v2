@@ -23,6 +23,9 @@ private:
 	std::priority_queue<int, std::vector<int>, std::greater<int>> m_free_Ids;
 	std::set<int> m_used_Ids;
 
+	//
+	std::queue<int> m_removeQueue;
+
 protected:
 
 	template<class T, typename = enable_if_t<is_base_of_v<Component, T>>, typename ...Args>
@@ -90,6 +93,17 @@ public:
 		}
 	}
 
+	void On_Update()
+	{
+		while (!m_removeQueue.empty())
+		{
+			int id = m_removeQueue.front();
+			m_removeQueue.pop();
+
+			RemoveEntity(id);
+		}
+	}
+
 	Entity& AddEntity()
 	{
 		int id;
@@ -134,7 +148,7 @@ public:
 		return *m_entities[id];
 
 	}
-
+	//before or after update loop
 	void RemoveEntity(int id)
 	{
 
@@ -152,6 +166,11 @@ public:
 		m_used_Ids.erase(id);
 
 		std::cout <<std::endl<< "Removed" << id << std::endl;
+	}
+	//
+	void QueueForRemove(int id)
+	{
+		m_removeQueue.push(id);
 	}
 
 	const std::vector<std::shared_ptr<Entity>>& GetVector()
@@ -192,7 +211,7 @@ public:
 };
 void Entity::Destroy()
 {
-	this->GetOwner().RemoveEntity(this->GetId());
+	this->GetOwner().QueueForRemove(this->GetId());
 }
 template<typename T, typename ...Args>
 T& Entity::AddComponent(Args&& ...args)

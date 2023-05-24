@@ -39,10 +39,20 @@ public:
 		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
 
-		if (transform.m_position.x > (float)GetScreenWidth() || transform.m_position.x < 0.f
-			|| transform.m_position.y >(float)GetScreenWidth() || transform.m_position.y < 0.f)
+		float offsetX = 0.f;
+		float offsetY = 0.f;
+
+		if (owner.HasComponent<SpriteComponent>())
 		{
-			//destroy
+			SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
+			offsetX = sprite.m_currentFrameRectangle.width / 2.f;
+			offsetY = sprite.m_currentFrameRectangle.height / 2.f;
+		}
+
+		if (transform.m_position.x > (float)GetScreenWidth() + offsetX || transform.m_position.x + offsetX < 0.f
+			|| transform.m_position.y >(float)GetScreenWidth() + offsetY || transform.m_position.y + offsetY < 0.f)
+		{
+			owner.Destroy();
 			return;
 		}
 

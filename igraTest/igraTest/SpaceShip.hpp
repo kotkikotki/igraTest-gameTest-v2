@@ -157,9 +157,19 @@ public:
 		std::cout << "Shoot" << std::endl;
 
 		Entity& projectile = entity.GetOwner().AddEntity();
+		
+		float offset = 0.f;
+		if (entity.HasComponent<SpriteComponent>())
+		{
+			SpriteComponent& sprite = entity.GetComponent<SpriteComponent>();
+			offset = sprite.m_currentFrameRectangle.height *1.75f;
+		}
 
 		projectile.AddComponent<TransformComponent>
-			(transform.m_position, transform.m_rotation, false, false, 1.f);
+			(
+				GetRotatedPoint(Vector2{ transform.m_position.x, transform.m_position.y - offset },
+					transform.m_position, transform.m_rotation),
+				transform.m_rotation, false, false, 1.f);
 		projectile.AddComponent<SpriteComponent>
 			(projectileTexture, 3, 1, 3.f);
 		projectile.AddComponent<AnimationComponent>
