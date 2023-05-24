@@ -190,7 +190,10 @@ public:
 	}
 	*/
 };
-
+void Entity::Destroy()
+{
+	this->GetOwner().RemoveEntity(this->GetId());
+}
 template<typename T, typename ...Args>
 T& Entity::AddComponent(Args&& ...args)
 {

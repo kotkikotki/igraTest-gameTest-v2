@@ -39,6 +39,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	}
 	
 	
+	
 	//audio
 	musicSystem.UpdateMusic();
 	//!audio
@@ -117,10 +118,8 @@ int main()
 	std::shared_ptr<InputMappings> mappings1 = std::make_shared<InputMappings>(InputMappings{});
 	mappings1->m_Map.AddAction("move_right", KEY_D, Down);
 	mappings1->m_Map.AddAction("move_left", KEY_A, Down);
-	mappings1->m_Map.AddAction("move_up", KEY_W, Down);
-	mappings1->m_Map.AddAction("move_down", KEY_S, Down);
-	mappings1->m_Map.AddAction("rotate_right", KEY_T, Down);
-	mappings1->m_Map.AddAction("rotate_left", KEY_R, Down);
+	mappings1->m_Map.AddAction("shoot", MOUSE_BUTTON_LEFT, Pressed);
+
 	/*
 	std::shared_ptr<InputMappings> mappings2 = std::make_shared<InputMappings>(InputMappings{});
 	mappings2->m_Map.AddAction("move_right", KEY_RIGHT, Down);
@@ -134,7 +133,7 @@ int main()
 	
 	
 	{
-		
+		//Texture2D playerTexture = LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png");
 		Entity& e1 = s1.AddEntity();
 		
 		e1.AddComponent<TransformComponent>
@@ -168,13 +167,17 @@ int main()
 		e2.GetComponent<BehaviourComponent>().
 			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
 			*/
-
+		
 		Entity& wall_l = s1.AddEntity();
+		wall_l.m_tags = { "blocking" };
 		wall_l.AddComponent<TransformComponent>(Vector2{ -1.f, (float)GetScreenHeight()/2.f}, 0.f, false, false, 1.f);
 		wall_l.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
 		Entity& wall_r = s1.AddEntity();
+		wall_r.m_tags = { "blocking" };
 		wall_r.AddComponent<TransformComponent>(Vector2{ (float)GetScreenWidth() + 2.f, (float)GetScreenHeight() / 2.f}, 0.f, false, false, 1.f);
 		wall_r.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
+		
+
 
 		backgorundManagerV.SetSpeedPtr
 		(e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("frameSpeed"));

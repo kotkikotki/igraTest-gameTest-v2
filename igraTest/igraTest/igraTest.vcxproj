@@ -156,6 +156,7 @@
     <ClInclude Include="InputSystem.hpp" />
     <ClInclude Include="PhysicsComponent.hpp" />
     <ClInclude Include="PhysicsSystem.hpp" />
+    <ClInclude Include="PlayerProjectile.hpp" />
     <ClInclude Include="Scripts.hpp" />
     <ClInclude Include="SpaceShip.hpp" />
     <ClInclude Include="SpriteComponent.hpp" />
@@ -173,12 +174,7 @@
     <Image Include="..\..\res\assets\used\Blue_Nebula_07-1024x1024.png" />
     <Image Include="..\..\res\assets\used\edited\base.png" />
     <Image Include="..\..\res\assets\used\Main Ship - Engines - Base Engine - Idle.png" />
-    <Image Include="..\..\res\assets\used\PC Computer - Nyan Cat Lost In Space - Nyan Cat_r.png" />
-    <Image Include="..\..\res\assets\used\plx-1.png" />
-    <Image Include="..\..\res\assets\used\plx-2.png" />
-    <Image Include="..\..\res\assets\used\plx-3.png" />
-    <Image Include="..\..\res\assets\used\plx-4.png" />
-    <Image Include="..\..\res\assets\used\plx-5.png" />
+    <Image Include="..\..\res\assets\used\Main ship weapon - Projectile - Rocket.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="script.txt" />

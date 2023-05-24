@@ -5,6 +5,8 @@
 #include<raylib.h>
 #include "Definitions.hpp"
 #include "Components.h"
+#include "Scene.hpp"
+#include "PlayerProjectile.hpp"
 
 class SpaceShipScript : public BehaviourScript
 {
@@ -18,6 +20,8 @@ class SpaceShipScript : public BehaviourScript
 
 	Vector2 maxVelocity = { -7.f, -15.f };
 	Vector2 minVelocity = { 7.f, 4.f };
+
+	Texture2D projectileTexture = {0};
 
 public:
 
@@ -66,7 +70,7 @@ public:
 			}
 		}
 		transform.m_rotation = rotation;
-		//std::cout << rotation << std::endl;
+		
 		//
 		{
 			engineVelocity = GetRotatedPoint(engineVelocity, { 0.f, 0.f }, transform.m_rotation);
@@ -106,8 +110,6 @@ public:
 		if (!(owner.HasComponent<AnimationComponent>())) return;
 		AnimationComponent& animation = owner.GetComponent<AnimationComponent>();
 
-
-
 		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", (m_Properties.GetVariableT<float>("frameSpeed")));
 	}
 
@@ -146,6 +148,32 @@ public:
 		engineVelocity = { v0.x + addition.x, v0.y + addition.y };
 	};
 	
+	std::function<void(Entity& entity)> Shoot = [&](Entity& entity) ->void
+	{
+
+		if (!(entity.HasComponent<TransformComponent>())) return;
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+
+		std::cout << "Shoot" << std::endl;
+
+		Entity& projectile = entity.GetOwner().AddEntity();
+
+		projectile.AddComponent<TransformComponent>
+			(transform.m_position, transform.m_rotation, false, false, 1.f);
+		projectile.AddComponent<SpriteComponent>
+			(projectileTexture, 3, 1, 3.f);
+		projectile.AddComponent<AnimationComponent>
+			(std::make_shared<PlayerProjectileAnimationScript>());
+		//.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", 5.f);
+
+		projectile.AddComponent<CollisionComponent>(projectile.GetComponent<SpriteComponent>().m_currentFrameRectangle,
+			projectile.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
+			Vector2{ -1.f, 5.f }, 0.f, 0.42f);
+		projectile.AddComponent<BehaviourComponent>
+			(std::make_shared<PlayerProjectileScript>(projectileTexture));
+		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{0.f, 0.f}, false);
+	};
+
 	SpaceShipScript() : BehaviourScript()
 	{
 		tags = { "player" };
@@ -156,42 +184,45 @@ public:
 		//emplace functions
 		m_actions.emplace("move_left", MoveLeft);
 		m_actions.emplace("move_right", MoveRight);
-		/*
-		m_actions.emplace("move_up", MoveUp);
-		m_actions.emplace("move_down", MoveDown);
-		m_actions.emplace("rotate_left", RotateLeft);
-		m_actions.emplace("rotate_right", RotateRight);
-		*/
+		m_actions.emplace("shoot", Shoot);
+
+		projectileTexture = LoadTexture("..\\..\\res\\assets\\used\\Main ship weapon - Projectile - Rocket.png");
+	}
+
+	~SpaceShipScript()
+	{
+		UnloadTexture(projectileTexture);
 	}
 	//
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		std::cout << "enter" << owner.GetId() << "-" << hit.GetId() << std::endl;
-		//TransformComponent& ownerTransform = owner.GetComponent<TransformComponent>();
+
 		if (!(owner.HasComponent<PhysicsComponent>())) return;
 		PhysicsComponent& ownerPhysics = owner.GetComponent<PhysicsComponent>();
 
-		ownerPhysics.m_velocityVector.x = 2.f * collisionInfo.separation.x;
-		ownerPhysics.m_velocityVector.y = 2.f * collisionInfo.separation.y;
+		if (hit.HasTag("blocking"))
+		{
+			ownerPhysics.m_velocityVector.x = 2.f * collisionInfo.separation.x;
+			ownerPhysics.m_velocityVector.y = 2.f * collisionInfo.separation.y;
+		}
 
 		
 	}
 	void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		std::cout << "stay" << owner.GetId() << "-" << hit.GetId() << std::endl;
-		//TransformComponent& ownerTransform = owner.GetComponent<TransformComponent>();
+		
 		if (!(owner.HasComponent<PhysicsComponent>())) return;
 		PhysicsComponent& ownerPhysics = owner.GetComponent<PhysicsComponent>();
-
-		ownerPhysics.m_velocityVector.x = 2.f * collisionInfo.separation.x;
-		ownerPhysics.m_velocityVector.y = 2.f * collisionInfo.separation.y;
+		if(hit.HasTag("blocking"))
+		{
+			ownerPhysics.m_velocityVector.x = 2.f * collisionInfo.separation.x;
+			ownerPhysics.m_velocityVector.y = 2.f * collisionInfo.separation.y;
+		}
 		
 	}
 	void On_Exit(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		std::cout << "exit" << owner.GetId() << "-" << hit.GetId() << std::endl;
-		//hit.GetComponent<TransformComponent>().m_position = collisionInfo.separation;
 
 	}
 
@@ -241,12 +272,6 @@ public:
 
 	void UpdateProperties() override
 	{
-		/*
-		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
-
-		//mem_frameSpeed = mem_LinkedProperties.GetVariable<float>("frameSpeed");
-		m_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
-		*/
 		m_frameSpeed = m_Properties.GetVariableT<float>("frameSpeed");
 	}
 
@@ -271,17 +296,8 @@ public:
 		if (mappings->m_Map.GetActionState("move_left"))
 			behaviour.GetScript()->On_Action(entity, "move_left");
 
-		if (mappings->m_Map.GetActionState("move_up"))
-			behaviour.GetScript()->On_Action(entity, "move_up");
-
-		if (mappings->m_Map.GetActionState("move_down"))
-			behaviour.GetScript()->On_Action(entity, "move_down");
-
-		if (mappings->m_Map.GetActionState("rotate_right"))
-			behaviour.GetScript()->On_Action(entity, "rotate_right");
-
-		if (mappings->m_Map.GetActionState("rotate_left"))
-			behaviour.GetScript()->On_Action(entity, "rotate_left");
+		if (mappings->m_Map.GetActionState("shoot"))
+			behaviour.GetScript()->On_Action(entity, "shoot");
 
 
 	}

@@ -28,9 +28,7 @@ public:
 				if ((m_scene->HasComponentById<CollisionComponent>(i)))
 				{
 					CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
-
-
-
+					//std::cout << i << std::endl;
 
 					if (auto area1 = std::get_if<Collision_Box>(&collision.GetAreaRef()))
 					{
@@ -51,6 +49,7 @@ public:
 			//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
 			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
 			//std::cout << m_scene->HasComponentById<SpriteComponent>(i)<< std::endl;
+			//std::cout << i << std::endl;
 
 			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);

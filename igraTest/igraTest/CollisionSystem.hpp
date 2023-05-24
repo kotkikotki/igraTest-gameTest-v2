@@ -107,15 +107,15 @@ public:
 
 		for (int i : m_scene->GetIds())
 		{
-			if (!(m_scene->HasComponentById<CollisionComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
-
 			newMatrix.Emplace(i);
 
 			for (int j : m_scene->GetIds())
 			{
-				if (!(m_scene->HasComponentById<CollisionComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
-
-				if (i == j)
+				
+				
+				if (i == j || 
+					!(m_scene->HasComponentById<CollisionComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))||
+					!(m_scene->HasComponentById<CollisionComponent>(j) && m_scene->HasComponentById<TransformComponent>(j)))
 				{
 					newMatrix[i].Emplace(j, NOT_COLLIDING, CollisionInfo{});
 					continue;

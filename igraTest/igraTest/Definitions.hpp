@@ -570,16 +570,16 @@ public:
 		switch (c)
 		{
 			case Down:
-				return (IsKeyDown(k));
+				return (IsKeyDown(k)) || (IsMouseButtonDown(k));
 				break;
 			case Pressed:
-				return (IsKeyPressed(k));
+				return (IsKeyPressed(k)) || (IsMouseButtonPressed(k));
 				break;
 			case Released:
-				return (IsKeyReleased(k));
+				return (IsKeyReleased(k)) || (IsMouseButtonReleased(k));
 				break;
 			case Up:
-				return (IsKeyUp(k));
+				return (IsKeyUp(k)) || (IsMouseButtonUp(k));
 				break;
 		}
 	}

@@ -58,6 +58,9 @@ public:
         return m_tags.find(tag) != m_tags.end();
     }
 
+    void Destroy();
+    
+
     template<typename T, typename ...Args>
     T& AddComponent(Args&& ...args);
     

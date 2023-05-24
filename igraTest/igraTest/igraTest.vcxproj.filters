@@ -13,15 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Resource Files\downloaded assets">
-      <UniqueIdentifier>{54a5ead1-65cb-45cf-a16c-93838e2a4b43}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\downloaded assets\background-jungle">
-      <UniqueIdentifier>{54814e3b-24ff-42d2-8e7a-360e7fa1510d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\nyan cat">
-      <UniqueIdentifier>{5c6b29b1-6016-43f3-b2cf-a93dbccf05ca}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\space assets">
       <UniqueIdentifier>{67c2999f-c2a2-4d28-8948-05022c2c5d80}</UniqueIdentifier>
     </Filter>
@@ -54,6 +45,12 @@
     </Filter>
     <Filter Include="Scripts\Input">
       <UniqueIdentifier>{9761f75d-3f6f-4c5f-a808-f2d063bdd2f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\space assets\space ship\projectile">
+      <UniqueIdentifier>{4093eeeb-c94a-4f03-ad92-3124870a5127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\ProjectilePlayer">
+      <UniqueIdentifier>{80c5be4c-4cd8-46a6-b3c4-cd8ef2f29f08}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -166,26 +163,11 @@
     <ClInclude Include="PhysicsSystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerProjectile.hpp">
+      <Filter>Entities\ProjectilePlayer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\res\assets\used\plx-1.png">
-      <Filter>Resource Files\downloaded assets\background-jungle</Filter>
-    </Image>
-    <Image Include="..\..\res\assets\used\plx-2.png">
-      <Filter>Resource Files\downloaded assets\background-jungle</Filter>
-    </Image>
-    <Image Include="..\..\res\assets\used\plx-3.png">
-      <Filter>Resource Files\downloaded assets\background-jungle</Filter>
-    </Image>
-    <Image Include="..\..\res\assets\used\plx-4.png">
-      <Filter>Resource Files\downloaded assets\background-jungle</Filter>
-    </Image>
-    <Image Include="..\..\res\assets\used\plx-5.png">
-      <Filter>Resource Files\downloaded assets\background-jungle</Filter>
-    </Image>
-    <Image Include="..\..\res\assets\used\PC Computer - Nyan Cat Lost In Space - Nyan Cat_r.png">
-      <Filter>Resource Files\nyan cat</Filter>
-    </Image>
     <Image Include="..\..\res\assets\used\Blue_Nebula_07-1024x1024.png">
       <Filter>Resource Files\space assets\background</Filter>
     </Image>
@@ -197,6 +179,9 @@
     </Image>
     <Image Include="..\..\res\assets\used\edited\base.png">
       <Filter>Resource Files\space assets\space ship</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\Main ship weapon - Projectile - Rocket.png">
+      <Filter>Resource Files\space assets\space ship\projectile</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
