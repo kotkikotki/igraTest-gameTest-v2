@@ -149,24 +149,22 @@ int main()
 		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
 		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, false);
 		
-		/*
+		
 		Entity& e2 = s1.AddEntity();
-
+		
 		e2.AddComponent<TransformComponent>
-			(Vector2{ GetScreenWidth() / 2.5f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
-		e2.AddComponent<SpriteComponent>(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
+			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
+		e2.AddComponent<SpriteComponent>
+			(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
 		e2.AddComponent<AnimationComponent>
-			(std::make_shared<AdvancedLoopAnimationScript>());
-		e2.GetComponent<AnimationComponent>().
-			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-		e2.AddComponent<InputComponent>(std::make_shared<MoveInputScript>(), mappings2);
-		e2.AddComponent<CollisionComponent>(e2.GetComponent<SpriteComponent>().m_currentFrameRectangle,
-			e1.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
-			Vector2{ 0.f, 0.f }, 0.f, 0.77f);
-		e2.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
-		e2.GetComponent<BehaviourComponent>().
-			GetScript()->m_LinkedProperties.AddVariable("frameSpeed", backgorundManagerV.GetCurrentSpeedPtr());
-			*/
+			(std::make_shared<SpaceShipAnimationScript>());
+		//e2.AddComponent<InputComponent>(std::make_shared<SpaceShipInputScript>(), mappings1);
+		e2.AddComponent<CollisionComponent>(e2.GetComponent<SpriteComponent>().m_currentFrameRectangle, 
+			e2.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
+			Vector2{0.f, 0.f}, 0.f, 0.77f);
+		//e2.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
+		e2.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, false);
+			
 		
 		Entity& wall_l = s1.AddEntity();
 		wall_l.m_tags = { "blocking" };

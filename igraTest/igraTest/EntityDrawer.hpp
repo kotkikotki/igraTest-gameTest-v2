@@ -5,6 +5,7 @@
 #include "Entity.hpp"
 #include "Components.h"
 #include <vector>
+#include <map>
 #include "Definitions.hpp"
 
 class EntityDrawer : System<EntityDrawer>
@@ -19,12 +20,23 @@ public:
 
 	void On_Update_Draw()
 	{
+
+		std::multimap<int, int> layeredIds;
+
 		for (int i : m_scene->GetIds())
 		{
-			//test collision
-			if (drawCollision)
-			{
-				//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
+			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
+			
+			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
+			//TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
+			
+			layeredIds.emplace(std::make_pair(sprite.m_layer, i));
+		}
+		//test collision
+		if (drawCollision)
+		{
+			for (int i: m_scene->GetIds())
+			{//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
 				if ((m_scene->HasComponentById<CollisionComponent>(i)))
 				{
 					CollisionComponent& collision = m_scene->GetComponentById<CollisionComponent>(i);
@@ -45,9 +57,21 @@ public:
 					}
 				}
 			}
+		}
+
+		//for (int i : m_scene->GetIds())
+		for(auto& a: layeredIds)
+		{
+			int i = a.second;
+			//test collision
+			
 
 			//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
-			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
+			
+			//!
+			//if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
+			//!
+			
 			//std::cout << m_scene->HasComponentById<SpriteComponent>(i)<< std::endl;
 			//std::cout << i << std::endl;
 
