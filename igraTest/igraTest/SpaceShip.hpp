@@ -182,11 +182,14 @@ public:
 		projectile.AddComponent<BehaviourComponent>
 			(std::make_shared<PlayerProjectileScript>(projectileTexture));
 		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{0.f, 0.f}, false);
+
+		//
+		projectile.m_tags = { "projectile" };
 	};
 
 	SpaceShipScript() : BehaviourScript()
 	{
-		tags = { "player" };
+		m_tags = { "player" };
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
@@ -284,7 +287,7 @@ public:
 	{
 		for (auto& a : sprites.m_layeredSprites)
 		{
-			auto& sprite = a.second;
+			auto& sprite = a.second.second;
 			m_frameSpeed = abs(m_frameSpeed);
 			int currentFrameMin = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX : 0;
 			int currentFrameMax = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;

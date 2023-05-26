@@ -40,7 +40,7 @@ class SpriteComponentAdvanced : public Component
 
 public:
 	
-	std::multimap<int, Sprite> m_layeredSprites;
+	std::multimap<int, std::pair<std::string, Sprite>> m_layeredSprites;
 	Sprite m_baseCopy;
 
 	unsigned int m_layer = 0; //0 -> min
@@ -48,7 +48,7 @@ public:
 
 	using Component::Component;
 
-	SpriteComponentAdvanced(const Sprite& base, unsigned int layer = 0) :
+	SpriteComponentAdvanced(const Sprite& base, const std::string& name = "base", unsigned int layer = 0) :
 		m_baseCopy(base),
 		m_layer(layer)
 	{
@@ -57,9 +57,75 @@ public:
 		{
 			m_layeredSprites.emplace(std::make_pair(a.m_layer, std::move(a)));
 		}*/
-		m_layeredSprites.emplace(std::make_pair(base.m_layer,base));
+		m_layeredSprites.emplace(std::make_pair(base.m_layer, std::make_pair(name,base)));
 
 	}
+
+	bool HasSprite(const std::string& name)
+	{
+
+		for (auto& a : m_layeredSprites)
+		{
+			auto& spritePair = a.second;
+			if (name == spritePair.first)
+				return true;
+		}
+
+		return false;
+	}
+	bool HasSprite(const std::string& name, int layer)
+	{
+		for (auto& a : m_layeredSprites)
+		{
+			auto& spritePair = a.second;
+			if (name == spritePair.first && a.first == layer)
+				return true;
+		}
+		return false;
+	}
+	Sprite& GetSprite(const std::string &name)
+	{
+		for (auto& a : m_layeredSprites)
+		{
+			auto& spritePair = a.second;
+			if (name == spritePair.first)
+				return spritePair.second;
+		}
+	}
+	Sprite& GetSprite(const std::string& name, int layer)
+	{
+		for (auto& a : m_layeredSprites)
+		{
+			auto& spritePair = a.second;
+			if (name == spritePair.first && a.first == layer)
+				return spritePair.second;
+		}
+	}
+
+	void AddSprite(const Sprite& sprite, const std::string& name = "base", unsigned int layer = 0)
+	{
+		m_layeredSprites.emplace(std::make_pair(sprite.m_layer, std::make_pair(name, sprite)));
+	}
+
+	void RemoveSprite(const std::string& name)
+	{
+		for (auto& a : m_layeredSprites)
+		{
+			auto& spritePair = a.second;
+			if (name == spritePair.first)
+				m_layeredSprites.erase(a.first);
+		}
+	}
+	void RemoveSprite(const std::string& name, int layer)
+	{
+		for (auto& a : m_layeredSprites)
+		{
+			auto& spritePair = a.second;
+			if (name == spritePair.first && a.first == layer)
+				m_layeredSprites.erase(a.first);
+		}
+	}
+
 };
 
 

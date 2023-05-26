@@ -150,6 +150,7 @@
     <ClInclude Include="CollisionSystem.hpp" />
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="EnemyTest.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="EntityDrawer.hpp" />
     <ClInclude Include="InputComponent.hpp" />
@@ -174,6 +175,8 @@
     <Image Include="..\..\res\assets\used\Blue_Nebula_02-1024x1024.png" />
     <Image Include="..\..\res\assets\used\Blue_Nebula_07-1024x1024.png" />
     <Image Include="..\..\res\assets\used\edited\base.png" />
+    <Image Include="..\..\res\assets\used\Kla%27ed - Battlecruiser - Base.png" />
+    <Image Include="..\..\res\assets\used\Kla%27ed - Battlecruiser - Engine12.png" />
     <Image Include="..\..\res\assets\used\Main Ship - Engines - Base Engine - Idle.png" />
     <Image Include="..\..\res\assets\used\Main ship weapon - Projectile - Rocket.png" />
   </ItemGroup>

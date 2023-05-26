@@ -52,6 +52,12 @@
     <Filter Include="Entities\ProjectilePlayer">
       <UniqueIdentifier>{80c5be4c-4cd8-46a6-b3c4-cd8ef2f29f08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Entities\Enemy1">
+      <UniqueIdentifier>{3bbae13c-4346-4cfb-9006-25411d4d21cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\space assets\enemy1">
+      <UniqueIdentifier>{19d6e185-9e22-4deb-8d59-1ab8bd7fdf6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -169,6 +175,9 @@
     <ClInclude Include="SpriteComponentAdvanced.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyTest.hpp">
+      <Filter>Entities\Enemy1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\res\assets\used\Blue_Nebula_07-1024x1024.png">
@@ -185,6 +194,12 @@
     </Image>
     <Image Include="..\..\res\assets\used\Main ship weapon - Projectile - Rocket.png">
       <Filter>Resource Files\space assets\space ship\projectile</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\Kla%27ed - Battlecruiser - Base.png">
+      <Filter>Resource Files\space assets\enemy1</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\Kla%27ed - Battlecruiser - Engine12.png">
+      <Filter>Resource Files\space assets\enemy1</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

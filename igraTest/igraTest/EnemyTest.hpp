@@ -1,26 +1,28 @@
-#ifndef PLAYER_PROJECTILE_HPP
+#ifndef ENEMY_TEST_HPP
 
-#define PLAYER_PROJECTILE_HPP
+#define ENEMY_TEST_HPP
 
 #include<raylib.h>
 #include "Definitions.hpp"
 #include "Components.h"
 #include "Scene.hpp"
 
-class PlayerProjectileScript : public BehaviourScript
+class EnemyTestScript : public BehaviourScript
 {
 
 	float velocityScalar = 5.f;
+	
+	float acceleration = 7.f;
 
-	float acceleration = 1.f;
-
+	/*
 	Vector2 engineVelocity = { 0.f, 0.f };
 
 	Vector2 maxVelocity = { -7.f, -7.f };
 	Vector2 minVelocity = { 7.f, 7.f };
 
 	Texture2D projectileTexture = { 0 };
-
+	*/
+	bool moveLeft = false;
 public:
 
 	using BehaviourScript::BehaviourScript;
@@ -33,12 +35,12 @@ public:
 
 	void On_Update(Entity& owner) override
 	{
-
+		
 		if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<PhysicsComponent>())) return;
-
+		
 		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
-
+		/*
 		float offsetX = 0.f;
 		float offsetY = 0.f;
 
@@ -56,7 +58,7 @@ public:
 			return;
 		}
 
-		
+
 		engineVelocity = GetRotatedPoint(Vector2{ 0.f, -acceleration }, Vector2{ 0.f, 0.f }, transform.m_rotation);
 		physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
 			physics.m_velocityVector.y + engineVelocity.y };
@@ -83,24 +85,38 @@ public:
 		physics.m_velocityVector = { newX, newY };
 
 		transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,
-			transform.m_position.y + physics.m_velocityVector.y};
+			transform.m_position.y + physics.m_velocityVector.y };
+		*/
+		if (moveLeft)
+			transform.m_position = { transform.m_position.x - acceleration, transform.m_position.y };
+		else
+			transform.m_position = { transform.m_position.x + acceleration, transform.m_position.y };
+
+		if (transform.m_position.x > (float)GetScreenWidth() / 1.25f) moveLeft = true;
+		if (transform.m_position.x < (float)GetScreenWidth() * 0.25f) moveLeft = false;
 
 		m_Properties.ChangeVariableByName("frameSpeed", (velocityScalar));
 		if (!(owner.HasComponent<AnimationComponent>())) return;
 		AnimationComponent& animation = owner.GetComponent<AnimationComponent>();
 		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", (m_Properties.GetVariableT<float>("frameSpeed")));
+		
 	}
 
-	PlayerProjectileScript(const Texture2D& texture) : BehaviourScript()
+	EnemyTestScript(const Texture2D& texture) : BehaviourScript()
 	{
-		m_tags = { "projectile" };
+		std::cout << std::endl << "Wodafjd";
+		/*
+		tags = { "projectile" };
 
-		m_Properties.AddVariable("frameSpeed", 0.f);
-		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
+		
 
 		//emplace functions
 
 		projectileTexture = texture;
+		*/
+
+		m_Properties.AddVariable("frameSpeed", 0.f);
+		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
 	}
 
 
@@ -108,8 +124,10 @@ public:
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		if (!hit.HasTag("player"))
+		if (hit.HasTag("projectile"))
 			owner.Destroy();
+		
+
 	}
 	void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
@@ -124,7 +142,7 @@ public:
 
 };
 
-class PlayerProjectileAnimationScript : public AnimationScript
+class EnemyTestAnimationScript : public AnimationScript
 {
 public:
 
@@ -137,13 +155,14 @@ public:
 
 	using AnimationScript::AnimationScript;
 
-	PlayerProjectileAnimationScript() : AnimationScript()
+	EnemyTestAnimationScript() : AnimationScript()
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
 
-	void Animate(SpriteComponent& sprite) override
+	void Animate(SpriteComponentAdvanced& sprites) override
 	{
+		Sprite& sprite = sprites.GetSprite("engine");
 		m_frameCounter++;
 		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
 		{
@@ -164,7 +183,7 @@ public:
 	void UpdateProperties() override
 	{
 		m_frameSpeed = m_Properties.GetVariableT<float>("frameSpeed");
-		//sstd::cout << m_frameSpeed << std::endl;
+		//std::cout << m_frameSpeed << std::endl;
 	}
 
 };
