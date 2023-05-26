@@ -25,12 +25,21 @@ public:
 
 		for (int i : m_scene->GetIds())
 		{
-			if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
+			if (!((m_scene->HasComponentById<SpriteComponent>(i)||m_scene->HasComponentById<SpriteComponentAdvanced>(i))
+				&& m_scene->HasComponentById<TransformComponent>(i))) continue;
 			
-			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
+			int layer;
+			if (m_scene->HasComponentById<SpriteComponent>(i))
+			{
+				layer = m_scene->GetComponentById<SpriteComponent>(i).m_layer;
+			}
+			if (m_scene->HasComponentById<SpriteComponentAdvanced>(i))
+			{
+				layer = m_scene->GetComponentById<SpriteComponentAdvanced>(i).m_layer;
+			}
 			//TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 			
-			layeredIds.emplace(std::make_pair(sprite.m_layer, i));
+			layeredIds.emplace(std::make_pair(layer, i));
 		}
 		//test collision
 		if (drawCollision)
@@ -44,8 +53,7 @@ public:
 
 					if (auto area1 = std::get_if<Collision_Box>(&collision.GetAreaRef()))
 					{
-						//DrawRectangle(area1->postition.x - area1->width / 2.f, area1->postition.y - area1->height / 2.f, area1->width, area1->height, RED);
-						//DrawRectangle(area1->postition.x, area1->postition.y, area1->width, area1->height, RED);
+						
 						Rectangle dest = { area1->position.x, area1->position.y, area1->width * area1->scale, area1->height * area1->scale };
 						Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
 						DrawRectanglePro(dest, origin, area1->rotation, RED);
@@ -63,32 +71,30 @@ public:
 		for(auto& a: layeredIds)
 		{
 			int i = a.second;
-			//test collision
-			
 
-			//if (!(e->HasComponent<SpriteComponent>() && e->HasComponent<TransformComponent>())) return;
-			
-			//!
-			//if (!(m_scene->HasComponentById<SpriteComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))) continue;
-			//!
-			
-			//std::cout << m_scene->HasComponentById<SpriteComponent>(i)<< std::endl;
-			//std::cout << i << std::endl;
-
-			SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
-			
-			Rectangle dest = {transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale};
-			Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
+			if (m_scene->HasComponentById<SpriteComponent>(i))
+			{
+				SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
+				
 
-			DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle, dest, origin, transform.m_rotation, WHITE);
+				Rectangle dest = { transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale };
+				Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
 
-			//std::cout << transform.m_rotation << std::endl;
-			/*DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle,
-				{ transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale },
-				{ sprite.m_currentFrameRectangle.width * SQRT2, sprite.m_currentFrameRectangle.height * SQRT2 }, transform.m_rotation, WHITE);
-			*/
-			
+				DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle, dest, origin, transform.m_rotation, WHITE);
+			}
+			if (m_scene->HasComponentById<SpriteComponentAdvanced>(i))
+			{
+				SpriteComponentAdvanced& sprites = m_scene->GetComponentById<SpriteComponentAdvanced>(i);
+				for (auto& a : sprites.m_layeredSprites)
+				{
+					auto& sprite = a.second;
+					Rectangle dest = { transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale };
+					Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
+
+					DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle, dest, origin, transform.m_rotation, WHITE);
+				}
+			}
 			//DrawCircle(transform.m_position.x, transform.m_position.y, 70.f, BLUE);
 			
 		}

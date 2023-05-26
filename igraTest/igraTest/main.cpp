@@ -138,18 +138,24 @@ int main()
 		
 		e1.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
-		e1.AddComponent<SpriteComponent>
-			(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
+		//e1.AddComponent<SpriteComponent>
+		//	(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
+		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
+		e1.AddComponent<SpriteComponentAdvanced>
+			(base1);
 		e1.AddComponent<AnimationComponent>
 			(std::make_shared<SpaceShipAnimationScript>());
 		e1.AddComponent<InputComponent>(std::make_shared<SpaceShipInputScript>(), mappings1);
-		e1.AddComponent<CollisionComponent>(e1.GetComponent<SpriteComponent>().m_currentFrameRectangle, 
-			e1.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
+		//e1.AddComponent<CollisionComponent>(e1.GetComponent<SpriteComponent>().m_currentFrameRectangle, 
+		//	e1.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
+		//	Vector2{0.f, 0.f}, 0.f, 0.77f);
+		e1.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle, 
+			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{0.f, 0.f}, 0.f, 0.77f);
 		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
 		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, false);
 		
-		
+		/*
 		Entity& e2 = s1.AddEntity();
 		
 		e2.AddComponent<TransformComponent>
@@ -164,7 +170,7 @@ int main()
 			Vector2{0.f, 0.f}, 0.f, 0.77f);
 		//e2.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
 		e2.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, false);
-			
+		*/	
 		
 		Entity& wall_l = s1.AddEntity();
 		wall_l.m_tags = { "blocking" };

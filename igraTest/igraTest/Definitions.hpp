@@ -507,6 +507,8 @@ public:
 	}
 	void Insert(int id, const T& element)
 	{
+		if (HasId(id)) return;
+		//
 		vector.emplace_back(element);
 		keys.emplace(std::make_pair(id, vector.size() - 1));
 	}
@@ -514,11 +516,15 @@ public:
 	template<typename ...Args>
 	void Emplace(int id, Args&& ...args)
 	{
+		if (HasId(id)) return;
+		//
 		vector.emplace_back(args...);
 		keys.emplace(std::make_pair(id, vector.size() - 1));
 	}
 	void Remove(int id)
 	{
+		if (!HasId(id)) return;
+
 		std::cout << "Bef" << std::endl;
 		for (auto& pair : keys)
 		{
@@ -625,7 +631,8 @@ using enable_if_t = typename std::enable_if<B, T>::type;
 //
 #include "Components.h"
 using component_var_t = std::variant
-<AnimationComponent, BehaviourComponent, CollisionComponent, InputComponent, PhysicsComponent, SpriteComponent, TransformComponent>;
+<AnimationComponent, BehaviourComponent, CollisionComponent, InputComponent, PhysicsComponent,
+SpriteComponent, SpriteComponentAdvanced, TransformComponent>;
 
 enum ComponentType
 {
@@ -635,6 +642,7 @@ enum ComponentType
 	INPUT,
 	PHYSICS,
 	SPRITE,
+	SPRITE_ADVANCED,
 	TRANSFORM,
 
 	END
@@ -648,6 +656,7 @@ std::unordered_map<std::type_index, ComponentType> componentIndexes
 	{typeid(InputComponent), INPUT},
 	{typeid(PhysicsComponent), PHYSICS},
 	{typeid(SpriteComponent), SPRITE},
+	{typeid(SpriteComponentAdvanced), SPRITE_ADVANCED},
 	{typeid(TransformComponent), TRANSFORM}
 };
 

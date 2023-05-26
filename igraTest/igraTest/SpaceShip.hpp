@@ -159,9 +159,9 @@ public:
 		Entity& projectile = entity.GetOwner().AddEntity();
 		
 		float offset = 0.f;
-		if (entity.HasComponent<SpriteComponent>())
+		if (entity.HasComponent<SpriteComponentAdvanced>())
 		{
-			SpriteComponent& sprite = entity.GetComponent<SpriteComponent>();
+			Sprite& sprite = entity.GetComponent<SpriteComponentAdvanced>().m_baseCopy;
 			offset = sprite.m_currentFrameRectangle.height *1.75f;
 		}
 
@@ -278,6 +278,32 @@ public:
 
 		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
 		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
+	}
+
+	void Animate(SpriteComponentAdvanced& sprites) override
+	{
+		for (auto& a : sprites.m_layeredSprites)
+		{
+			auto& sprite = a.second;
+			m_frameSpeed = abs(m_frameSpeed);
+			int currentFrameMin = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX : 0;
+			int currentFrameMax = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
+			m_frameCounter++;
+			if (m_frameCounter >= (GetFPS() / m_frameSpeed))
+			{
+				m_frameCounter = 0;
+				m_currentFrame++;
+
+				if (m_currentFrame >= currentFrameMax) m_currentFrame = currentFrameMin;
+			}
+
+			int currentFrameX = m_currentFrame % sprite.m_frameCountX,
+				currentFrameY = m_currentFrame / sprite.m_frameCountX;
+
+
+			sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
+			sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
+		}
 	}
 
 	void UpdateProperties() override

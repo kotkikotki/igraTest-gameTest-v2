@@ -160,6 +160,7 @@
     <ClInclude Include="Scripts.hpp" />
     <ClInclude Include="SpaceShip.hpp" />
     <ClInclude Include="SpriteComponent.hpp" />
+    <ClInclude Include="SpriteComponentAdvanced.hpp" />
     <ClInclude Include="System.hpp" />
     <ClInclude Include="Systems.h" />
     <ClInclude Include="TransformComponent.hpp" />

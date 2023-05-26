@@ -4,6 +4,7 @@
 #include "InputComponent.hpp"
 #include "PhysicsComponent.hpp"
 #include "SpriteComponent.hpp"
+#include "SpriteComponentAdvanced.hpp"
 #include "TransformComponent.hpp"
 
 #include "Scripts.hpp"
