@@ -98,7 +98,9 @@ public:
 		m_Properties.ChangeVariableByName("frameSpeed", (velocityScalar));
 		if (!(owner.HasComponent<AnimationComponent>())) return;
 		AnimationComponent& animation = owner.GetComponent<AnimationComponent>();
-		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", (m_Properties.GetVariableT<float>("frameSpeed")));
+
+		float value = (m_Properties.GetVariableT<float>("frameSpeed"));
+		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", value);
 		
 	}
 

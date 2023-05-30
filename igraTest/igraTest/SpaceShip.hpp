@@ -110,7 +110,8 @@ public:
 		if (!(owner.HasComponent<AnimationComponent>())) return;
 		AnimationComponent& animation = owner.GetComponent<AnimationComponent>();
 
-		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", (m_Properties.GetVariableT<float>("frameSpeed")));
+		float value = (m_Properties.GetVariableT<float>("frameSpeed"));
+		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", value);
 	}
 
 	std::function<void(Entity& entity)> MoveRight = [&](Entity& entity) ->void
@@ -201,11 +202,12 @@ public:
 
 		projectileTexture = LoadTexture("..\\..\\res\\assets\\used\\Main ship weapon - Projectile - Rocket.png");
 	}
-
+	/*
 	~SpaceShipScript()
 	{
 		UnloadTexture(projectileTexture);
 	}
+	*/
 	//
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override

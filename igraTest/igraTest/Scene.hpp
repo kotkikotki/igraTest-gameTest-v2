@@ -84,12 +84,35 @@ public:
 
 	~Scene()
 	{
+		std::unordered_set<int> unloadedTextures;
 		//texture_unload
 		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponent)]].GetVector())
 		{
-			SpriteComponent& sprite = std::get<SpriteComponent>(*comp);
+			Texture& texture = std::get<SpriteComponent>(*comp).m_texture;
 
-			UnloadTexture(sprite.m_texture);
+			if(unloadedTextures.find(texture.id) == unloadedTextures.end())
+			{
+				unloadedTextures.emplace(texture.id);
+				UnloadTexture(texture);
+			}
+		}
+		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponentAdvanced)]].GetVector())
+		{
+			SpriteComponentAdvanced& sprites = std::get<SpriteComponentAdvanced>(*comp);
+			for(auto &a: sprites.m_layeredSprites)
+			{
+				Texture& texture = a.second.second.m_texture;
+
+				if (unloadedTextures.find(texture.id) == unloadedTextures.end())
+				{
+					unloadedTextures.emplace(texture.id);
+					UnloadTexture(texture);
+				}
+			}
+		}
+		for (int i : unloadedTextures)
+		{
+			std::cout << i << std::endl;
 		}
 	}
 

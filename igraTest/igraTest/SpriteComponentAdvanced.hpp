@@ -60,7 +60,15 @@ public:
 		m_layeredSprites.emplace(std::make_pair(base.m_layer, std::make_pair(name,base)));
 
 	}
-
+	/*
+	~SpriteComponentAdvanced()
+	{
+		for (auto &a : m_layeredSprites)
+		{
+			UnloadTexture(a.second.second.m_texture);
+		}
+	}
+	*/
 	bool HasSprite(const std::string& name)
 	{
 
@@ -91,6 +99,7 @@ public:
 			if (name == spritePair.first)
 				return spritePair.second;
 		}
+		throw std::invalid_argument("Invalid sprite name.");
 	}
 	Sprite& GetSprite(const std::string& name, int layer)
 	{
@@ -100,6 +109,8 @@ public:
 			if (name == spritePair.first && a.first == layer)
 				return spritePair.second;
 		}
+		throw std::invalid_argument("Invalid sprite name or layer.");
+
 	}
 
 	void AddSprite(const Sprite& sprite, const std::string& name = "base", unsigned int layer = 0)

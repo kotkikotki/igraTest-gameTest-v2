@@ -12,10 +12,16 @@ public:
     //virtual ~Component() = default;
     //Component(const Component& r) = delete;
     Component() = default;
-    
+    virtual ~Component() = default;
+
 
 protected:
     
+    Component(const Component& r) = default;
+    Component(Component&& r) = default;
+    Component& operator=(const Component& r) = default;
+    Component& operator=(Component&& r) = default;
+
     //Component() = default;
     
 };

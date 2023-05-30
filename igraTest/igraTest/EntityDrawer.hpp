@@ -7,10 +7,12 @@
 #include <vector>
 #include <map>
 #include "Definitions.hpp"
+#include <unordered_set>
 
 class EntityDrawer : System<EntityDrawer>
 {
 
+	//inline static std::unordered_set<unsigned int> unloadedTextures;
 
 public:
 
@@ -18,6 +20,12 @@ public:
 
 	using System :: System;
 
+	/*
+	~EntityDrawer()
+	{
+		UnloadTextures();
+	}
+	*/
 	void On_Update_Draw()
 	{
 
@@ -99,7 +107,42 @@ public:
 			
 		}
 	}
-	
+	/*
+	void UnloadTextures()
+	{
+		for (int i : m_scene->GetIds())
+		{
+			if (m_scene->HasComponentById<SpriteComponent>(i))
+			{
+				Texture& texture = m_scene->GetComponentById<SpriteComponent>(i).m_texture;
+				if (unloadedTextures.find(texture.id) == unloadedTextures.end())
+				{
+					unloadedTextures.emplace(texture.id);
+					UnloadTexture(texture);
+
+				}
+			}
+			if (m_scene->HasComponentById<SpriteComponentAdvanced>(i))
+			{
+				SpriteComponentAdvanced& sprites = m_scene->GetComponentById<SpriteComponentAdvanced>(i);
+				for(auto &a: sprites.m_layeredSprites)
+				{
+					Texture& texture = a.second.second.m_texture;
+					if(unloadedTextures.find(texture.id)==unloadedTextures.end())
+					{
+						unloadedTextures.emplace(texture.id);
+						UnloadTexture(texture);
+						
+					}
+				}
+			}
+		}
+		for (int i : unloadedTextures)
+		{
+			std::cout << i << std::endl;
+		}
+	}
+	*/
 };
 
 

@@ -30,6 +30,7 @@ public:
 
 	}
 
+
 	virtual void UpdateProperties() {}
 
 	virtual void AddProperties(const std::initializer_list < std::pair<std::string, std::string>>& properties, const std::initializer_list < std::pair<std::string, std::shared_ptr<std::any>>>& linkedProperties)
@@ -44,6 +45,12 @@ public:
 		}
 
 	}
+
+protected:
+	Script(const Script& r) = default;
+	Script(Script&& r) = default;
+	Script& operator=(const Script& r) = default;
+	Script& operator=(Script&& r) = default;
 };
 
 //Behaviour
