@@ -18,6 +18,10 @@ class Scene
 
 private:
 
+	//
+	static inline std::unordered_set<int> unloadedTextures;
+	//
+
 	SparseArray<std::shared_ptr<Entity>> m_entities;
 	std::vector<SparseArray<std::shared_ptr<component_var_t>>> m_components;
 	std::priority_queue<int, std::vector<int>, std::greater<int>> m_free_Ids;
@@ -25,6 +29,10 @@ private:
 
 	//
 	std::queue<int> m_removeQueue;
+	//
+	
+
+
 
 protected:
 
@@ -84,7 +92,7 @@ public:
 
 	~Scene()
 	{
-		std::unordered_set<int> unloadedTextures;
+		//std::unordered_set<int> unloadedTextures;
 		//texture_unload
 		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponent)]].GetVector())
 		{
