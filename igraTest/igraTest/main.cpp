@@ -141,15 +141,7 @@ int main()
 	mappings1->m_Map.AddAction("move_left", KEY_A, Down);
 	mappings1->m_Map.AddAction("shoot", MOUSE_BUTTON_LEFT, Pressed);
 
-	/*
-	std::shared_ptr<InputMappings> mappings2 = std::make_shared<InputMappings>(InputMappings{});
-	mappings2->m_Map.AddAction("move_right", KEY_RIGHT, Down);
-	mappings2->m_Map.AddAction("move_left", KEY_LEFT, Down);
-	mappings2->m_Map.AddAction("move_up", KEY_UP, Down);
-	mappings2->m_Map.AddAction("move_down", KEY_DOWN, Down);
-	mappings2->m_Map.AddAction("rotate_right", KEY_KP_6, Down);
-	mappings2->m_Map.AddAction("rotate_left", KEY_KP_4, Down);
-	*/
+	
 	Scene s1;
 	
 	

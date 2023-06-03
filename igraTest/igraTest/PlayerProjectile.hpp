@@ -145,26 +145,7 @@ public:
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
-	/*
-	void Animate(SpriteComponent& sprite) override
-	{
-		m_frameCounter++;
-		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
-		{
-			m_frameCounter = 0;
-			m_currentFrame++;
-
-			if (m_currentFrame >= (sprite.m_frameCountX * sprite.m_frameCountY)) m_currentFrame = 0;
-		}
-
-		int currentFrameX = m_currentFrame % sprite.m_frameCountX,
-			currentFrameY = m_currentFrame / sprite.m_frameCountX;
-
-
-		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
-		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
-	}
-	*/
+	
 	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("base");

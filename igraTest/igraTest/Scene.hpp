@@ -94,18 +94,7 @@ public:
 	{
 		//std::unordered_set<int> unloadedTextures;
 		//texture_unload
-		/*
-		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponent)]].GetVector())
-		{
-			Texture& texture = std::get<SpriteComponent>(*comp).m_texture;
-
-			if(unloadedTextures.find(texture.id) == unloadedTextures.end())
-			{
-				unloadedTextures.emplace(texture.id);
-				UnloadTexture(texture);
-			}
-		}
-		*/
+		
 		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponent)]].GetVector())
 		{
 			SpriteComponent& sprites = std::get<SpriteComponent>(*comp);
