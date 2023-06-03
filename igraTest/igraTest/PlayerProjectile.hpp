@@ -97,7 +97,6 @@ public:
 
 	PlayerProjectileScript(const Texture2D& texture) : BehaviourScript()
 	{
-		//m_tags = { "projectile" };
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));

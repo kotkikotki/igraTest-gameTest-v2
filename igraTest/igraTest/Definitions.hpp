@@ -654,7 +654,6 @@ std::unordered_map<std::type_index, ComponentType> componentIndexes
 	{typeid(CollisionComponent), COLLISION},
 	{typeid(InputComponent), INPUT},
 	{typeid(PhysicsComponent), PHYSICS},
-	
 	{typeid(SpriteComponent), SPRITE},
 	{typeid(TransformComponent), TRANSFORM}
 };

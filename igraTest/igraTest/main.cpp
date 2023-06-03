@@ -56,7 +56,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
-		//enemy.m_tags = { "enemy" };
+		
 	}
 	
 	
@@ -164,14 +164,14 @@ int main()
 		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, false);
 		
 		//
-		//e1.m_tags = { "player" };
+		
 		
 		Entity& wall_l = s1.AddEntity({ "blocking" });
-		//wall_l.m_tags = { "blocking" };
+
 		wall_l.AddComponent<TransformComponent>(Vector2{ -1.f, (float)GetScreenHeight()/2.f}, 0.f, false, false, 1.f);
 		wall_l.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
 		Entity& wall_r = s1.AddEntity({ "blocking" });
-		//wall_r.m_tags = { "blocking" };
+
 		wall_r.AddComponent<TransformComponent>(Vector2{ (float)GetScreenWidth() + 2.f, (float)GetScreenHeight() / 2.f}, 0.f, false, false, 1.f);
 		wall_r.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
 		
@@ -199,7 +199,7 @@ int main()
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
-		//enemy.m_tags = { "enemy" };
+
 	}
 	
 	EntityDrawer entityDrawer(s1);

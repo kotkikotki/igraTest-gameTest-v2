@@ -185,12 +185,12 @@ public:
 		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{0.f, 0.f}, false);
 
 		//
-		//projectile.m_tags = { "projectile" };
+
 	};
 
 	SpaceShipScript() : BehaviourScript()
 	{
-		//m_tags = { "player" };
+
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
