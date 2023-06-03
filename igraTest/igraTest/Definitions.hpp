@@ -484,7 +484,7 @@ public:
 	template<typename T>
 	const T& GetVariable(const std::string& name)
 	{
-		return std::any_cast<T>(pairs[name]);
+		return std::any_cast<T>(*pairs[name]);
 	}
 };
 
@@ -525,11 +525,13 @@ public:
 	{
 		if (!HasId(id)) return;
 
+		/*
 		std::cout << "Bef" << std::endl;
 		for (auto& pair : keys)
 		{
 			std::cout << pair.first << " " << pair.second << std::endl;
 		}
+		*/
 		vector.erase(vector.begin()+keys[id]);
 
 		for (auto& pair : keys)
@@ -539,12 +541,14 @@ public:
 		}
 
 		keys.erase(id);
+		/*
 		std::cout << "Aft" << std::endl;
 
 		for (auto& pair : keys)
 		{
 			std::cout<<pair.first<<" "<<pair.second<< std::endl;
 		}
+		*/
 	}
 	T& operator[](int id)
 	{

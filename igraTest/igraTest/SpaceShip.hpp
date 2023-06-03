@@ -12,14 +12,18 @@ class SpaceShipScript : public BehaviourScript
 {
 
 	float velocityScalar = 5.f;
+	//
+	float velocityScalarAcceleration = 0.07f;
+	float velocityScalarMax = 15.f;
 
 	float accelerationX = 2.f;
 	float brakeX = 0.1f;
 
 	Vector2 engineVelocity = { 0.f, 0.f };
 
-	Vector2 maxVelocity = { -7.f, -15.f };
-	Vector2 minVelocity = { 7.f, 4.f };
+	//Vector2 maxVelocity = { -7.f, -15.f };
+	//Vector2 minVelocity = { 7.f, 4.f };
+	float maxX = 7.f;
 
 	Texture2D projectileTexture = {0};
 
@@ -83,11 +87,11 @@ public:
 			float newX = physics.m_velocityVector.x;
 			if (newX >= 0.f)
 			{
-				newX = min(newX, minVelocity.x);
+				newX = min(newX, maxX);
 			}
 			else
 			{
-				newX = max(newX, maxVelocity.x);
+				newX = max(newX, -maxX);
 			}
 	
 	
@@ -148,14 +152,21 @@ public:
 
 		engineVelocity = { v0.x + addition.x, v0.y + addition.y };
 	};
+
+	std::function<void(Entity& entity)> MoveUp = [&](Entity& entity) ->void
+	{
+		velocityScalar = min(velocityScalar + velocityScalarAcceleration, velocityScalarMax);
+	};
+	std::function<void(Entity& entity)> MoveDown = [&](Entity& entity) ->void
+	{
+		velocityScalar = max(velocityScalar - velocityScalarAcceleration, 0.f);
+	};
 	
 	std::function<void(Entity& entity)> Shoot = [&](Entity& entity) ->void
 	{
 
 		if (!(entity.HasComponent<TransformComponent>())) return;
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
-
-		std::cout << "Shoot" << std::endl;
 
 		Entity& projectile = entity.GetOwner().AddEntity({ "projectile" });
 		
@@ -172,7 +183,7 @@ public:
 					transform.m_position, transform.m_rotation),
 				transform.m_rotation, false, false, 1.f);
 		projectile.AddComponent<SpriteComponent>
-			(Sprite{ projectileTexture, 3, 1, 3.f });
+			(Sprite{ projectileTexture, {3}, 3.f });
 		projectile.AddComponent<AnimationComponent>
 			(std::make_shared<PlayerProjectileAnimationScript>());
 		//.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", 5.f);
@@ -181,7 +192,7 @@ public:
 			projectile.GetComponent<SpriteComponent>().GetSprite("base").m_textureScale, COLLISION_CIRCLE,
 			Vector2{ -1.f, 5.f }, 0.f, 0.42f);
 		projectile.AddComponent<BehaviourComponent>
-			(std::make_shared<PlayerProjectileScript>(projectileTexture));
+			(std::make_shared<PlayerProjectileScript>(projectileTexture, entity));
 		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{0.f, 0.f}, false);
 
 		//
@@ -194,13 +205,18 @@ public:
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
+		
+		m_LinkedProperties.AddVariable("score", std::make_shared<std::any>((int)0));
 
 		//emplace functions
 		m_actions.emplace("move_left", MoveLeft);
 		m_actions.emplace("move_right", MoveRight);
+		m_actions.emplace("move_up", MoveUp);
+		m_actions.emplace("move_down", MoveDown);
 		m_actions.emplace("shoot", Shoot);
 
-		projectileTexture = LoadTexture("..\\..\\res\\assets\\used\\Main ship weapon - Projectile - Rocket.png");
+		projectileTexture = LoadTexture
+		("..\\..\\res\\assets\\used\\player-ship\\projectile\\Main ship weapon - Projectile - Rocket.png");
 	}
 	
 	//
@@ -259,6 +275,7 @@ public:
 	
 	void Animate(SpriteComponent& sprites) override
 	{
+		/*
 		for (auto& a : sprites.m_layeredSprites)
 		{
 			auto& sprite = a.second.second;
@@ -281,6 +298,29 @@ public:
 			sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
 			sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
 		}
+		*/
+		Sprite& sprite = sprites.GetSprite("engineEffects");
+		
+		int frameCountY = sprite.m_frameCount.size();
+		int frameCountX = sprite.m_frameCount[frameCountY-1];
+		m_frameSpeed = abs(m_frameSpeed);
+		int currentFrameMin = (m_frameSpeed >= 7.f) ? frameCountX : 0;
+		int currentFrameMax = (m_frameSpeed >= 7.f) ? frameCountX * frameCountY : frameCountX;
+		m_frameCounter++;
+		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
+		{
+			m_frameCounter = 0;
+			m_currentFrame++;
+
+			if (m_currentFrame >= currentFrameMax) m_currentFrame = currentFrameMin;
+		}
+
+		int currentFrameX = m_currentFrame % frameCountX,
+			currentFrameY = m_currentFrame / frameCountX;
+
+
+		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(frameCountX);
+		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(frameCountY);
 	}
 
 	void UpdateProperties() override
@@ -308,6 +348,12 @@ public:
 
 		if (mappings->m_Map.GetActionState("move_left"))
 			behaviour.GetScript()->On_Action(entity, "move_left");
+
+		if (mappings->m_Map.GetActionState("move_up"))
+			behaviour.GetScript()->On_Action(entity, "move_up");
+
+		if (mappings->m_Map.GetActionState("move_down"))
+			behaviour.GetScript()->On_Action(entity, "move_down");
 
 		if (mappings->m_Map.GetActionState("shoot"))
 			behaviour.GetScript()->On_Action(entity, "shoot");

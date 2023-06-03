@@ -161,7 +161,6 @@
     <ClInclude Include="Scripts.hpp" />
     <ClInclude Include="SpaceShip.hpp" />
     <ClInclude Include="SpriteComponent.hpp" />
-    <ClInclude Include="SpriteComponentAdvanced.hpp" />
     <ClInclude Include="System.hpp" />
     <ClInclude Include="Systems.h" />
     <ClInclude Include="TransformComponent.hpp" />
@@ -172,13 +171,14 @@
     <ClInclude Include="UsedScripts.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\res\assets\used\Blue_Nebula_02-1024x1024.png" />
-    <Image Include="..\..\res\assets\used\Blue_Nebula_07-1024x1024.png" />
-    <Image Include="..\..\res\assets\used\edited\base.png" />
-    <Image Include="..\..\res\assets\used\Kla%27ed - Battlecruiser - Base.png" />
-    <Image Include="..\..\res\assets\used\Kla%27ed - Battlecruiser - Engine12.png" />
-    <Image Include="..\..\res\assets\used\Main Ship - Engines - Base Engine - Idle.png" />
-    <Image Include="..\..\res\assets\used\Main ship weapon - Projectile - Rocket.png" />
+    <Image Include="..\..\res\assets\used\background\Blue_Nebula_02-1024x1024.png" />
+    <Image Include="..\..\res\assets\used\background\Blue_Nebula_07-1024x1024.png" />
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Base.png" />
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Engine12.png" />
+    <Image Include="..\..\res\assets\used\player-ship\base\Main Ship - Base - Full health.png" />
+    <Image Include="..\..\res\assets\used\player-ship\engine effects\Main Ship - Engines - Base Engine - Spritesheet.png" />
+    <Image Include="..\..\res\assets\used\player-ship\engine\Main Ship - Engines - Base Engine.png" />
+    <Image Include="..\..\res\assets\used\player-ship\projectile\Main ship weapon - Projectile - Rocket.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="script.txt" />

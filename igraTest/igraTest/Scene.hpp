@@ -45,7 +45,7 @@ protected:
 		m_components[component_id].Emplace(id, std::move(std::make_shared<component_var_t>(Create<T>(args...))));
 		//m_components[component_id].Emplace(id, args...));
 
-		std::cout << "added comp" << typeid(T).name();
+		//std::cout << "added comp" << typeid(T).name();
 
 		return std::get<T>(*m_components[component_id][id]);
 	}
@@ -109,10 +109,12 @@ public:
 				}
 			}
 		}
+		/*
 		for (int i : unloadedTextures)
 		{
 			std::cout << i << std::endl;
 		}
+		*/
 	}
 
 	void On_Update()
@@ -144,7 +146,7 @@ public:
 		m_used_Ids.emplace(id);
 
 		m_entities[id]->m_tags = tags;
-		std::cout << std::endl << "Added" << id << std::endl;
+		//std::cout << std::endl << "Added" << id << std::endl;
 		return *m_entities[id];
 
 	}
@@ -188,7 +190,7 @@ public:
 		m_free_Ids.push(id);
 		m_used_Ids.erase(id);
 
-		std::cout <<std::endl<< "Removed" << id << std::endl;
+		//std::cout <<std::endl<< "Removed" << id << std::endl;
 	}
 	//
 	void QueueForRemove(int id)

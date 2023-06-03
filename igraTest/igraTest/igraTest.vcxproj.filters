@@ -22,12 +22,6 @@
     <Filter Include="Resource Files\space assets\space ship">
       <UniqueIdentifier>{061068cd-de15-47c9-b88e-7279bffb48d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\space assets\space ship\idle">
-      <UniqueIdentifier>{025409fd-8607-436e-8495-d10a6d0c8d8a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\space assets\space ship\powering">
-      <UniqueIdentifier>{ffce6515-74cd-4089-b414-61d5e7af0765}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\dep">
       <UniqueIdentifier>{6535dfa6-85d3-4349-9dac-9e7244aaed19}</UniqueIdentifier>
     </Filter>
@@ -57,6 +51,15 @@
     </Filter>
     <Filter Include="Resource Files\space assets\enemy1">
       <UniqueIdentifier>{19d6e185-9e22-4deb-8d59-1ab8bd7fdf6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\space assets\space ship\base">
+      <UniqueIdentifier>{169f9b91-a4bc-4d75-b8d6-13206853d5c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\space assets\space ship\engine effects">
+      <UniqueIdentifier>{b9475971-d931-4f3f-b60c-2bb9a50ca8ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\space assets\space ship\engine">
+      <UniqueIdentifier>{c453ca58-058c-48db-aea3-66a2d9691b5b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -172,34 +175,34 @@
     <ClInclude Include="PlayerProjectile.hpp">
       <Filter>Entities\ProjectilePlayer</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteComponentAdvanced.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EnemyTest.hpp">
       <Filter>Entities\Enemy1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\res\assets\used\Blue_Nebula_07-1024x1024.png">
+    <Image Include="..\..\res\assets\used\background\Blue_Nebula_02-1024x1024.png">
       <Filter>Resource Files\space assets\background</Filter>
     </Image>
-    <Image Include="..\..\res\assets\used\Main Ship - Engines - Base Engine - Idle.png">
-      <Filter>Resource Files\space assets\space ship\idle</Filter>
-    </Image>
-    <Image Include="..\..\res\assets\used\Blue_Nebula_02-1024x1024.png">
+    <Image Include="..\..\res\assets\used\background\Blue_Nebula_07-1024x1024.png">
       <Filter>Resource Files\space assets\background</Filter>
     </Image>
-    <Image Include="..\..\res\assets\used\edited\base.png">
-      <Filter>Resource Files\space assets\space ship</Filter>
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Base.png">
+      <Filter>Resource Files\space assets\enemy1</Filter>
     </Image>
-    <Image Include="..\..\res\assets\used\Main ship weapon - Projectile - Rocket.png">
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Engine12.png">
+      <Filter>Resource Files\space assets\enemy1</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\player-ship\projectile\Main ship weapon - Projectile - Rocket.png">
       <Filter>Resource Files\space assets\space ship\projectile</Filter>
     </Image>
-    <Image Include="..\..\res\assets\used\Kla%27ed - Battlecruiser - Base.png">
-      <Filter>Resource Files\space assets\enemy1</Filter>
+    <Image Include="..\..\res\assets\used\player-ship\base\Main Ship - Base - Full health.png">
+      <Filter>Resource Files\space assets\space ship\base</Filter>
     </Image>
-    <Image Include="..\..\res\assets\used\Kla%27ed - Battlecruiser - Engine12.png">
-      <Filter>Resource Files\space assets\enemy1</Filter>
+    <Image Include="..\..\res\assets\used\player-ship\engine effects\Main Ship - Engines - Base Engine - Spritesheet.png">
+      <Filter>Resource Files\space assets\space ship\engine effects</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\player-ship\engine\Main Ship - Engines - Base Engine.png">
+      <Filter>Resource Files\space assets\space ship\engine</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

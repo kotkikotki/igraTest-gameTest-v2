@@ -15,11 +15,16 @@ class PlayerProjectileScript : public BehaviourScript
 	float acceleration = 1.f;
 
 	Vector2 engineVelocity = { 0.f, 0.f };
-
+	/*
 	Vector2 maxVelocity = { -7.f, -7.f };
 	Vector2 minVelocity = { 7.f, 7.f };
+	*/
+	Vector2 maxVelocity = { 0.f, 7.f };
+	
 
 	Texture2D projectileTexture = { 0 };
+	
+	Entity* player;
 
 public:
 
@@ -63,26 +68,30 @@ public:
 		physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
 			physics.m_velocityVector.y + engineVelocity.y };
 
+		
+		Vector2 maxVelocityRotated = GetRotatedPoint(maxVelocity, { 0.f, 0.f }, -transform.m_rotation);
 
 		float newX = physics.m_velocityVector.x;
 		if (newX >= 0.f)
 		{
-			newX = min(newX, minVelocity.x);
+			newX = min(newX, maxVelocityRotated.x);
 		}
 		else
 		{
-			newX = max(newX, maxVelocity.x);
+			newX = max(newX, maxVelocityRotated.x);
 		}
 		float newY = physics.m_velocityVector.y;
 		if (newY >= 0.f)
 		{
-			newY = min(newY, minVelocity.y);
+			newY = min(newY, -maxVelocityRotated.y);
 		}
 		else
 		{
-			newY = max(newY, maxVelocity.y);
+			newY = max(newY, -maxVelocityRotated.y);
 		}
+		
 		physics.m_velocityVector = { newX, newY };
+		
 
 		transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,
 			transform.m_position.y + physics.m_velocityVector.y};
@@ -95,14 +104,14 @@ public:
 		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", value);
 	}
 
-	PlayerProjectileScript(const Texture2D& texture) : BehaviourScript()
+	PlayerProjectileScript(const Texture2D& texture, Entity& owner) : BehaviourScript()
 	{
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
 
 		//emplace functions
-
+		player = &owner;
 		projectileTexture = texture;
 	}
 
@@ -111,8 +120,17 @@ public:
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		if (!hit.HasTag("player"))
+		if (hit.HasTag("enemy"))
+		{
+			if (player != nullptr)
+			{
+				auto& script = player->GetComponent<BehaviourComponent>().GetScript();
+				int value = script->m_LinkedProperties.GetVariable<int>("score") + 1;
+				
+				script->m_LinkedProperties.ChangeVariableByName<int>("score", value);
+			}
 			owner.Destroy();
+		}
 	}
 	void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
@@ -148,26 +166,27 @@ public:
 	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("base");
+		auto frameCountX = sprite.m_framesOnRow;
+		auto frameCountY = sprite.m_frameCount.size();
 		m_frameCounter++;
 		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
 		{
 			m_frameCounter = 0;
 			m_currentFrame++;
 
-			if (m_currentFrame >= (sprite.m_frameCountX * sprite.m_frameCountY)) m_currentFrame = 0;
+			if (m_currentFrame >= (frameCountX * frameCountY)) m_currentFrame = 0;
 		}
 
-		int currentFrameX = m_currentFrame % sprite.m_frameCountX,
-			currentFrameY = m_currentFrame / sprite.m_frameCountX;
+		int currentFrameX = m_currentFrame % frameCountX,
+			currentFrameY = m_currentFrame / frameCountX;
 
 
-		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
-		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
+		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(frameCountX);
+		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(frameCountY);
 	}
 	void UpdateProperties() override
 	{
 		m_frameSpeed = m_Properties.GetVariableT<float>("frameSpeed");
-		//sstd::cout << m_frameSpeed << std::endl;
 	}
 
 };

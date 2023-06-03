@@ -106,7 +106,6 @@ public:
 
 	EnemyTestScript(const Texture2D& texture) : BehaviourScript()
 	{
-		std::cout << std::endl << "Wodafjd";
 		/*
 		tags = { "projectile" };
 
@@ -165,21 +164,23 @@ public:
 	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("engine");
+		auto frameCountX = sprite.m_framesOnRow;
+		auto frameCountY = sprite.m_frameCount.size();
 		m_frameCounter++;
 		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
 		{
 			m_frameCounter = 0;
 			m_currentFrame++;
 
-			if (m_currentFrame >= (sprite.m_frameCountX * sprite.m_frameCountY)) m_currentFrame = 0;
+			if (m_currentFrame >= (frameCountX * frameCountY)) m_currentFrame = 0;
 		}
 
-		int currentFrameX = m_currentFrame % sprite.m_frameCountX,
-			currentFrameY = m_currentFrame / sprite.m_frameCountX;
+		int currentFrameX = m_currentFrame % frameCountX,
+			currentFrameY = m_currentFrame / frameCountX;
 
 
-		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
-		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
+		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(frameCountX);
+		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(frameCountY);
 	}
 
 	void UpdateProperties() override
