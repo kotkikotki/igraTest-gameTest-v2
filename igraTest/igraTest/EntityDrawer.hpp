@@ -33,18 +33,10 @@ public:
 
 		for (int i : m_scene->GetIds())
 		{
-			if (!((m_scene->HasComponentById<SpriteComponent>(i)||m_scene->HasComponentById<SpriteComponentAdvanced>(i))
+			if (!((m_scene->HasComponentById<SpriteComponentAdvanced>(i))
 				&& m_scene->HasComponentById<TransformComponent>(i))) continue;
 			
-			int layer;
-			if (m_scene->HasComponentById<SpriteComponent>(i))
-			{
-				layer = m_scene->GetComponentById<SpriteComponent>(i).m_layer;
-			}
-			if (m_scene->HasComponentById<SpriteComponentAdvanced>(i))
-			{
-				layer = m_scene->GetComponentById<SpriteComponentAdvanced>(i).m_layer;
-			}
+			int layer = m_scene->GetComponentById<SpriteComponentAdvanced>(i).m_layer;
 			//TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 			
 			layeredIds.emplace(std::make_pair(layer, i));
@@ -81,28 +73,16 @@ public:
 			int i = a.second;
 
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
-			if (m_scene->HasComponentById<SpriteComponent>(i))
+			SpriteComponentAdvanced& sprites = m_scene->GetComponentById<SpriteComponentAdvanced>(i);
+			for (auto& a : sprites.m_layeredSprites)
 			{
-				SpriteComponent& sprite = m_scene->GetComponentById<SpriteComponent>(i);
-				
-
+				auto& sprite = a.second.second;
 				Rectangle dest = { transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale };
 				Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
 
 				DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle, dest, origin, transform.m_rotation, WHITE);
 			}
-			if (m_scene->HasComponentById<SpriteComponentAdvanced>(i))
-			{
-				SpriteComponentAdvanced& sprites = m_scene->GetComponentById<SpriteComponentAdvanced>(i);
-				for (auto& a : sprites.m_layeredSprites)
-				{
-					auto& sprite = a.second.second;
-					Rectangle dest = { transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale };
-					Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
-
-					DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle, dest, origin, transform.m_rotation, WHITE);
-				}
-			}
+			
 			//DrawCircle(transform.m_position.x, transform.m_position.y, 70.f, BLUE);
 			
 		}

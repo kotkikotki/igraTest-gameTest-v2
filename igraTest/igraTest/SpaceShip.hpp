@@ -162,7 +162,7 @@ public:
 		float offset = 0.f;
 		if (entity.HasComponent<SpriteComponentAdvanced>())
 		{
-			Sprite& sprite = entity.GetComponent<SpriteComponentAdvanced>().m_baseCopy;
+			Sprite& sprite = entity.GetComponent<SpriteComponentAdvanced>().GetSprite("base");
 			offset = sprite.m_currentFrameRectangle.height *1.75f;
 		}
 
@@ -171,14 +171,14 @@ public:
 				GetRotatedPoint(Vector2{ transform.m_position.x, transform.m_position.y - offset },
 					transform.m_position, transform.m_rotation),
 				transform.m_rotation, false, false, 1.f);
-		projectile.AddComponent<SpriteComponent>
-			(projectileTexture, 3, 1, 3.f);
+		projectile.AddComponent<SpriteComponentAdvanced>
+			(Sprite{ projectileTexture, 3, 1, 3.f });
 		projectile.AddComponent<AnimationComponent>
 			(std::make_shared<PlayerProjectileAnimationScript>());
 		//.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", 5.f);
 
-		projectile.AddComponent<CollisionComponent>(projectile.GetComponent<SpriteComponent>().m_currentFrameRectangle,
-			projectile.GetComponent<SpriteComponent>().m_textureScale, COLLISION_CIRCLE,
+		projectile.AddComponent<CollisionComponent>(projectile.GetComponent<SpriteComponentAdvanced>().GetSprite("base").m_currentFrameRectangle,
+			projectile.GetComponent<SpriteComponentAdvanced>().GetSprite("base").m_textureScale, COLLISION_CIRCLE,
 			Vector2{ -1.f, 5.f }, 0.f, 0.42f);
 		projectile.AddComponent<BehaviourComponent>
 			(std::make_shared<PlayerProjectileScript>(projectileTexture));
@@ -261,7 +261,7 @@ public:
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
-
+	/*
 	void Animate(SpriteComponent& sprite) override
 	{
 
@@ -284,7 +284,7 @@ public:
 		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
 		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
 	}
-
+	*/
 	void Animate(SpriteComponentAdvanced& sprites) override
 	{
 		for (auto& a : sprites.m_layeredSprites)

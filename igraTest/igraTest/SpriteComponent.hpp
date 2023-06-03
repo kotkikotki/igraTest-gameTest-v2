@@ -1,4 +1,4 @@
-#ifndef SPRITE_COMPONENT_HPP
+/*#ifndef SPRITE_COMPONENT_HPP
 
 #define SPRITE_COMPONENT_HPP
 
@@ -44,10 +44,11 @@ public:
 	{
 		UnloadTexture(m_texture);
 	}
-	*/
+	
 };
 
 
 
 #endif // !SPRITE_COMPONENT_HPP
 
+*/

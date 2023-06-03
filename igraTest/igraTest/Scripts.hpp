@@ -106,7 +106,7 @@ public:
 
 	using Script::Script;
 
-	virtual void Animate(SpriteComponent& sprite) {}
+	//virtual void Animate(SpriteComponent& sprite) {}
 	virtual void Animate(SpriteComponentAdvanced& sprites) {}
 };
 

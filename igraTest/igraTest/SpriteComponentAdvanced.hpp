@@ -41,7 +41,6 @@ class SpriteComponentAdvanced : public Component
 public:
 	
 	std::multimap<int, std::pair<std::string, Sprite>> m_layeredSprites;
-	Sprite m_baseCopy;
 
 	unsigned int m_layer = 0; //0 -> min
 
@@ -49,7 +48,6 @@ public:
 	using Component::Component;
 
 	SpriteComponentAdvanced(const Sprite& base, const std::string& name = "base", unsigned int layer = 0) :
-		m_baseCopy(base),
 		m_layer(layer)
 	{
 		/*
@@ -99,6 +97,9 @@ public:
 			if (name == spritePair.first)
 				return spritePair.second;
 		}
+		//
+		if (name == "base") return m_layeredSprites.begin()->second.second;
+		//
 		throw std::invalid_argument("Invalid sprite name.");
 	}
 	Sprite& GetSprite(const std::string& name, int layer)
@@ -109,6 +110,9 @@ public:
 			if (name == spritePair.first && a.first == layer)
 				return spritePair.second;
 		}
+		//
+		if (name == "base") return m_layeredSprites.begin()->second.second;
+		//
 		throw std::invalid_argument("Invalid sprite name or layer.");
 
 	}
