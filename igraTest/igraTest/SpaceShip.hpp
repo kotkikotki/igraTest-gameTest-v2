@@ -157,7 +157,7 @@ public:
 
 		std::cout << "Shoot" << std::endl;
 
-		Entity& projectile = entity.GetOwner().AddEntity();
+		Entity& projectile = entity.GetOwner().AddEntity({ "projectile" });
 		
 		float offset = 0.f;
 		if (entity.HasComponent<SpriteComponent>())
@@ -185,7 +185,7 @@ public:
 		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{0.f, 0.f}, false);
 
 		//
-		projectile.m_tags = { "projectile" };
+		//projectile.m_tags = { "projectile" };
 	};
 
 	SpaceShipScript() : BehaviourScript()

@@ -642,7 +642,6 @@ enum ComponentType
 	INPUT,
 	PHYSICS,
 	SPRITE,
-	SPRITE_ADVANCED,
 	TRANSFORM,
 
 	END
