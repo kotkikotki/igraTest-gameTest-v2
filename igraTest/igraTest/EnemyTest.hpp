@@ -126,7 +126,19 @@ public:
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
 		if (hit.HasTag("projectile"))
+		{
+			BehaviourScript& base = *hit.GetComponent<BehaviourComponent>().GetScript();
+			PlayerProjectileScript& scriptProjectile = static_cast<PlayerProjectileScript&>(base);
+			Entity& player = scriptProjectile.GetPlayer();
+
+			auto& script = player.GetComponent<BehaviourComponent>().GetScript();
+
+			int value = script->m_LinkedProperties.GetVariable<int>("score") + 1;
+
+			script->m_LinkedProperties.ChangeVariableByName<int>("score", value);
 			owner.Destroy();
+			
+		}
 		
 
 	}

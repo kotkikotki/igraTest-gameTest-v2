@@ -69,6 +69,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 
 	//test
 	scene.On_Update();
+
 	behaviourSystem.On_Update();
 	inputSystem.On_Update();
 	physicsSystem.On_Update();

@@ -28,7 +28,7 @@ private:
 	std::set<int> m_used_Ids;
 
 	//
-	std::queue<int> m_removeQueue;
+	std::unordered_set<int> m_removeSet;
 	//
 	
 
@@ -119,12 +119,11 @@ public:
 
 	void On_Update()
 	{
-		while (!m_removeQueue.empty())
+		while(!m_removeSet.empty())
 		{
-			int id = m_removeQueue.front();
-			m_removeQueue.pop();
-
+			int id = *m_removeSet.begin();
 			RemoveEntity(id);
+			m_removeSet.erase(id);
 		}
 	}
 
@@ -177,7 +176,7 @@ public:
 	void RemoveEntity(int id)
 	{
 
-		if (!HasEntityById(id))throw std::invalid_argument("Entity does not exist.");
+		if (!HasEntityById(id)) { return; throw std::invalid_argument("Entity does not exist.");  }
 		//m_entities.erase(m_entities.begin() + id);
 		
 		for (auto& pair : componentIndexes)
@@ -195,7 +194,8 @@ public:
 	//
 	void QueueForRemove(int id)
 	{
-		m_removeQueue.push(id);
+		if(m_removeSet.find(id)==m_removeSet.end())
+			m_removeSet.emplace(id);
 	}
 
 	const std::vector<std::shared_ptr<Entity>>& GetVector()
@@ -217,7 +217,8 @@ public:
 	template<typename T>
 	bool HasComponentById(int id)
 	{
-		return !(GetComponentPtr<T>(id)==nullptr);
+		//return !(GetComponentPtr<T>(id)==nullptr);
+		return !(GetComponentPtr<T>(id) == nullptr) && m_removeSet.find(id)==m_removeSet.end();
 	}
 
 	//test

@@ -105,6 +105,8 @@ public:
 	
 		SparseArray<SparseArray<std::pair<CollisionState, CollisionInfo>>> newMatrix;
 
+		
+
 		for (int i : m_scene->GetIds())
 		{
 			newMatrix.Emplace(i);
@@ -156,11 +158,17 @@ public:
 					*std::static_pointer_cast<CollisionEvents, BehaviourScript>
 					(e.GetComponent<BehaviourComponent>().GetScript());
 				if (currentState == ENTERING)
+				{
 					collisionEvents.On_Enter(e, m_scene->GetEntity(j), info);
+				}
 				if (currentState == STAYING)
+				{
 					collisionEvents.On_Stay(e, m_scene->GetEntity(j), info);
+				}
 				if (currentState == NOT_COLLIDING && previousState != NOT_COLLIDING)
-					collisionEvents.On_Exit(e, m_scene->GetEntity(j), info );
+				{
+					collisionEvents.On_Exit(e, m_scene->GetEntity(j), info);
+				}
 				
 				CollisionComponent& collision1 = m_scene->GetComponentById<CollisionComponent>(i);
 				TransformComponent& transform1 = m_scene->GetComponentById<TransformComponent>(i);

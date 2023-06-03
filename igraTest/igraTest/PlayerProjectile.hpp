@@ -122,13 +122,7 @@ public:
 	{
 		if (hit.HasTag("enemy"))
 		{
-			if (player != nullptr)
-			{
-				auto& script = player->GetComponent<BehaviourComponent>().GetScript();
-				int value = script->m_LinkedProperties.GetVariable<int>("score") + 1;
-				
-				script->m_LinkedProperties.ChangeVariableByName<int>("score", value);
-			}
+			
 			owner.Destroy();
 		}
 	}
@@ -140,6 +134,11 @@ public:
 	void On_Exit(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
 
+	}
+
+	Entity& GetPlayer()
+	{
+		return *player;
 	}
 
 
