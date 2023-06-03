@@ -126,7 +126,7 @@ public:
 		}
 	}
 
-	Entity& AddEntity()
+	Entity& AddEntity(const std::unordered_set<std::string>& tags = {})
 	{
 		int id;
 		if (m_free_Ids.empty())
@@ -143,6 +143,7 @@ public:
 
 		m_used_Ids.emplace(id);
 
+		m_entities[id]->m_tags = tags;
 		std::cout << std::endl << "Added" << id << std::endl;
 		return *m_entities[id];
 

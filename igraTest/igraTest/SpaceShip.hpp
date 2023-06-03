@@ -190,7 +190,7 @@ public:
 
 	SpaceShipScript() : BehaviourScript()
 	{
-		m_tags = { "player" };
+		//m_tags = { "player" };
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));

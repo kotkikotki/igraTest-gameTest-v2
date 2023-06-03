@@ -39,7 +39,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	}
 	if (IsKeyReleased(KEY_M))
 	{
-		Entity& enemy = scene.AddEntity();
+		Entity& enemy = scene.AddEntity({"enemy"});
 		enemy.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f }, 180.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\Kla'ed - Battlecruiser - Base.png"), 1, 1, 3.f);
@@ -56,7 +56,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
-		enemy.m_tags = { "enemy" };
+		//enemy.m_tags = { "enemy" };
 	}
 	
 	
@@ -147,7 +147,7 @@ int main()
 	
 	{
 		//Texture2D playerTexture = LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png");
-		Entity& e1 = s1.AddEntity();
+		Entity& e1 = s1.AddEntity({ "player" });
 		
 		e1.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
@@ -164,14 +164,14 @@ int main()
 		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, false);
 		
 		//
-		e1.m_tags = { "player" };
+		//e1.m_tags = { "player" };
 		
-		Entity& wall_l = s1.AddEntity();
-		wall_l.m_tags = { "blocking" };
+		Entity& wall_l = s1.AddEntity({ "blocking" });
+		//wall_l.m_tags = { "blocking" };
 		wall_l.AddComponent<TransformComponent>(Vector2{ -1.f, (float)GetScreenHeight()/2.f}, 0.f, false, false, 1.f);
 		wall_l.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
-		Entity& wall_r = s1.AddEntity();
-		wall_r.m_tags = { "blocking" };
+		Entity& wall_r = s1.AddEntity({ "blocking" });
+		//wall_r.m_tags = { "blocking" };
 		wall_r.AddComponent<TransformComponent>(Vector2{ (float)GetScreenWidth() + 2.f, (float)GetScreenHeight() / 2.f}, 0.f, false, false, 1.f);
 		wall_r.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
 		
@@ -182,7 +182,7 @@ int main()
 	}
 	
 	{
-		Entity& enemy = s1.AddEntity();
+		Entity& enemy = s1.AddEntity({"enemy"});
 		enemy.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f }, 180.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\Kla'ed - Battlecruiser - Base.png"), 1, 1, 3.f);
@@ -199,7 +199,7 @@ int main()
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
-		enemy.m_tags = { "enemy" };
+		//enemy.m_tags = { "enemy" };
 	}
 	
 	EntityDrawer entityDrawer(s1);

@@ -80,7 +80,7 @@ protected:
 
 public:
 
-	static inline std::unordered_set<std::string> m_tags;
+	//static inline std::unordered_set<std::string> m_tags;
 
 	using Script::Script;
 
