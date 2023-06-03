@@ -50,23 +50,10 @@ public:
 	SpriteComponentAdvanced(const Sprite& base, const std::string& name = "base", unsigned int layer = 0) :
 		m_layer(layer)
 	{
-		/*
-		for (auto& a : sprites)
-		{
-			m_layeredSprites.emplace(std::make_pair(a.m_layer, std::move(a)));
-		}*/
 		m_layeredSprites.emplace(std::make_pair(base.m_layer, std::make_pair(name,base)));
 
 	}
-	/*
-	~SpriteComponentAdvanced()
-	{
-		for (auto &a : m_layeredSprites)
-		{
-			UnloadTexture(a.second.second.m_texture);
-		}
-	}
-	*/
+	
 	bool HasSprite(const std::string& name)
 	{
 

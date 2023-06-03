@@ -202,12 +202,7 @@ public:
 
 		projectileTexture = LoadTexture("..\\..\\res\\assets\\used\\Main ship weapon - Projectile - Rocket.png");
 	}
-	/*
-	~SpaceShipScript()
-	{
-		UnloadTexture(projectileTexture);
-	}
-	*/
+	
 	//
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
@@ -261,30 +256,7 @@ public:
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
-	/*
-	void Animate(SpriteComponent& sprite) override
-	{
-
-		m_frameSpeed = abs(m_frameSpeed);
-		int currentFrameMin = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX : 0;
-		int currentFrameMax = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
-		m_frameCounter++;
-		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
-		{
-			m_frameCounter = 0;
-			m_currentFrame++;
-
-			if (m_currentFrame >= currentFrameMax) m_currentFrame = currentFrameMin;
-		}
-
-		int currentFrameX = m_currentFrame % sprite.m_frameCountX,
-			currentFrameY = m_currentFrame / sprite.m_frameCountX;
-
-
-		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
-		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
-	}
-	*/
+	
 	void Animate(SpriteComponentAdvanced& sprites) override
 	{
 		for (auto& a : sprites.m_layeredSprites)
