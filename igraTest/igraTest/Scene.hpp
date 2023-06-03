@@ -106,9 +106,9 @@ public:
 			}
 		}
 		*/
-		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponentAdvanced)]].GetVector())
+		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponent)]].GetVector())
 		{
-			SpriteComponentAdvanced& sprites = std::get<SpriteComponentAdvanced>(*comp);
+			SpriteComponent& sprites = std::get<SpriteComponent>(*comp);
 			for(auto &a: sprites.m_layeredSprites)
 			{
 				Texture& texture = a.second.second.m_texture;

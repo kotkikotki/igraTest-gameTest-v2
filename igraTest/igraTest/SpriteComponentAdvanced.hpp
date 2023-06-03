@@ -35,7 +35,7 @@ struct Sprite
 	}
 };
 
-class SpriteComponentAdvanced : public Component
+class SpriteComponent : public Component
 {
 
 public:
@@ -47,7 +47,7 @@ public:
 
 	using Component::Component;
 
-	SpriteComponentAdvanced(const Sprite& base, const std::string& name = "base", unsigned int layer = 0) :
+	SpriteComponent(const Sprite& base, const std::string& name = "base", unsigned int layer = 0) :
 		m_layer(layer)
 	{
 		m_layeredSprites.emplace(std::make_pair(base.m_layer, std::make_pair(name,base)));

@@ -43,9 +43,9 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		enemy.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f }, 180.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\Kla'ed - Battlecruiser - Base.png"), 1, 1, 3.f);
-		enemy.AddComponent<SpriteComponentAdvanced>
+		enemy.AddComponent<SpriteComponent>
 			(base1);
-		enemy.GetComponent<SpriteComponentAdvanced>().AddSprite
+		enemy.GetComponent<SpriteComponent>().AddSprite
 		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\Kla'ed - Battlecruiser - Engine12.png"), 12, 1, 3.f }, "engine", 0);
 		enemy.AddComponent<AnimationComponent>
 			(std::make_shared<EnemyTestAnimationScript>());
@@ -160,7 +160,7 @@ int main()
 		e1.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png"), 4, 2, 3.f);
-		e1.AddComponent<SpriteComponentAdvanced>
+		e1.AddComponent<SpriteComponent>
 			(base1);
 		e1.AddComponent<AnimationComponent>
 			(std::make_shared<SpaceShipAnimationScript>());
@@ -194,9 +194,9 @@ int main()
 		enemy.AddComponent<TransformComponent>
 			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f }, 180.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\Kla'ed - Battlecruiser - Base.png"), 1, 1, 3.f);
-		enemy.AddComponent<SpriteComponentAdvanced>
+		enemy.AddComponent<SpriteComponent>
 			(base1);
-		enemy.GetComponent<SpriteComponentAdvanced>().AddSprite
+		enemy.GetComponent<SpriteComponent>().AddSprite
 		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\Kla'ed - Battlecruiser - Engine12.png"), 12, 1, 3.f }, "engine", 0);
 		enemy.AddComponent<AnimationComponent>
 			(std::make_shared<EnemyTestAnimationScript>());

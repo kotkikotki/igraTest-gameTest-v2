@@ -33,10 +33,10 @@ public:
 
 		for (int i : m_scene->GetIds())
 		{
-			if (!((m_scene->HasComponentById<SpriteComponentAdvanced>(i))
+			if (!((m_scene->HasComponentById<SpriteComponent>(i))
 				&& m_scene->HasComponentById<TransformComponent>(i))) continue;
 			
-			int layer = m_scene->GetComponentById<SpriteComponentAdvanced>(i).m_layer;
+			int layer = m_scene->GetComponentById<SpriteComponent>(i).m_layer;
 			//TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
 			
 			layeredIds.emplace(std::make_pair(layer, i));
@@ -73,7 +73,7 @@ public:
 			int i = a.second;
 
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);
-			SpriteComponentAdvanced& sprites = m_scene->GetComponentById<SpriteComponentAdvanced>(i);
+			SpriteComponent& sprites = m_scene->GetComponentById<SpriteComponent>(i);
 			for (auto& a : sprites.m_layeredSprites)
 			{
 				auto& sprite = a.second.second;

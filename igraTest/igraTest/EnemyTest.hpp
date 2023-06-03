@@ -162,7 +162,7 @@ public:
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
 
-	void Animate(SpriteComponentAdvanced& sprites) override
+	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("engine");
 		m_frameCounter++;

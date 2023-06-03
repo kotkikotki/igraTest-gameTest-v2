@@ -160,9 +160,9 @@ public:
 		Entity& projectile = entity.GetOwner().AddEntity();
 		
 		float offset = 0.f;
-		if (entity.HasComponent<SpriteComponentAdvanced>())
+		if (entity.HasComponent<SpriteComponent>())
 		{
-			Sprite& sprite = entity.GetComponent<SpriteComponentAdvanced>().GetSprite("base");
+			Sprite& sprite = entity.GetComponent<SpriteComponent>().GetSprite("base");
 			offset = sprite.m_currentFrameRectangle.height *1.75f;
 		}
 
@@ -171,14 +171,14 @@ public:
 				GetRotatedPoint(Vector2{ transform.m_position.x, transform.m_position.y - offset },
 					transform.m_position, transform.m_rotation),
 				transform.m_rotation, false, false, 1.f);
-		projectile.AddComponent<SpriteComponentAdvanced>
+		projectile.AddComponent<SpriteComponent>
 			(Sprite{ projectileTexture, 3, 1, 3.f });
 		projectile.AddComponent<AnimationComponent>
 			(std::make_shared<PlayerProjectileAnimationScript>());
 		//.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", 5.f);
 
-		projectile.AddComponent<CollisionComponent>(projectile.GetComponent<SpriteComponentAdvanced>().GetSprite("base").m_currentFrameRectangle,
-			projectile.GetComponent<SpriteComponentAdvanced>().GetSprite("base").m_textureScale, COLLISION_CIRCLE,
+		projectile.AddComponent<CollisionComponent>(projectile.GetComponent<SpriteComponent>().GetSprite("base").m_currentFrameRectangle,
+			projectile.GetComponent<SpriteComponent>().GetSprite("base").m_textureScale, COLLISION_CIRCLE,
 			Vector2{ -1.f, 5.f }, 0.f, 0.42f);
 		projectile.AddComponent<BehaviourComponent>
 			(std::make_shared<PlayerProjectileScript>(projectileTexture));
@@ -257,7 +257,7 @@ public:
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
 	
-	void Animate(SpriteComponentAdvanced& sprites) override
+	void Animate(SpriteComponent& sprites) override
 	{
 		for (auto& a : sprites.m_layeredSprites)
 		{

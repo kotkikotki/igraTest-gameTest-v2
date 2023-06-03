@@ -632,7 +632,7 @@ using enable_if_t = typename std::enable_if<B, T>::type;
 #include "Components.h"
 using component_var_t = std::variant
 <AnimationComponent, BehaviourComponent, CollisionComponent, InputComponent, PhysicsComponent,
-SpriteComponentAdvanced, TransformComponent>;
+SpriteComponent, TransformComponent>;
 
 enum ComponentType
 {
@@ -656,7 +656,7 @@ std::unordered_map<std::type_index, ComponentType> componentIndexes
 	{typeid(InputComponent), INPUT},
 	{typeid(PhysicsComponent), PHYSICS},
 	
-	{typeid(SpriteComponentAdvanced), SPRITE_ADVANCED},
+	{typeid(SpriteComponent), SPRITE},
 	{typeid(TransformComponent), TRANSFORM}
 };
 

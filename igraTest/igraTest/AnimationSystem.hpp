@@ -25,9 +25,9 @@ public:
 			animation.GetScript()->UpdateProperties();
 
 
-			if (m_scene->HasComponentById<SpriteComponentAdvanced>(i))
+			if (m_scene->HasComponentById<SpriteComponent>(i))
 			{
-				SpriteComponentAdvanced& sprites = m_scene->GetComponentById<SpriteComponentAdvanced>(i);
+				SpriteComponent& sprites = m_scene->GetComponentById<SpriteComponent>(i);
 				animation.GetScript()->Animate(sprites);
 			}
 

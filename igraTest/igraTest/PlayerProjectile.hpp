@@ -43,10 +43,10 @@ public:
 		float offsetY = 0.f;
 		
 		//if (owner.HasComponent<SpriteComponent>())
-		if(owner.HasComponent<SpriteComponentAdvanced>())
+		if(owner.HasComponent<SpriteComponent>())
 		{
 			//SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
-			Sprite& sprite = owner.GetComponent<SpriteComponentAdvanced>().GetSprite("base");
+			Sprite& sprite = owner.GetComponent<SpriteComponent>().GetSprite("base");
 			offsetX = sprite.m_currentFrameRectangle.width / 2.f;
 			offsetY = sprite.m_currentFrameRectangle.height / 2.f;
 		}
@@ -165,7 +165,7 @@ public:
 		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
 	}
 	*/
-	void Animate(SpriteComponentAdvanced& sprites) override
+	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("base");
 		m_frameCounter++;

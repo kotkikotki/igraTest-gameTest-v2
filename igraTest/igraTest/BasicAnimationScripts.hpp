@@ -42,7 +42,7 @@ public:
 		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
 	}
 	*/
-	void Animate(SpriteComponentAdvanced& sprites) override
+	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("base");
 		m_frameCounter++;
@@ -117,7 +117,7 @@ public:
 		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
 	}
 	*/
-	void Animate(SpriteComponentAdvanced& sprites) override
+	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("base");
 		m_frameSpeed = abs(m_frameSpeed);
