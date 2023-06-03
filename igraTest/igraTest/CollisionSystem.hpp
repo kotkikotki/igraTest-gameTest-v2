@@ -105,16 +105,19 @@ public:
 	
 		SparseArray<SparseArray<std::pair<CollisionState, CollisionInfo>>> newMatrix;
 
-		
-
+		int collided = 0;
+		//std::cout << "-----\n";
 		for (int i : m_scene->GetIds())
 		{
 			newMatrix.Emplace(i);
-
-			for (int j : m_scene->GetIds())
+			//std::cout << collided<<"---\n";
+			//for (int j : m_scene->GetIds())
+			for(auto it = std::next(m_scene->GetIds().begin(),collided); it!=m_scene->GetIds().end(); it++)
 			{
+				int j = *it;
 				
-				
+				//std::cout << j << std::endl;
+
 				if (i == j || 
 					!(m_scene->HasComponentById<CollisionComponent>(i) && m_scene->HasComponentById<TransformComponent>(i))||
 					!(m_scene->HasComponentById<CollisionComponent>(j) && m_scene->HasComponentById<TransformComponent>(j)))
@@ -149,27 +152,40 @@ public:
 				}
 				newMatrix[i].Emplace(j, currentState, info);
 				
-				Entity& e = m_scene->GetEntity(i);
-				if (!e.HasComponent<BehaviourComponent>()) continue;
+				{
+					Entity& e1 = m_scene->GetEntity(i);
+					Entity& e2 = m_scene->GetEntity(j);
 
-				//BehaviourScript* behaviourScript = &*e.GetComponent<BehaviourComponent>().GetScript();
-				
-				CollisionEvents& collisionEvents = 
-					*std::static_pointer_cast<CollisionEvents, BehaviourScript>
-					(e.GetComponent<BehaviourComponent>().GetScript());
-				if (currentState == ENTERING)
-				{
-					collisionEvents.On_Enter(e, m_scene->GetEntity(j), info);
+					if (e1.HasComponent<BehaviourComponent>())
+					{
+						//BehaviourScript* behaviourScript = &*e.GetComponent<BehaviourComponent>().GetScript();
+
+						CollisionEvents& collisionEvents1 =
+							*std::static_pointer_cast<CollisionEvents, BehaviourScript>
+							(e1.GetComponent<BehaviourComponent>().GetScript());
+						if (currentState == ENTERING)
+							collisionEvents1.On_Enter(e1, e2, info);
+						if (currentState == STAYING)
+							collisionEvents1.On_Stay(e1, e2, info);
+						if (currentState == NOT_COLLIDING && previousState != NOT_COLLIDING)
+							collisionEvents1.On_Exit(e1, e2, info);
+					}
+					
+					if (e2.HasComponent<BehaviourComponent>())
+					{
+						//BehaviourScript* behaviourScript = &*e.GetComponent<BehaviourComponent>().GetScript();
+
+						CollisionEvents& collisionEvents2 =
+							*std::static_pointer_cast<CollisionEvents, BehaviourScript>
+							(e2.GetComponent<BehaviourComponent>().GetScript());
+						if (currentState == ENTERING)
+							collisionEvents2.On_Enter(e2, e1, info);
+						if (currentState == STAYING)
+							collisionEvents2.On_Stay(e2, e1, info);
+						if (currentState == NOT_COLLIDING && previousState != NOT_COLLIDING)
+							collisionEvents2.On_Exit(e2, e1, info);
+					}
 				}
-				if (currentState == STAYING)
-				{
-					collisionEvents.On_Stay(e, m_scene->GetEntity(j), info);
-				}
-				if (currentState == NOT_COLLIDING && previousState != NOT_COLLIDING)
-				{
-					collisionEvents.On_Exit(e, m_scene->GetEntity(j), info);
-				}
-				
 				CollisionComponent& collision1 = m_scene->GetComponentById<CollisionComponent>(i);
 				TransformComponent& transform1 = m_scene->GetComponentById<TransformComponent>(i);
 
@@ -179,7 +195,10 @@ public:
 				TransformComponent& transform2 = m_scene->GetComponentById<TransformComponent>(j);
 
 				collision2.UpdateMembers(transform2.m_position, transform2.m_rotation, transform2.m_scale);
+
+				
 			}
+			collided++;
 		}
 		m_collisionMatrix = std::move(newMatrix);
 		//m_collisionMatrix = newMatrix;
