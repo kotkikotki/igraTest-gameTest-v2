@@ -9,8 +9,11 @@
 #include "Definitions.hpp"
 #include <unordered_set>
 
+
 class EntityDrawer : System<EntityDrawer>
 {
+private:
+
 
 public:
 

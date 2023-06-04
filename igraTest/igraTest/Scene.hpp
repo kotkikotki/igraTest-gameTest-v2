@@ -26,6 +26,12 @@ private:
 
 	std::unordered_set<int> m_removeSet;
 	
+	//
+	// particles
+	//
+
+	
+
 
 protected:
 	
@@ -194,7 +200,10 @@ public:
 		return !(GetComponentPtr<T>(id) == nullptr) && m_removeSet.find(id) == m_removeSet.end()
 			&& static_cast<Component&>(GetComponent<T>(id)).m_enabled == true;
 	}
-
+	//
+	//particles
+	//
+	
 	//test
 	/*
 	void PrintAll()

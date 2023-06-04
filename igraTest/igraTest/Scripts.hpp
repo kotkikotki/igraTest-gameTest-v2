@@ -111,7 +111,7 @@ public:
 	Sprite* sprite;
 	int currentFrame = 0;
 
-	explicit Sequence(Sprite& sprite, float duration)
+	Sequence(Sprite& sprite, float duration)
 	{
 		this->sprite = &sprite;
 		this->duration = duration;

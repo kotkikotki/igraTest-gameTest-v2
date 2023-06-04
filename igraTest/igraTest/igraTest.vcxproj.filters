@@ -64,6 +64,9 @@
     <Filter Include="Resource Files\space assets\space ship\weapons">
       <UniqueIdentifier>{50567e1b-64b1-41b9-b9f9-d899cd9f7776}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Particles">
+      <UniqueIdentifier>{a892952b-9362-41fb-a94f-64dde525edfa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -184,6 +187,9 @@
     <ClInclude Include="EnemyBoss.hpp">
       <Filter>Entities\Enemy1</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleHelper.hpp">
+      <Filter>Particles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\res\assets\used\background\Blue_Nebula_02-1024x1024.png">
@@ -212,6 +218,9 @@
     </Image>
     <Image Include="..\..\res\assets\used\player-ship\weapons\Main Ship - Weapons - Auto Cannon.png">
       <Filter>Resource Files\space assets\space ship\weapons</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Destruction.png">
+      <Filter>Resource Files\space assets\enemy1</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

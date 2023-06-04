@@ -35,7 +35,8 @@ public:
 				//
 				animation.GetScript()->UpdateSequences();
 			}
-
+			//particles
+			//m_scene->UpdateParticles();
 		}
 	}
 

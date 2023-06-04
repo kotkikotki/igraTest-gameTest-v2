@@ -52,7 +52,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyTestScript>());
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(enemy));
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
@@ -209,7 +209,7 @@ int main()
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyTestScript>());
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(enemy));
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//

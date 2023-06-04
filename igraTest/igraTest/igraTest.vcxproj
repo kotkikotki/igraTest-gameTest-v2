@@ -156,6 +156,7 @@
     <ClInclude Include="EntityDrawer.hpp" />
     <ClInclude Include="InputComponent.hpp" />
     <ClInclude Include="InputSystem.hpp" />
+    <ClInclude Include="ParticleHelper.hpp" />
     <ClInclude Include="PhysicsComponent.hpp" />
     <ClInclude Include="PhysicsSystem.hpp" />
     <ClInclude Include="PlayerProjectile.hpp" />
@@ -175,6 +176,7 @@
     <Image Include="..\..\res\assets\used\background\Blue_Nebula_02-1024x1024.png" />
     <Image Include="..\..\res\assets\used\background\Blue_Nebula_07-1024x1024.png" />
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Base.png" />
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Destruction.png" />
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Engine12.png" />
     <Image Include="..\..\res\assets\used\player-ship\base\Main Ship - Base - Full health.png" />
     <Image Include="..\..\res\assets\used\player-ship\engine effects\Main Ship - Engines - Base Engine - Spritesheet.png" />

@@ -15,6 +15,9 @@ class EnemyBossScript : public BehaviourScript
 	float acceleration = 7.f;
 
 	bool moveLeft = false;
+
+	Texture2D particleTexture = { 0 };
+
 public:
 
 	using BehaviourScript::BehaviourScript;
@@ -51,12 +54,15 @@ public:
 		//owner.GetComponent<CollisionComponent>().m_enabled = false;
 	}
 
-	EnemyBossScript() : BehaviourScript()
+	EnemyBossScript(Entity& owner) : BehaviourScript()
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
 
 		//if()
+		particleTexture = LoadTexture
+		("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Destruction.png");
+		SpriteTextureUnloadHelper::AddTexture(particleTexture);
 	}
 
 
@@ -75,6 +81,14 @@ public:
 			int value = script->m_LinkedProperties.GetVariable<int>("score") + 1;
 
 			script->m_LinkedProperties.ChangeVariableByName<int>("score", value);
+
+			if (!(owner.HasComponent<TransformComponent>()&&owner.HasComponent<SpriteComponent>())) return;
+			TransformComponent& transform = owner.GetComponent<TransformComponent>();
+			SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
+			AddParticle(owner.GetOwner(),
+				TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
+				SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 2.f);
+
 			owner.Destroy();
 
 		}

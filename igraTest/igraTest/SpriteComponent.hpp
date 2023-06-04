@@ -38,6 +38,9 @@ struct Sprite
 
 	unsigned int m_framesOnRow = 1;
 
+	//
+	//Sprite() = default;
+	//
 	Sprite(const Texture2D& texture, const std::vector<unsigned int> &frameCount, float textureScale, unsigned int layer = 0,
 		float relative_rotation = 0.f, const Vector2& relative_position = { 0.f, 0.f }) :
 		m_texture(texture),

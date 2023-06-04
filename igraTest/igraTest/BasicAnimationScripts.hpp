@@ -101,6 +101,10 @@ public:
 
 };
 
+class SequenceOnlyAnimationScript : public AnimationScript
+{
+
+};
 
 #endif // !BASIC_ANIMATION_SCRIPTS_HPP
 
