@@ -18,23 +18,14 @@ class Scene
 
 private:
 
-	//
-	//static inline std::unordered_set<int> unloadedTextures;
-	//std::unordered_set<int> unloadedTextures;
-	//std::unordered_set<Texture*> unusedTexturesToUnload;
-	//
 
 	SparseArray<std::shared_ptr<Entity>> m_entities;
 	std::vector<SparseArray<std::shared_ptr<component_var_t>>> m_components;
 	std::priority_queue<int, std::vector<int>, std::greater<int>> m_free_Ids;
 	std::set<int> m_used_Ids;
 
-	//
 	std::unordered_set<int> m_removeSet;
-	//
 	
-
-	//
 
 protected:
 	
@@ -90,40 +81,13 @@ protected:
 
 public:
 
-	//std::unordered_set<int> unloadedTextures;
 
 	Scene()
 	{
 		m_components = std::vector <SparseArray<std::shared_ptr<component_var_t>>>(END);
 	}
 
-	~Scene()
-	{
-		//std::unordered_set<int> unloadedTextures;
-		//texture_unload
-		//TODO
-		/*
-		for (auto& texture : unusedTexturesToUnload)
-		{
-			unloadedTextures.emplace(texture->id);
-			UnloadTexture(*texture);
-		}
-		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponent)]].GetVector())
-		{
-			SpriteComponent& sprites = std::get<SpriteComponent>(*comp);
-			for(auto &a: sprites.m_layeredSprites)
-			{
-				Texture& texture = a.second.second.m_texture;
-
-				if (unloadedTextures.find(texture.id) == unloadedTextures.end())
-				{
-					unloadedTextures.emplace(texture.id);
-					UnloadTexture(texture);
-				}
-			}
-		}
-		*/
-	}
+	
 
 	void On_Update()
 	{
@@ -226,7 +190,9 @@ public:
 	bool HasComponentById(int id)
 	{
 		//return !(GetComponentPtr<T>(id)==nullptr);
-		return !(GetComponentPtr<T>(id) == nullptr) && m_removeSet.find(id)==m_removeSet.end();
+		//return !(GetComponentPtr<T>(id) == nullptr) && m_removeSet.find(id)==m_removeSet.end();
+		return !(GetComponentPtr<T>(id) == nullptr) && m_removeSet.find(id) == m_removeSet.end()
+			&& static_cast<Component&>(GetComponent<T>(id)).m_enabled == true;
 	}
 
 	//test

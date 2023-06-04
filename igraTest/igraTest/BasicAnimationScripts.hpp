@@ -22,26 +22,7 @@ public:
 	}
 
 	
-	/*
-	void Animate(SpriteComponent& sprite) override
-	{
-		m_frameCounter++;
-		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
-		{
-			m_frameCounter = 0;
-			m_currentFrame++;
-
-			if (m_currentFrame >= (sprite.m_frameCountX * sprite.m_frameCountY)) m_currentFrame = 0;
-		}
-
-		int currentFrameX = m_currentFrame % sprite.m_frameCountX,
-			currentFrameY = m_currentFrame / sprite.m_frameCountX;
-
-
-		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
-		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
-	}
-	*/
+	
 	void Animate(SpriteComponent& sprites) override
 	{
  
@@ -66,13 +47,6 @@ public:
 	}
 	void UpdateProperties() override
 	{
-		/*
-		//frameSpeed
-		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
-
-		//mem_frameSpeed = mem_LinkedProperties.GetVariablePtr<float>("frameSpeed");
-		m_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
-		*/
 		m_frameSpeed = m_Properties.GetVariableT<float>("frameSpeed");
 	}
 
@@ -96,30 +70,6 @@ public:
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
 	
-	/*
-	void Animate(SpriteComponent& sprite) override
-	{
-		
-		m_frameSpeed = abs(m_frameSpeed);
-		int currentFrameMin = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX : 0;
-		int currentFrameMax = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
-		m_frameCounter++;
-		if (m_frameCounter >= (GetFPS() / m_frameSpeed))
-		{
-			m_frameCounter = 0;
-			m_currentFrame++;
-
-			if (m_currentFrame >= currentFrameMax) m_currentFrame = currentFrameMin;
-		}
-
-		int currentFrameX = m_currentFrame % sprite.m_frameCountX,
-			currentFrameY = m_currentFrame / sprite.m_frameCountX;
-
-
-		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
-		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
-	}
-	*/
 	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("base");
@@ -146,12 +96,6 @@ public:
 	}
 	void UpdateProperties() override
 	{
-		/*
-		if (!m_LinkedProperties.HasVariable("frameSpeed")) return;
-
-		//mem_frameSpeed = mem_LinkedProperties.GetVariable<float>("frameSpeed");
-		m_frameSpeed = *std::static_pointer_cast<float>(m_LinkedProperties.GetVariablePtr("frameSpeed"));
-		*/
 		m_frameSpeed = m_Properties.GetVariableT<float>("frameSpeed");
 	}
 

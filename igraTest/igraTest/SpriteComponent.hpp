@@ -52,17 +52,12 @@ struct Sprite
 		{
 			if (i > m_framesOnRow) m_framesOnRow = i;
 		}
-		//m_currentFrameRectangle = { 0.f, 0.f, (float)m_texture.width / (float)m_frameCountX, (float)m_texture.height / (float)m_frameCountY };
+
 		m_currentFrameRectangle = { 0.f, 0.f, (float)m_texture.width / (float)m_framesOnRow, (float)m_texture.height / (float)m_frameCount.size()};
 
 		SpriteTextureUnloadHelper::AddTexture(m_texture);
 	}
-	/*
-	~Sprite()
-	{
-		UnloadTexture(m_texture);
-	}
-	*/
+	
 };
 
 class SpriteComponent : public Component

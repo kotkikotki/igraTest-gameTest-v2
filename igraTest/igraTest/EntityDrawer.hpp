@@ -63,6 +63,7 @@ public:
 		//for (int i : m_scene->GetIds())
 		for(auto& a: layeredIds)
 		{
+			//check already done above
 			int i = a.second;
 
 			TransformComponent& transform = m_scene->GetComponentById<TransformComponent>(i);

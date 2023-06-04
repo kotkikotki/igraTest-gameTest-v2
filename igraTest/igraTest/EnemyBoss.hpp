@@ -1,17 +1,17 @@
-#ifndef ENEMY_TEST_HPP
+#ifndef ENEMY_BOSS_HPP
 
-#define ENEMY_TEST_HPP
+#define ENEMY_BOSS_HPP
 
 #include<raylib.h>
 #include "Definitions.hpp"
 #include "Components.h"
 #include "Scene.hpp"
 
-class EnemyTestScript : public BehaviourScript
+class EnemyBossScript : public BehaviourScript
 {
 
 	float velocityScalar = 5.f;
-	
+
 	float acceleration = 7.f;
 
 	bool moveLeft = false;
@@ -27,12 +27,12 @@ public:
 
 	void On_Update(Entity& owner) override
 	{
-		
+
 		if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<PhysicsComponent>())) return;
-		
+
 		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
-		
+
 		if (moveLeft)
 			transform.m_position = { transform.m_position.x - acceleration, transform.m_position.y };
 		else
@@ -47,16 +47,16 @@ public:
 
 		float value = (m_Properties.GetVariableT<float>("frameSpeed"));
 		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", value);
-		
+
 		//owner.GetComponent<CollisionComponent>().m_enabled = false;
 	}
 
-	EnemyTestScript() : BehaviourScript()
+	EnemyBossScript() : BehaviourScript()
 	{
-		
-
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
+
+		//if()
 	}
 
 
@@ -76,9 +76,9 @@ public:
 
 			script->m_LinkedProperties.ChangeVariableByName<int>("score", value);
 			owner.Destroy();
-			
+
 		}
-		
+
 
 	}
 	void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
@@ -94,7 +94,7 @@ public:
 
 };
 
-class EnemyTestAnimationScript : public AnimationScript
+class EnemyBossAnimationScript : public AnimationScript
 {
 public:
 
@@ -107,7 +107,7 @@ public:
 
 	using AnimationScript::AnimationScript;
 
-	EnemyTestAnimationScript() : AnimationScript()
+	EnemyBossAnimationScript() : AnimationScript()
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
@@ -144,5 +144,5 @@ public:
 
 
 
-#endif // !ENEMY_TEST_HPP
+#endif // !ENEMY_BOSS_HPP
 

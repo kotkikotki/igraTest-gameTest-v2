@@ -206,10 +206,11 @@ public:
 	}
 	
 	//helper method
+	/*
 	void PrintCurrent()
 	{
 		//std::cout << std::endl << "Collision test" << std::endl;
-		/*
+		
 		for (int i: m_scene->GetIds())
 		{
 			for (int j : m_scene->GetIds())
@@ -233,8 +234,9 @@ public:
 			std::cout << std::endl;
 		}
 		std::cout << std::endl << "-----------" << std::endl;
-		*/
+		
 	}
+	*/
 	
 };
 

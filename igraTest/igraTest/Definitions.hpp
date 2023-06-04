@@ -472,14 +472,6 @@ public:
 	{
 		return pairs[name];
 	}
-	/*
-	template<typename T>
-	const std::shared_ptr<T>& GetVariablePtrT(const std::string& name)
-	{
-		//return pairs[name];
-		return std::dynamic_pointer_cast<float>(pairs[name]);
-	}
-	*/
 	
 	template<typename T>
 	const T& GetVariable(const std::string& name)
@@ -525,13 +517,6 @@ public:
 	{
 		if (!HasId(id)) return;
 
-		/*
-		std::cout << "Bef" << std::endl;
-		for (auto& pair : keys)
-		{
-			std::cout << pair.first << " " << pair.second << std::endl;
-		}
-		*/
 		vector.erase(vector.begin()+keys[id]);
 
 		for (auto& pair : keys)

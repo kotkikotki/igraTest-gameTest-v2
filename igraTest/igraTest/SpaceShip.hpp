@@ -231,12 +231,7 @@ public:
 		SpriteTextureUnloadHelper::AddTexture(projectileTexture);
 	}
 
-	/*
-	~SpaceShipScript()
-	{
-		UnloadTexture(projectileTexture);
-	}
-	*/
+	
 
 	//
 	//colision

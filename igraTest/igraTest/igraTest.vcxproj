@@ -150,6 +150,7 @@
     <ClInclude Include="CollisionSystem.hpp" />
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="EnemyBoss.hpp" />
     <ClInclude Include="EnemyTest.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="EntityDrawer.hpp" />

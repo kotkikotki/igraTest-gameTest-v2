@@ -181,6 +181,9 @@
     <ClInclude Include="EnemyTest.hpp">
       <Filter>Entities\Enemy1</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyBoss.hpp">
+      <Filter>Entities\Enemy1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\res\assets\used\background\Blue_Nebula_02-1024x1024.png">

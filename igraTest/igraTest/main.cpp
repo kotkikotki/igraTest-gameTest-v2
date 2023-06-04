@@ -35,7 +35,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	}
 	if (IsKeyReleased(KEY_K))
 	{
-		collisionSystem.PrintCurrent();
+		//collisionSystem.PrintCurrent();
 	}
 	if (IsKeyReleased(KEY_M))
 	{
@@ -52,7 +52,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyTestScript>(Texture2D{ 0 }));
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyTestScript>());
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
@@ -209,7 +209,7 @@ int main()
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyTestScript>(Texture2D{0}));
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyTestScript>());
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
@@ -228,7 +228,7 @@ int main()
 
 	//!initialize
 
-	//HideCursor();
+	HideCursor();
 	//game loop
 	while (!WindowShouldClose())
 	{
@@ -241,16 +241,18 @@ int main()
 
 	//de-initialize
 	CloseWindow();
-	musicSystem.De_initMusics();
+	
 	backgorundManagerV.De_init();
 	
-	CloseAudioDevice();
+	
 	//!de-initialize
 	
 	for (auto& texturePair : SpriteTextureUnloadHelper::textures)
 	{
 		UnloadTexture(*texturePair.second);
 	}
+	musicSystem.De_initMusics();
+	CloseAudioDevice();
 
 	return 0;
 }
