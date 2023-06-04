@@ -32,6 +32,8 @@ public:
 			{
 				SpriteComponent& sprites = m_scene->GetComponentById<SpriteComponent>(i);
 				animation.GetScript()->Animate(sprites);
+				//
+				animation.GetScript()->UpdateSequences();
 			}
 
 		}

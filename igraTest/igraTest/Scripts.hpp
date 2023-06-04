@@ -3,6 +3,7 @@
 #define SCRIPTS_HPP
 
 #include<functional>
+#include<queue>
 #include "Definitions.hpp"
 #include "Entity.hpp"
 
@@ -96,49 +97,94 @@ public:
 		m_actions[action](entity);
 	}
 };
-/*
-struct Sprite;
+
 struct Sequence
 {
 private:
 	float durationToNextFrame = 0.f;
-public:
-	Sprite* sprite;
 	float duration = 0.f;
+	float durationLeft = 0.f;
+	
+
+public:
+
+	Sprite* sprite;
+	int currentFrame = 0;
 
 	explicit Sequence(Sprite& sprite, float duration)
 	{
 		this->sprite = &sprite;
 		this->duration = duration;
+
+		durationLeft = duration;
+		durationToNextFrame = duration / (sprite.m_frameCount.size() * sprite.m_framesOnRow);
+		
+	}
+	float GetDurationLeft()
+	{
+		return durationLeft;
+	}
+	void Update(float frameTime)
+	{
+		durationLeft -= frameTime;
+		durationToNextFrame -= frameTime;
+		if (durationToNextFrame <= 0.f)
+		{
+			currentFrame++;
+			durationToNextFrame = duration / (sprite->m_frameCount.size() * sprite->m_framesOnRow);
+
+		}
+		int frameCountY = sprite->m_frameCount.size();
+		int frameCountX = sprite->m_framesOnRow;
+
+		int currentFrameY = currentFrame / frameCountX,
+			currentFrameX = currentFrame % frameCountX;
+		sprite->m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite->m_texture.width / (float)(frameCountX);
+		sprite->m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite->m_texture.height / (float)(frameCountY);
+
 	}
 };
-*/
+
 // Animation
 class AnimationScript : public Script
 {
 private:
 
-	//std::unordered_set<Sequence> sequences;
+	std::vector<Sequence> m_sequences;
 
 public:
 
 	using Script::Script;
 
-	
 	virtual void Animate(SpriteComponent& sprites) {}
-
-protected:
+	virtual void UpdateSequences()
+	{
+		float frameTime = GetFrameTime();
+		for (int i = 0; i<m_sequences.size(); i++)
+		{
+			auto& sequence = m_sequences[i];
+			if (sequence.GetDurationLeft() <= 0.f)
+			{
+				m_sequences.erase(m_sequences.begin() + i);
+				i--;
+				continue;
+			}
+			sequence.Update(frameTime);
+		}
+	}
 	
-	/*
+
 	virtual void AddSequence(Sprite& sprite, float duration)
 	{
-		sequences.emplace(sprite, duration);
+		m_sequences.emplace_back(sprite, duration);
 	}
-	virtual std::unordered_set<Sequence>& GetSequences()
+	
+	virtual const std::vector<Sequence>& GetSequences()
 	{
-		return sequences;
+		return m_sequences;
 	}
-	*/
+	
+	
 };
 
 //Input

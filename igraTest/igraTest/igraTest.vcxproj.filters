@@ -61,6 +61,9 @@
     <Filter Include="Resource Files\space assets\space ship\engine">
       <UniqueIdentifier>{c453ca58-058c-48db-aea3-66a2d9691b5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\space assets\space ship\weapons">
+      <UniqueIdentifier>{50567e1b-64b1-41b9-b9f9-d899cd9f7776}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -203,6 +206,9 @@
     </Image>
     <Image Include="..\..\res\assets\used\player-ship\engine\Main Ship - Engines - Base Engine.png">
       <Filter>Resource Files\space assets\space ship\engine</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\player-ship\weapons\Main Ship - Weapons - Auto Cannon.png">
+      <Filter>Resource Files\space assets\space ship\weapons</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

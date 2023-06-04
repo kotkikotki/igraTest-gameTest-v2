@@ -27,6 +27,8 @@ class SpaceShipScript : public BehaviourScript
 
 	Texture2D projectileTexture = {0};
 
+	bool shootingLeft = false;
+
 public:
 
 	using BehaviourScript::BehaviourScript;
@@ -164,22 +166,28 @@ public:
 	
 	std::function<void(Entity& entity)> Shoot = [&](Entity& entity) ->void
 	{
-
+		
 		if (!(entity.HasComponent<TransformComponent>())) return;
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
 		Entity& projectile = entity.GetOwner().AddEntity({ "projectile" });
 		
-		float offset = 0.f;
+		float offsetHeight = 0.f;
+		float offsetWidth = 0.f;
 		if (entity.HasComponent<SpriteComponent>())
 		{
 			Sprite& sprite = entity.GetComponent<SpriteComponent>().GetSprite("base");
-			offset = sprite.m_currentFrameRectangle.height *1.75f;
+			offsetHeight = sprite.m_currentFrameRectangle.height *0.75f;
+			//
+			
+			offsetWidth = sprite.m_currentFrameRectangle.width * 0.58f;
+			if (shootingLeft) offsetWidth *= -1.f;
+			shootingLeft = !shootingLeft;
 		}
 
 		projectile.AddComponent<TransformComponent>
 			(
-				GetRotatedPoint(Vector2{ transform.m_position.x, transform.m_position.y - offset },
+				GetRotatedPoint(Vector2{ transform.m_position.x + offsetWidth, transform.m_position.y - offsetHeight },
 					transform.m_position, transform.m_rotation),
 				transform.m_rotation, false, false, 1.f);
 		projectile.AddComponent<SpriteComponent>
@@ -194,7 +202,10 @@ public:
 		projectile.AddComponent<BehaviourComponent>
 			(std::make_shared<PlayerProjectileScript>(projectileTexture, entity));
 		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{0.f, 0.f}, false);
+		
 
+		auto& weapon = *entity.GetComponent<AnimationComponent>().GetScript();
+		weapon.AddSequence(entity.GetComponent<SpriteComponent>().GetSprite("weapon"), 0.3f);
 		//
 
 	};

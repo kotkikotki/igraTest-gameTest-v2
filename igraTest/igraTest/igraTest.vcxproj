@@ -179,6 +179,7 @@
     <Image Include="..\..\res\assets\used\player-ship\engine effects\Main Ship - Engines - Base Engine - Spritesheet.png" />
     <Image Include="..\..\res\assets\used\player-ship\engine\Main Ship - Engines - Base Engine.png" />
     <Image Include="..\..\res\assets\used\player-ship\projectile\Main ship weapon - Projectile - Rocket.png" />
+    <Image Include="..\..\res\assets\used\player-ship\weapons\Main Ship - Weapons - Auto Cannon.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="script.txt" />

@@ -164,6 +164,8 @@ int main()
 		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\player-ship\\engine effects\\Main Ship - Engines - Base Engine - Spritesheet.png"), {3, 4}, 3.f }, "engineEffects", 0);
 		e1.GetComponent<SpriteComponent>().AddSprite
 		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\player-ship\\engine\\Main Ship - Engines - Base Engine.png"), {1}, 3.f }, "engine", 0);
+		e1.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\player-ship\\weapons\\Main Ship - Weapons - Auto Cannon.png"), {7}, 3.f }, "weapon", 0);
 		e1.AddComponent<AnimationComponent>
 			(std::make_shared<SpaceShipAnimationScript>());
 		e1.AddComponent<InputComponent>(std::make_shared<SpaceShipInputScript>(), mappings1);
