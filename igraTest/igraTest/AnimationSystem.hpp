@@ -7,6 +7,9 @@
 #include "Definitions.hpp"
 #include "System.hpp"
 
+#include "Entity.hpp"
+#include "Components.h"
+
 class AnimationSystem : public System<AnimationSystem>
 {
 

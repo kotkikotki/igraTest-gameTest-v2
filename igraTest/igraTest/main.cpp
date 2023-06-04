@@ -51,7 +51,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 			(std::make_shared<EnemyTestAnimationScript>());
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
-			Vector2{ 0.f, 0.f }, 0.f, 0.50f);
+			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
 		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyTestScript>(Texture2D{ 0 }));
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
@@ -176,6 +176,7 @@ int main()
 		//
 		
 		
+		
 		Entity& wall_l = s1.AddEntity({ "blocking" });
 
 		wall_l.AddComponent<TransformComponent>(Vector2{ -1.f, (float)GetScreenHeight()/2.f}, 0.f, false, false, 1.f);
@@ -205,7 +206,7 @@ int main()
 			(std::make_shared<EnemyTestAnimationScript>());
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
-			Vector2{ 0.f, 0.f }, 0.f, 0.50f);
+			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
 		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyTestScript>(Texture2D{0}));
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 

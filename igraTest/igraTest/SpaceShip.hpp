@@ -275,34 +275,12 @@ public:
 	
 	void Animate(SpriteComponent& sprites) override
 	{
-		/*
-		for (auto& a : sprites.m_layeredSprites)
-		{
-			auto& sprite = a.second.second;
-			m_frameSpeed = abs(m_frameSpeed);
-			int currentFrameMin = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX : 0;
-			int currentFrameMax = (m_frameSpeed >= 7.f) ? sprite.m_frameCountX * sprite.m_frameCountY : sprite.m_frameCountX;
-			m_frameCounter++;
-			if (m_frameCounter >= (GetFPS() / m_frameSpeed))
-			{
-				m_frameCounter = 0;
-				m_currentFrame++;
-
-				if (m_currentFrame >= currentFrameMax) m_currentFrame = currentFrameMin;
-			}
-
-			int currentFrameX = m_currentFrame % sprite.m_frameCountX,
-				currentFrameY = m_currentFrame / sprite.m_frameCountX;
-
-
-			sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(sprite.m_frameCountX);
-			sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(sprite.m_frameCountY);
-		}
-		*/
+		
 		Sprite& sprite = sprites.GetSprite("engineEffects");
 		
 		int frameCountY = sprite.m_frameCount.size();
-		int frameCountX = sprite.m_frameCount[frameCountY-1];
+		int frameCountX = sprite.m_framesOnRow;
+			//sprite.m_frameCount[frameCountY-1];
 		m_frameSpeed = abs(m_frameSpeed);
 		int currentFrameMin = (m_frameSpeed >= 7.f) ? frameCountX : 0;
 		int currentFrameMax = (m_frameSpeed >= 7.f) ? frameCountX * frameCountY : frameCountX;
@@ -315,9 +293,17 @@ public:
 			if (m_currentFrame >= currentFrameMax) m_currentFrame = currentFrameMin;
 		}
 
-		int currentFrameX = m_currentFrame % frameCountX,
-			currentFrameY = m_currentFrame / frameCountX;
+		int currentFrameY = m_currentFrame / frameCountX,
+			currentFrameX = m_currentFrame % frameCountX;
+		if (currentFrameX >= sprite.m_frameCount[currentFrameY])
+		{
+			m_currentFrame++;
 
+			if (m_currentFrame >= currentFrameMax) m_currentFrame = currentFrameMin;
+			currentFrameY = m_currentFrame / frameCountX;
+			currentFrameX = m_currentFrame % frameCountX;
+		}
+		
 
 		sprite.m_currentFrameRectangle.x = (float)(currentFrameX) * (float)sprite.m_texture.width / (float)(frameCountX);
 		sprite.m_currentFrameRectangle.y = (float)(currentFrameY) * (float)sprite.m_texture.height / (float)(frameCountY);

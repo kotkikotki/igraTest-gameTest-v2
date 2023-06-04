@@ -96,17 +96,49 @@ public:
 		m_actions[action](entity);
 	}
 };
+/*
+struct Sprite;
+struct Sequence
+{
+private:
+	float durationToNextFrame = 0.f;
+public:
+	Sprite* sprite;
+	float duration = 0.f;
 
+	explicit Sequence(Sprite& sprite, float duration)
+	{
+		this->sprite = &sprite;
+		this->duration = duration;
+	}
+};
+*/
 // Animation
 class AnimationScript : public Script
 {
+private:
+
+	//std::unordered_set<Sequence> sequences;
 
 public:
 
 	using Script::Script;
 
-	//virtual void Animate(SpriteComponent& sprite) {}
+	
 	virtual void Animate(SpriteComponent& sprites) {}
+
+protected:
+	
+	/*
+	virtual void AddSequence(Sprite& sprite, float duration)
+	{
+		sequences.emplace(sprite, duration);
+	}
+	virtual std::unordered_set<Sequence>& GetSequences()
+	{
+		return sequences;
+	}
+	*/
 };
 
 //Input
