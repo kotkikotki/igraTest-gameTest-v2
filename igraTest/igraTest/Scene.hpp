@@ -19,7 +19,9 @@ class Scene
 private:
 
 	//
-	static inline std::unordered_set<int> unloadedTextures;
+	//static inline std::unordered_set<int> unloadedTextures;
+	//std::unordered_set<int> unloadedTextures;
+	//std::unordered_set<Texture*> unusedTexturesToUnload;
 	//
 
 	SparseArray<std::shared_ptr<Entity>> m_entities;
@@ -35,6 +37,9 @@ private:
 	//
 
 protected:
+	
+
+	//friend EntityDrawer;
 
 	template<class T, typename = enable_if_t<is_base_of_v<Component, T>>, typename ...Args>
 	T& AddComponent(int id, Args&&... args)
@@ -85,6 +90,8 @@ protected:
 
 public:
 
+	//std::unordered_set<int> unloadedTextures;
+
 	Scene()
 	{
 		m_components = std::vector <SparseArray<std::shared_ptr<component_var_t>>>(END);
@@ -94,7 +101,13 @@ public:
 	{
 		//std::unordered_set<int> unloadedTextures;
 		//texture_unload
-		
+		//TODO
+		/*
+		for (auto& texture : unusedTexturesToUnload)
+		{
+			unloadedTextures.emplace(texture->id);
+			UnloadTexture(*texture);
+		}
 		for (auto& comp : m_components[componentIndexes[typeid(SpriteComponent)]].GetVector())
 		{
 			SpriteComponent& sprites = std::get<SpriteComponent>(*comp);
@@ -108,11 +121,6 @@ public:
 					UnloadTexture(texture);
 				}
 			}
-		}
-		/*
-		for (int i : unloadedTextures)
-		{
-			std::cout << i << std::endl;
 		}
 		*/
 	}

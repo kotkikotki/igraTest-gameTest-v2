@@ -17,6 +17,7 @@ public:
 	bool drawCollision = false;
 
 	using System :: System;
+	
 
 	void On_Update_Draw()
 	{
@@ -73,6 +74,10 @@ public:
 				Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
 
 				DrawTexturePro(sprite.m_texture, sprite.m_currentFrameRectangle, dest, origin, transform.m_rotation, WHITE);
+				//
+				
+				
+				//
 			}
 			
 			//DrawCircle(transform.m_position.x, transform.m_position.y, 70.f, BLUE);

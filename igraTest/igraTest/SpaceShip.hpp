@@ -228,8 +228,16 @@ public:
 
 		projectileTexture = LoadTexture
 		("..\\..\\res\\assets\\used\\player-ship\\projectile\\Main ship weapon - Projectile - Rocket.png");
+		SpriteTextureUnloadHelper::AddTexture(projectileTexture);
 	}
-	
+
+	/*
+	~SpaceShipScript()
+	{
+		UnloadTexture(projectileTexture);
+	}
+	*/
+
 	//
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override

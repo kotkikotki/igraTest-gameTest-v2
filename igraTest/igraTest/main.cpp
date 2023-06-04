@@ -246,6 +246,11 @@ int main()
 	
 	CloseAudioDevice();
 	//!de-initialize
+	
+	for (auto& texturePair : SpriteTextureUnloadHelper::textures)
+	{
+		UnloadTexture(*texturePair.second);
+	}
 
 	return 0;
 }

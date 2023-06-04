@@ -5,8 +5,19 @@
 #include "Component.hpp"
 #include<map>
 
+struct SpriteTextureUnloadHelper
+{
+	static inline std::unordered_map<int, Texture*> textures;
+	static inline void AddTexture(Texture2D& texture)
+	{
+		if (SpriteTextureUnloadHelper::textures.find(texture.id) == SpriteTextureUnloadHelper::textures.end())
+			SpriteTextureUnloadHelper::textures.emplace(std::make_pair(texture.id, &texture));
+	}
+};
+
 struct Sprite
 {
+
 	Texture2D m_texture = { 0 };
 
 	//int m_frameCountX = 1; //static
@@ -44,7 +55,14 @@ struct Sprite
 		//m_currentFrameRectangle = { 0.f, 0.f, (float)m_texture.width / (float)m_frameCountX, (float)m_texture.height / (float)m_frameCountY };
 		m_currentFrameRectangle = { 0.f, 0.f, (float)m_texture.width / (float)m_framesOnRow, (float)m_texture.height / (float)m_frameCount.size()};
 
+		SpriteTextureUnloadHelper::AddTexture(m_texture);
 	}
+	/*
+	~Sprite()
+	{
+		UnloadTexture(m_texture);
+	}
+	*/
 };
 
 class SpriteComponent : public Component
@@ -55,7 +73,6 @@ public:
 	std::multimap<int, std::pair<std::string, Sprite>> m_layeredSprites;
 
 	unsigned int m_layer = 0; //0 -> min
-
 
 	using Component::Component;
 
