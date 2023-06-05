@@ -12,17 +12,13 @@ class EnemyBossScript : public BehaviourScript
 
 	float velocityScalar = 5.f;
 
-	float acceleration = 5.f;
-
-	bool moveLeft = false;
-
 	Texture2D particleTexture = { 0 };
 
 	std::vector<Vector2> introLocations =
 	{ 
-		//{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f }
-		//{ GetScreenWidth() / 1.25f, GetScreenHeight() / 2.f }
-		{ GetScreenWidth() / 2.f, GetScreenHeight() / 0.75f }
+		{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f },
+		//{ GetScreenWidth() / 1.25f, GetScreenHeight() / 2.f },
+		//{ GetScreenWidth() / 2.f, GetScreenHeight() / 0.75f }
 	};
 
 	Vector2 engineVelocity = { 0.f, 0.f };
@@ -45,26 +41,56 @@ public:
 	void On_Update(Entity& owner) override
 	{
 		
-		if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<PhysicsComponent>()
-			&& owner.HasComponent<SpriteComponent>())) return;
+		if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<PhysicsComponent>())) return;
 
 		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
-		SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
-
-		if (player != nullptr && player->HasComponent<TransformComponent>())
+		
+		
+		if (owner.HasComponentDisabled<CollisionComponent>())
 		{
+			owner.GetComponent<CollisionComponent>().m_enabled = true;
+		}
 
-			TransformComponent& playerTransform = player->GetComponent<TransformComponent>();
+		if (!introLocations.empty())
+		{
+			if (owner.HasComponent<CollisionComponent>())
+			{
+				owner.GetComponent<CollisionComponent>().m_enabled = false;
+			}
+			Vector2 location = introLocations[0];
 
-
-			Vector2 direction = { playerTransform.m_position.x - transform.m_position.x,
-				playerTransform.m_position.y - transform.m_position.y };
+			Vector2 direction = { location.x - transform.m_position.x,
+				location.y - transform.m_position.y };
 
 			float rotation = GetAngleOfPoint_Vertical(direction);
-
+			bool flag = false;
 			if (!(direction.x == 0.f && direction.y == 0.f))
-				transform.m_rotation = rotation;
+			{
+				//transform.m_rotation = rotation;
+				float delta = rotation - transform.m_rotation;
+
+				if (delta > 180.f)
+				{
+					delta = -(360.f - delta);
+				}
+				if (delta < -180.f)
+				{
+					delta = (360.f + delta);
+				}
+				//std::cout << delta << std::endl;
+				if (delta > 0.f)
+				{
+					delta = min(rotationRate, delta);
+				}
+				else if (delta < 0.f)
+				{
+					delta = max(-rotationRate, delta);
+				}
+
+				transform.m_rotation += delta;
+			}
+				
 			else
 			{
 				if (transform.m_rotation < 0.f)
@@ -75,80 +101,194 @@ public:
 				{
 					transform.m_rotation = min(180.f, transform.m_rotation + rotationRate);
 				}
+				if (abs(transform.m_rotation) == 180.f)
+				{
+					//std::cout << "completed\n";
+					flag = true;
+					introLocations.erase(introLocations.begin());
+				}
 
 			}
 
-
-			engineVelocity = direction;
-			
-			physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
-				physics.m_velocityVector.y + engineVelocity.y };
-
-			Vector2 maxVelocityRotated = GetRotatedPoint(maxVelocity, { 0.f, 0.f }, -transform.m_rotation);
-
+			if(!flag)
 			{
-				float newX = physics.m_velocityVector.x;
-				if (newX >= 0.f)
+				engineVelocity = direction;
+
+				physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
+					physics.m_velocityVector.y + engineVelocity.y };
+
+				Vector2 maxVelocityRotated = GetRotatedPoint(maxVelocity, { 0.f, 0.f }, -transform.m_rotation);
+
 				{
-					newX = min(newX, direction.x);
+					float newX = physics.m_velocityVector.x;
+					if (newX >= 0.f)
+					{
+						newX = min(newX, direction.x);
+					}
+					else
+					{
+						newX = max(newX, direction.x);
+					}
+					float newY = physics.m_velocityVector.y;
+					if (newY >= 0.f)
+					{
+						newY = min(newY, direction.y);
+					}
+					else
+					{
+						newY = max(newY, direction.y);
+					}
+					physics.m_velocityVector = { newX, newY };
+
 				}
-				else
+				if (physics.m_velocityVector.x != 0.f || physics.m_velocityVector.y != 0.f)
 				{
-					newX = max(newX, direction.x);
+					float newX = physics.m_velocityVector.x;
+					if (newX >= 0.f)
+					{
+						newX = min(newX, maxVelocityRotated.x);
+					}
+					else
+					{
+						newX = max(newX, maxVelocityRotated.x);
+					}
+					float newY = physics.m_velocityVector.y;
+					if (newY >= 0.f)
+					{
+						newY = min(newY, -maxVelocityRotated.y);
+					}
+					else
+					{
+						newY = max(newY, -maxVelocityRotated.y);
+					}
+					physics.m_velocityVector = { newX, newY };
+
 				}
-				float newY = physics.m_velocityVector.y;
-				if (newY >= 0.f)
-				{
-					newY = min(newY, direction.y);
-				}
-				else
-				{
-					newY = max(newY, direction.y);
-				}
-				physics.m_velocityVector = { newX, newY };
+
+				transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,
+				transform.m_position.y + physics.m_velocityVector.y };
+
+
 
 			}
-			if(physics.m_velocityVector.x!=0.f||physics.m_velocityVector.y!=0.f)
+		}
+
+		if (introLocations.empty())
+		{
+			if (player != nullptr && player->HasComponent<TransformComponent>())
 			{
-				float newX = physics.m_velocityVector.x;
-				if (newX >= 0.f)
+
+				TransformComponent& playerTransform = player->GetComponent<TransformComponent>();
+
+
+				Vector2 direction = { playerTransform.m_position.x - transform.m_position.x,
+					playerTransform.m_position.y - transform.m_position.y };
+
+				float rotation = GetAngleOfPoint_Vertical(direction);
+
+				if (!(direction.x == 0.f && direction.y == 0.f))
 				{
-					newX = min(newX, maxVelocityRotated.x);
+					//transform.m_rotation = rotation;
+					float delta = rotation - transform.m_rotation;
+
+					if (delta > 180.f)
+					{
+						delta = -(360.f - delta);
+					}
+					if (delta < -180.f)
+					{
+						delta = (360.f + delta);
+					}
+					//std::cout << delta << std::endl;
+					if (delta > 0.f)
+					{
+						delta = min(rotationRate, delta);
+					}
+					else if (delta < 0.f)
+					{
+						delta = max(-rotationRate, delta);
+					}
+
+					transform.m_rotation += delta;
 				}
 				else
 				{
-					newX = max(newX, maxVelocityRotated.x);
+					if (abs(transform.m_rotation) != 180.f)
+					{
+						if (transform.m_rotation < 0.f)
+						{
+							transform.m_rotation = max(-180.f, transform.m_rotation - rotationRate);
+						}
+						else if (transform.m_rotation > 0.f)
+						{
+							transform.m_rotation = min(180.f, transform.m_rotation + rotationRate);
+						}
+					}
+
 				}
-				float newY = physics.m_velocityVector.y;
-				if (newY >= 0.f)
+
+				/*
+				engineVelocity = direction;
+
+				physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
+					physics.m_velocityVector.y + engineVelocity.y };
+
+				Vector2 maxVelocityRotated = GetRotatedPoint(maxVelocity, { 0.f, 0.f }, -transform.m_rotation);
+
 				{
-					newY = min(newY, -maxVelocityRotated.y);
+					float newX = physics.m_velocityVector.x;
+					if (newX >= 0.f)
+					{
+						newX = min(newX, direction.x);
+					}
+					else
+					{
+						newX = max(newX, direction.x);
+					}
+					float newY = physics.m_velocityVector.y;
+					if (newY >= 0.f)
+					{
+						newY = min(newY, direction.y);
+					}
+					else
+					{
+						newY = max(newY, direction.y);
+					}
+					physics.m_velocityVector = { newX, newY };
+
 				}
-				else
+				if(physics.m_velocityVector.x!=0.f||physics.m_velocityVector.y!=0.f)
 				{
-					newY = max(newY, -maxVelocityRotated.y);
+					float newX = physics.m_velocityVector.x;
+					if (newX >= 0.f)
+					{
+						newX = min(newX, maxVelocityRotated.x);
+					}
+					else
+					{
+						newX = max(newX, maxVelocityRotated.x);
+					}
+					float newY = physics.m_velocityVector.y;
+					if (newY >= 0.f)
+					{
+						newY = min(newY, -maxVelocityRotated.y);
+					}
+					else
+					{
+						newY = max(newY, -maxVelocityRotated.y);
+					}
+					physics.m_velocityVector = { newX, newY };
+
 				}
-				physics.m_velocityVector = { newX, newY };
+
+				transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,
+				transform.m_position.y + physics.m_velocityVector.y };
+				*/
+
 
 			}
-			
-			transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,
-			transform.m_position.y + physics.m_velocityVector.y };
-			
-
-			
 		}
 		
-		
-		/*
-		if (moveLeft)
-			transform.m_position = { transform.m_position.x - acceleration, transform.m_position.y };
-		else
-			transform.m_position = { transform.m_position.x + acceleration, transform.m_position.y };
-
-		if (transform.m_position.x > (float)GetScreenWidth() / 1.25f) moveLeft = true;
-		if (transform.m_position.x < (float)GetScreenWidth() * 0.25f) moveLeft = false;
-		*/
 		
 		m_Properties.ChangeVariableByName("frameSpeed", (velocityScalar));
 		if (!(owner.HasComponent<AnimationComponent>())) return;

@@ -41,7 +41,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	{
 		Entity& enemy = scene.AddEntity({ "enemy" });
 		enemy.AddComponent<TransformComponent>
-			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 4.2f }, 180.f, false, false, 1.f);
+			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Base.png"), { 1 }, 3.f);
 		enemy.AddComponent<SpriteComponent>
 			(base1);
@@ -198,7 +198,7 @@ int main()
 	{
 		Entity& enemy = s1.AddEntity({"enemy"});
 		enemy.AddComponent<TransformComponent>
-			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 4.2f }, 180.f, false, false, 1.f);
+			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Base.png"), {1}, 3.f);
 		enemy.AddComponent<SpriteComponent>
 			(base1);

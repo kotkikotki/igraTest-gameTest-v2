@@ -73,6 +73,9 @@ public:
     template<typename T>
     bool HasComponent();
 
+    template<typename T>
+    bool HasComponentDisabled();
+
 };
 
 

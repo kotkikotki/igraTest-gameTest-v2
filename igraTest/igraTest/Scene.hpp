@@ -195,10 +195,13 @@ public:
 	template<typename T>
 	bool HasComponentById(int id)
 	{
-		//return !(GetComponentPtr<T>(id)==nullptr);
-		//return !(GetComponentPtr<T>(id) == nullptr) && m_removeSet.find(id)==m_removeSet.end();
 		return !(GetComponentPtr<T>(id) == nullptr) && m_removeSet.find(id) == m_removeSet.end()
 			&& static_cast<Component&>(GetComponent<T>(id)).m_enabled == true;
+	}
+	template<typename T>
+	bool HasComponentByIdDisabled(int id)
+	{
+		return !(GetComponentPtr<T>(id) == nullptr) && m_removeSet.find(id) == m_removeSet.end();
 	}
 	//
 	//particles
@@ -241,6 +244,11 @@ template<typename T>
 bool Entity::HasComponent()
 {
 	return this->GetOwner().HasComponentById<T>(this->GetId());
+}
+template<typename T>
+bool Entity::HasComponentDisabled()
+{
+	return this->GetOwner().HasComponentByIdDisabled<T>(this->GetId());
 }
 
 #endif // !SCENE_HPP
