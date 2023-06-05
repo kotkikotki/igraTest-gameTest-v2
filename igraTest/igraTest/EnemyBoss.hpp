@@ -17,8 +17,6 @@ class EnemyBossScript : public BehaviourScript
 	std::vector<Vector2> introLocations =
 	{ 
 		{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f },
-		//{ GetScreenWidth() / 1.25f, GetScreenHeight() / 2.f },
-		//{ GetScreenWidth() / 2.f, GetScreenHeight() / 0.75f }
 	};
 
 	Vector2 engineVelocity = { 0.f, 0.f };
