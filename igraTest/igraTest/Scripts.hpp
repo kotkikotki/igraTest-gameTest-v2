@@ -91,11 +91,17 @@ public:
 	virtual void On_Update(Entity& owner)
 	{}
 
-	virtual void On_Action(Entity& entity, const std::string& action)
+	virtual void On_Draw(Entity& owner)
+	{
+
+	}
+
+	virtual void On_Action(Entity& entity, const std::string& action) final
 	{
 		if (m_actions.find(action) == m_actions.end()) return;
 		m_actions[action](entity);
 	}
+
 };
 
 struct Sequence

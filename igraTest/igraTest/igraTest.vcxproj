@@ -181,6 +181,7 @@
     <Image Include="..\..\res\assets\used\player-ship\base\Main Ship - Base - Full health.png" />
     <Image Include="..\..\res\assets\used\player-ship\engine effects\Main Ship - Engines - Base Engine - Spritesheet.png" />
     <Image Include="..\..\res\assets\used\player-ship\engine\Main Ship - Engines - Base Engine.png" />
+    <Image Include="..\..\res\assets\used\player-ship\projectile\Explosion-duplicate frames.png" />
     <Image Include="..\..\res\assets\used\player-ship\projectile\Main ship weapon - Projectile - Rocket.png" />
     <Image Include="..\..\res\assets\used\player-ship\weapons\Main Ship - Weapons - Auto Cannon.png" />
   </ItemGroup>

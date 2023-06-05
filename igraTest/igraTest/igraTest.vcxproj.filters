@@ -222,6 +222,9 @@
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Destruction.png">
       <Filter>Resource Files\space assets\enemy1</Filter>
     </Image>
+    <Image Include="..\..\res\assets\used\player-ship\projectile\Explosion-duplicate frames.png">
+      <Filter>Resource Files\space assets\space ship\projectile</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="script.txt">

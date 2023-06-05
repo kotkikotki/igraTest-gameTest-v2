@@ -27,6 +27,8 @@ public:
 			behaviour.GetScript()->UpdateProperties();
 			behaviour.GetScript()->On_Update(m_scene->GetEntity(i));
 			
+			//behaviour.GetScript()->On_Draw(m_scene->GetEntity(i));
+			
 		}
 
 	}

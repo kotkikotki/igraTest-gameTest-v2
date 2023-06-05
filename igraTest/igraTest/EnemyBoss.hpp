@@ -26,6 +26,8 @@ class EnemyBossScript : public BehaviourScript
 	//
 	Entity* player;
 
+	float health = 100.f;
+
 public:
 
 	using BehaviourScript::BehaviourScript;
@@ -322,20 +324,27 @@ public:
 			PlayerProjectileScript& scriptProjectile = static_cast<PlayerProjectileScript&>(base);
 			Entity& player = scriptProjectile.GetPlayer();
 
-			auto& script = player.GetComponent<BehaviourComponent>().GetScript();
+			float damage = base.m_Properties.GetVariableT<float>("damage");
 
-			int value = script->m_LinkedProperties.GetVariable<int>("score") + 1;
+			
 
-			script->m_LinkedProperties.ChangeVariableByName<int>("score", value);
+			health -= damage;
+			if(health<=0.f)
+			{
+				auto& script = player.GetComponent<BehaviourComponent>().GetScript();
+				int value = script->m_LinkedProperties.GetVariable<int>("score") + 1;
 
-			if (!(owner.HasComponent<TransformComponent>()&&owner.HasComponent<SpriteComponent>())) return;
-			TransformComponent& transform = owner.GetComponent<TransformComponent>();
-			SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
-			AddParticle(owner.GetOwner(),
-				TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
-				SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 1.f);
+				script->m_LinkedProperties.ChangeVariableByName<int>("score", value);
 
-			owner.Destroy();
+				if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
+				TransformComponent& transform = owner.GetComponent<TransformComponent>();
+				SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
+				AddParticle(owner.GetOwner(),
+					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
+					SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 1.f);
+
+				owner.Destroy();
+			}
 
 		}
 
@@ -349,6 +358,28 @@ public:
 	void On_Exit(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
 
+	}
+
+	void On_Draw(Entity& owner) override
+	{
+		if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
+
+		TransformComponent& transform = owner.GetComponent<TransformComponent>();
+		SpriteComponent& sprites = owner.GetComponent<SpriteComponent>();
+		Sprite& sprite = sprites.GetSprite("base");
+
+		const float size = 200.f;
+
+		DrawRectangle(transform.m_position.x - size/2.f,
+			transform.m_position.y - sprite.m_currentFrameRectangle.height * sprite.m_textureScale/2.f + 60.f ,
+			size, 10.f, WHITE);
+		const float offsetX = 2.f;
+		const float offsetY = 2.f;
+		DrawRectangle(transform.m_position.x - size / 2.f + offsetX,
+			transform.m_position.y - sprite.m_currentFrameRectangle.height * sprite.m_textureScale / 2.f + 60.f + offsetX,
+			(size-offsetX*2.f)*(health/100.f),
+			10.f-offsetY*2.f,
+			RED);
 	}
 
 

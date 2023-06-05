@@ -83,6 +83,11 @@ public:
 				
 				//
 			}
+			if (m_scene->HasComponentById<BehaviourComponent>(i))
+			{
+				BehaviourComponent& behaviour = m_scene->GetComponentById<BehaviourComponent>(i);
+				behaviour.GetScript()->On_Draw(m_scene->GetEntity(i));
+			}
 			
 			//DrawCircle(transform.m_position.x, transform.m_position.y, 70.f, BLUE);
 			

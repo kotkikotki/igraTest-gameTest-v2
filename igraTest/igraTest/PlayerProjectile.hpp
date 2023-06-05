@@ -14,6 +14,9 @@ class PlayerProjectileScript : public BehaviourScript
 
 	float acceleration = 1.f;
 
+	Texture2D particleTexture = { 0 };
+
+
 	Vector2 engineVelocity = { 0.f, 0.f };
 	/*
 	Vector2 maxVelocity = { -7.f, -7.f };
@@ -22,7 +25,7 @@ class PlayerProjectileScript : public BehaviourScript
 	Vector2 maxVelocity = { 0.f, 7.f };
 	
 
-	Texture2D projectileTexture = { 0 };
+	//Texture2D projectileTexture = { 0 };
 	
 	Entity* player;
 
@@ -110,9 +113,15 @@ public:
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
 
+		m_Properties.AddVariable("damage", 20.f);
+
 		//emplace functions
 		player = &owner;
-		projectileTexture = texture;
+		//projectileTexture = texture;
+
+		particleTexture = LoadTexture
+		("..\\..\\res\\assets\\used\\player-ship\\projectile\\Explosion-duplicate frames.png");
+		SpriteTextureUnloadHelper::AddTexture(particleTexture);
 	}
 
 
@@ -122,7 +131,14 @@ public:
 	{
 		if (hit.HasTag("enemy"))
 		{
-			
+			if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
+			TransformComponent& transform = owner.GetComponent<TransformComponent>();
+			SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
+			AddParticle(owner.GetOwner(),
+				TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
+				SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale/2.f)), 
+				0.5f);
+
 			owner.Destroy();
 		}
 	}
