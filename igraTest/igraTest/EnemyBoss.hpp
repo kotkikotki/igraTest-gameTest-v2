@@ -12,11 +12,25 @@ class EnemyBossScript : public BehaviourScript
 
 	float velocityScalar = 5.f;
 
-	float acceleration = 7.f;
+	float acceleration = 5.f;
 
 	bool moveLeft = false;
 
 	Texture2D particleTexture = { 0 };
+
+	std::vector<Vector2> introLocations =
+	{ 
+		//{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f }
+		//{ GetScreenWidth() / 1.25f, GetScreenHeight() / 2.f }
+		{ GetScreenWidth() / 2.f, GetScreenHeight() / 0.75f }
+	};
+
+	Vector2 engineVelocity = { 0.f, 0.f };
+	Vector2 maxVelocity = { 0.f, 7.f };
+
+	float rotationRate = 5.f;
+	//
+	Entity* player;
 
 public:
 
@@ -30,12 +44,103 @@ public:
 
 	void On_Update(Entity& owner) override
 	{
-
-		if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<PhysicsComponent>())) return;
+		
+		if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<PhysicsComponent>()
+			&& owner.HasComponent<SpriteComponent>())) return;
 
 		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
+		SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
 
+		if (player != nullptr && player->HasComponent<TransformComponent>())
+		{
+
+			TransformComponent& playerTransform = player->GetComponent<TransformComponent>();
+
+
+			Vector2 direction = { playerTransform.m_position.x - transform.m_position.x,
+				playerTransform.m_position.y - transform.m_position.y };
+
+			float rotation = GetAngleOfPoint_Vertical(direction);
+
+			if (!(direction.x == 0.f && direction.y == 0.f))
+				transform.m_rotation = rotation;
+			else
+			{
+				if (transform.m_rotation < 0.f)
+				{
+					transform.m_rotation = max(-180.f, transform.m_rotation - rotationRate);
+				}
+				else
+				{
+					transform.m_rotation = min(180.f, transform.m_rotation + rotationRate);
+				}
+
+			}
+
+
+			engineVelocity = direction;
+			
+			physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
+				physics.m_velocityVector.y + engineVelocity.y };
+
+			Vector2 maxVelocityRotated = GetRotatedPoint(maxVelocity, { 0.f, 0.f }, -transform.m_rotation);
+
+			{
+				float newX = physics.m_velocityVector.x;
+				if (newX >= 0.f)
+				{
+					newX = min(newX, direction.x);
+				}
+				else
+				{
+					newX = max(newX, direction.x);
+				}
+				float newY = physics.m_velocityVector.y;
+				if (newY >= 0.f)
+				{
+					newY = min(newY, direction.y);
+				}
+				else
+				{
+					newY = max(newY, direction.y);
+				}
+				physics.m_velocityVector = { newX, newY };
+
+			}
+			if(physics.m_velocityVector.x!=0.f||physics.m_velocityVector.y!=0.f)
+			{
+				float newX = physics.m_velocityVector.x;
+				if (newX >= 0.f)
+				{
+					newX = min(newX, maxVelocityRotated.x);
+				}
+				else
+				{
+					newX = max(newX, maxVelocityRotated.x);
+				}
+				float newY = physics.m_velocityVector.y;
+				if (newY >= 0.f)
+				{
+					newY = min(newY, -maxVelocityRotated.y);
+				}
+				else
+				{
+					newY = max(newY, -maxVelocityRotated.y);
+				}
+				physics.m_velocityVector = { newX, newY };
+
+			}
+			
+			transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,
+			transform.m_position.y + physics.m_velocityVector.y };
+			
+
+			
+		}
+		
+		
+		/*
 		if (moveLeft)
 			transform.m_position = { transform.m_position.x - acceleration, transform.m_position.y };
 		else
@@ -43,18 +148,19 @@ public:
 
 		if (transform.m_position.x > (float)GetScreenWidth() / 1.25f) moveLeft = true;
 		if (transform.m_position.x < (float)GetScreenWidth() * 0.25f) moveLeft = false;
-
+		*/
+		
 		m_Properties.ChangeVariableByName("frameSpeed", (velocityScalar));
 		if (!(owner.HasComponent<AnimationComponent>())) return;
 		AnimationComponent& animation = owner.GetComponent<AnimationComponent>();
 
 		float value = (m_Properties.GetVariableT<float>("frameSpeed"));
 		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", value);
-
+		
 		//owner.GetComponent<CollisionComponent>().m_enabled = false;
 	}
 
-	EnemyBossScript(Entity& owner) : BehaviourScript()
+	EnemyBossScript(Entity& player) : BehaviourScript()
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
 		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
@@ -63,6 +169,8 @@ public:
 		particleTexture = LoadTexture
 		("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Destruction.png");
 		SpriteTextureUnloadHelper::AddTexture(particleTexture);
+
+		this->player = &player;
 	}
 
 
@@ -87,7 +195,7 @@ public:
 			SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
 			AddParticle(owner.GetOwner(),
 				TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
-				SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 2.f);
+				SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 1.f);
 
 			owner.Destroy();
 

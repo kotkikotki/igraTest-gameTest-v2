@@ -132,12 +132,29 @@ Vector2 GetRotatedPoint(const Vector2& point, const Vector2& centerOfRotation, f
 	
 }
 
-float GetAngleOfPoints(const Vector2& p1, const Vector2& p2)
+float GetAngleOfVectors(const Vector2& p1, const Vector2& p2)
 {
 	float dot = DotProduct(p1, p2);
 	float determinant = Determinant(p1, p2);
 	float angle =  atan2f(determinant, dot);
 	angle = angle * 180.f / PI;
+	return angle;
+}
+
+float GetAngleOfPoint(const Vector2& point)
+{
+	float angle = atan2f(point.y, point.x);
+	angle = angle * 180.f / PI;
+	return angle;
+}
+float GetAngleOfPoint_Vertical(const Vector2& point)
+{
+	float angle = atan2f(point.y, point.x);
+	angle = angle * 180.f / PI;
+	angle += 90.f;
+	if (angle > 180.f)
+		angle -= 360.f;
+
 	return angle;
 }
 

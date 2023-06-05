@@ -41,7 +41,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	{
 		Entity& enemy = scene.AddEntity({ "enemy" });
 		enemy.AddComponent<TransformComponent>
-			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f }, 180.f, false, false, 1.f);
+			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 4.2f }, 180.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Base.png"), { 1 }, 3.f);
 		enemy.AddComponent<SpriteComponent>
 			(base1);
@@ -52,7 +52,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(enemy));
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(scene.GetEntity(0)));
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
@@ -91,12 +91,12 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		
 		entityDrawer.On_Update_Draw();
 		//collisionSystem.On_UpdateDrawTest();
-		
+		//DrawCircle((float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 0.75f / 1.25f / 2.f, 5.f, RED);
 		//!test
 		
 		//DrawText("Hayo", GetScreenWidth() / 2, GetScreenHeight() / 2, 36, BLACK);
 		std::string output = "Kill count: " + std::to_string(std::any_cast<int>(*score));
-		DrawText(output.c_str(), GetScreenWidth() / 1.375f, GetScreenHeight() / 1.125f, 36, WHITE);
+		DrawText(output.c_str(), (float)GetScreenWidth() / 1.375f, (float)GetScreenHeight() / 1.125f, 36, WHITE);
 
 	EndDrawing();
 }
@@ -156,7 +156,7 @@ int main()
 		Entity& e1 = s1.AddEntity({ "player" });
 		
 		e1.AddComponent<TransformComponent>
-			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
+			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\player-ship\\base\\Main Ship - Base - Full health.png"), {1}, 3.f, 1);
 		e1.AddComponent<SpriteComponent>
 			(base1);
@@ -198,7 +198,7 @@ int main()
 	{
 		Entity& enemy = s1.AddEntity({"enemy"});
 		enemy.AddComponent<TransformComponent>
-			(Vector2{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f }, 180.f, false, false, 1.f);
+			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 4.2f }, 180.f, false, false, 1.f);
 		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Base.png"), {1}, 3.f);
 		enemy.AddComponent<SpriteComponent>
 			(base1);
@@ -209,7 +209,7 @@ int main()
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(enemy));
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(s1.GetEntity(0)));
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
@@ -228,7 +228,7 @@ int main()
 
 	//!initialize
 
-	HideCursor();
+	//HideCursor();
 	//game loop
 	while (!WindowShouldClose())
 	{

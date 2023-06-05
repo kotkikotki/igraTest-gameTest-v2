@@ -46,36 +46,28 @@ public:
 
 		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
-
-		Vector2 p1 = { transform.m_position.x - (float)GetMouseX(), 0.f };
-		Vector2 p2 = { transform.m_position.x - (float)GetMouseX(), 
-			max(0.f, transform.m_position.y - (float)GetMouseY()) };
 		
-		float rotation = -GetAngleOfPoints(p1, p2);
+		float mouseX = (float)GetMouseX(),
+			  mouseY = (float)GetMouseY();
+		
+		Vector2 direction = { mouseX - transform.m_position.x, 
+			mouseY - transform.m_position.y };
+		
+	
+		float rotation = GetAngleOfPoint_Vertical(direction);
+		
+		if(rotation>-90.f&&rotation<90.f)
 		{
 			if (rotation > 0.f)
 			{
-				rotation = 90.f - rotation;
+				rotation = min(60.f, rotation);
 			}
 			else if (rotation < 0.f)
 			{
-				rotation = -90.f - rotation;
+				rotation = max(-60.f, rotation);
 			}
-			else
-			{
-				rotation = transform.m_rotation;
-			}
-
-			if (rotation >= 0.f)
-			{
-				rotation = min(rotation, 45.f);
-			}
-			else
-			{
-				rotation = max(rotation, -45.f);
-			}
+			transform.m_rotation = rotation;
 		}
-		transform.m_rotation = rotation;
 		
 		//
 		{
@@ -118,6 +110,8 @@ public:
 
 		float value = (m_Properties.GetVariableT<float>("frameSpeed"));
 		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", value);
+		
+		//transform.m_position = { (float)GetMouseX(), (float)GetMouseY() };
 	}
 
 	std::function<void(Entity& entity)> MoveRight = [&](Entity& entity) ->void
