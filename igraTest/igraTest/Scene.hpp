@@ -134,6 +134,15 @@ public:
 		return m_entities.HasId(id);
 	}
 
+	bool HasEntityByTag(const std::string& tag)
+	{
+		for (auto &a : m_entities.GetVector())
+		{
+			if (a->HasTag(tag)) return true;
+		}
+		return false;
+	}
+
 	int GetEntityCount()
 	{
 		return m_used_Ids.size();
@@ -150,6 +159,17 @@ public:
 		return *m_entities[id];
 
 	}
+	
+	Entity& GetEntity(const std::string& tag)
+	{
+		for (auto& a : m_entities.GetVector())
+		{
+			if (a->HasTag(tag)) return *a;
+		}
+		throw std::invalid_argument("Entity does not exist.");
+		
+	}
+
 	//before or after update loop
 	void RemoveEntity(int id)
 	{

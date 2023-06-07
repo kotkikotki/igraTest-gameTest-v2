@@ -15,7 +15,9 @@
 #include "UsedScripts.h"
 #include "UsedEntities.h"
 
-std::shared_ptr<std::any> score;
+int score = 0;
+float backgroundSpeed = 0.f;
+
 
 void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundManagerV, Scene &scene, 
 	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem,
@@ -76,6 +78,18 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	collisionSystem.On_Update();
 	animationSystem.On_Update();
 	
+
+	if (scene.HasEntityByTag("player"))
+	{
+		Entity& e = scene.GetEntity("player");
+
+		if (e.HasComponent<BehaviourComponent>())
+		{
+			score = e.GetComponent<BehaviourComponent>().GetScript()->m_Properties.GetVariableT<int>("score");
+			backgroundManagerV.SetCurrentSpeed
+			(e.GetComponent<BehaviourComponent>().GetScript()->m_Properties.GetVariableT<float>("frameSpeed"));
+		}
+	}
 	backgroundManagerV.UpdateTexturePositionValues();
 	//!test
 	
@@ -95,7 +109,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		//!test
 		
 		//DrawText("Hayo", GetScreenWidth() / 2, GetScreenHeight() / 2, 36, BLACK);
-		std::string output = "Kill count: " + std::to_string(std::any_cast<int>(*score));
+		std::string output = "Kill count: " + std::to_string(score);
 		DrawText(output.c_str(), (float)GetScreenWidth() / 1.375f, (float)GetScreenHeight() / 1.125f, 36, WHITE);
 
 	EndDrawing();
@@ -190,9 +204,9 @@ int main()
 		
 
 
-		backgorundManagerV.SetSpeedPtr
-		(e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("frameSpeed"));
-		score = e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("score");
+		//backgorundManagerV.SetSpeedPtr
+		//(e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("frameSpeed"));
+		//score = e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("score");
 	}
 	
 	{

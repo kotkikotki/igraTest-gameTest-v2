@@ -87,6 +87,9 @@ public:
 	BehaviourScript() : Script() , CollisionEvents()
 	{
 	}
+	BehaviourScript(Entity& e) : Script(), CollisionEvents()
+	{
+	}
 
 	virtual void On_Update(Entity& owner)
 	{}

@@ -13,6 +13,7 @@
 #include<utility>
 #include<optional>
 #include<limits>
+#include<random>
 
 #define SQRT2 1.41421356f
 //#define G_CONST 9.78033f / 1000.f
@@ -36,6 +37,12 @@ T min(T a, T b)
 	return (a <= b) ? a : b;
 }
 
+int random(int min_in, int max_in)
+{
+	std::random_device generator;
+	std::uniform_int_distribution distribution(min_in, max_in);
+	return distribution(generator);
+}
 
 enum Collision_Area_Type
 {

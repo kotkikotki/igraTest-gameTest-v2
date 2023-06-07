@@ -36,7 +36,7 @@ public:
 
 	void UpdateProperties() override
 	{
-		m_LinkedProperties.ChangeVariableByName<float>("frameSpeed", m_Properties.GetVariableT<float>("frameSpeed"));
+		//m_LinkedProperties.ChangeVariableByName<float>("frameSpeed", m_Properties.GetVariableT<float>("frameSpeed"));
 	}
 	
 	void On_Update(Entity& owner) override
@@ -209,9 +209,10 @@ public:
 
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
-		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
+		//m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
 		
-		m_LinkedProperties.AddVariable("score", std::make_shared<std::any>((int)0));
+		//m_LinkedProperties.AddVariable("score", std::make_shared<std::any>((int)0));
+		m_Properties.AddVariable("score", (int)0);
 
 		//emplace functions
 		m_actions.emplace("move_left", MoveLeft);

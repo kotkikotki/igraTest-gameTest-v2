@@ -74,6 +74,8 @@ public:
 			for (auto& a : sprites.m_layeredSprites)
 			{
 				auto& sprite = a.second.second;
+				if (!sprite.m_visible) continue;
+
 				Rectangle dest = { transform.m_position.x, transform.m_position.y, sprite.m_currentFrameRectangle.width * sprite.m_textureScale, sprite.m_currentFrameRectangle.height * sprite.m_textureScale };
 				Vector2 origin = { dest.width / 2.f, dest.height / 2.f };
 

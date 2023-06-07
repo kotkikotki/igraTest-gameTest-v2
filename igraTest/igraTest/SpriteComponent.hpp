@@ -38,17 +38,20 @@ struct Sprite
 
 	unsigned int m_framesOnRow = 1;
 
+	bool m_visible = true;
+
 	//
 	//Sprite() = default;
 	//
 	Sprite(const Texture2D& texture, const std::vector<unsigned int> &frameCount, float textureScale, unsigned int layer = 0,
-		float relative_rotation = 0.f, const Vector2& relative_position = { 0.f, 0.f }) :
+		float relative_rotation = 0.f, const Vector2& relative_position = { 0.f, 0.f }, bool visible = true) :
 		m_texture(texture),
 		m_frameCount(frameCount),
 		m_textureScale(textureScale),
 		m_layer(layer),
 		m_relative_rotation(relative_rotation),
-		m_relative_position(relative_position)
+		m_relative_position(relative_position),
+		m_visible(visible)
 	{
 		
 		for (unsigned int i : m_frameCount)

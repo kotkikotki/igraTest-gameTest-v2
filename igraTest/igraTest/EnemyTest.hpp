@@ -22,7 +22,7 @@ public:
 
 	void UpdateProperties() override
 	{
-		m_LinkedProperties.ChangeVariableByName<float>("frameSpeed", m_Properties.GetVariableT<float>("frameSpeed"));
+		//m_LinkedProperties.ChangeVariableByName<float>("frameSpeed", m_Properties.GetVariableT<float>("frameSpeed"));
 	}
 
 	void On_Update(Entity& owner) override
@@ -56,7 +56,7 @@ public:
 		
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
-		m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
+		//m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
 	}
 
 
@@ -72,9 +72,9 @@ public:
 
 			auto& script = player.GetComponent<BehaviourComponent>().GetScript();
 
-			int value = script->m_LinkedProperties.GetVariable<int>("score") + 1;
+			int value = script->m_Properties.GetVariableT<int>("score") + 1;
 
-			script->m_LinkedProperties.ChangeVariableByName<int>("score", value);
+			script->m_Properties.ChangeVariableByName("score", (int)value);
 			owner.Destroy();
 			
 		}

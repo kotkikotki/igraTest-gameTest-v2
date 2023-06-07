@@ -21,7 +21,7 @@ class BackgroundManager_Horizontal
 
 	//req
 
-	std::shared_ptr<std::any> overallSpeedMultiplierPtr = std::make_shared<std::any>(0.f);
+	std::shared_ptr<std::any> overallSpeedMultiplierPtr = nullptr;
 
 	//
 
@@ -68,7 +68,8 @@ public:
 
 	void UpdateTexturePositionValues()
 	{
-		SetCurrentSpeed(std::any_cast<float>(*overallSpeedMultiplierPtr));
+		if(overallSpeedMultiplierPtr!=nullptr)
+			SetCurrentSpeed(std::any_cast<float>(*overallSpeedMultiplierPtr));
 		for (int i = 0; i < size; i++)
 		{
 			if (overallSpeedMultiplier >= 0.f)
