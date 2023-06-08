@@ -5,10 +5,10 @@
 #include "Component.hpp"
 #include<map>
 
-struct SpriteTextureUnloadHelper
+namespace SpriteTextureUnloadHelper
 {
-	static inline std::unordered_map<int, Texture*> textures;
-	static inline void AddTexture(Texture2D& texture)
+	static std::unordered_map<int, Texture*> textures;
+	static void AddTexture(Texture2D& texture)
 	{
 		if (SpriteTextureUnloadHelper::textures.find(texture.id) == SpriteTextureUnloadHelper::textures.end())
 			SpriteTextureUnloadHelper::textures.emplace(std::make_pair(texture.id, &texture));

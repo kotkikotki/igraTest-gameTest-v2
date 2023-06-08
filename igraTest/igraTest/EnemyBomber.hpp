@@ -1,13 +1,13 @@
-#ifndef ENEMY_BOSS_HPP
+#ifndef ENEMY_BOMBER_HPP
 
-#define ENEMY_BOSS_HPP
+#define ENEMY_BOMBER_HPP
 
 #include<raylib.h>
 #include "Definitions.hpp"
 #include "Components.h"
 #include "Scene.hpp"
 
-class EnemyBossScript : public BehaviourScript
+class EnemyBomberScript : public BehaviourScript
 {
 
 	float velocityScalar = 5.f;
@@ -15,7 +15,7 @@ class EnemyBossScript : public BehaviourScript
 	Texture2D particleTexture = { 0 };
 
 	std::vector<Vector2> introLocations =
-	{ 
+	{
 		{ GetScreenWidth() / 2.f, GetScreenHeight() / 5.f },
 	};
 
@@ -26,8 +26,8 @@ class EnemyBossScript : public BehaviourScript
 	//
 	Entity* player;
 
-	float health = 400.f;
-	const float maxHealth = 400.f;
+	float health = 60.f;
+	const float maxHealth = 60.f;
 
 public:
 
@@ -53,8 +53,8 @@ public:
 
 		TransformComponent& transform = owner.GetComponent<TransformComponent>();
 		PhysicsComponent& physics = owner.GetComponent<PhysicsComponent>();
-		
-		
+
+
 		if (owner.HasComponentDisabled<CollisionComponent>())
 		{
 			owner.GetComponent<CollisionComponent>().m_enabled = true;
@@ -107,7 +107,7 @@ public:
 
 				transform.m_rotation += delta;
 			}
-				
+
 			else
 			{
 				if (transform.m_rotation < 0.f)
@@ -127,7 +127,7 @@ public:
 
 			}
 
-			if(!flag)
+			if (!flag)
 			{
 				engineVelocity = direction;
 
@@ -201,8 +201,9 @@ public:
 				Vector2 direction = { playerTransform.m_position.x - transform.m_position.x,
 					playerTransform.m_position.y - transform.m_position.y };
 
-				float rotation = GetAngleOfPoint_Vertical(direction);
 
+				float rotation = GetAngleOfPoint_Vertical(direction);
+				bool flag = false;
 				if (!(direction.x == 0.f && direction.y == 0.f))
 				{
 					//transform.m_rotation = rotation;
@@ -228,49 +229,117 @@ public:
 
 					transform.m_rotation += delta;
 				}
+
 				else
 				{
-					if (abs(transform.m_rotation) != 180.f)
+					if (transform.m_rotation < 0.f)
 					{
-						if (transform.m_rotation < 0.f)
-						{
-							transform.m_rotation = max(-180.f, transform.m_rotation - rotationRate);
-						}
-						else if (transform.m_rotation > 0.f)
-						{
-							transform.m_rotation = min(180.f, transform.m_rotation + rotationRate);
-						}
+						transform.m_rotation = max(-180.f, transform.m_rotation - rotationRate);
+					}
+					else
+					{
+						transform.m_rotation = min(180.f, transform.m_rotation + rotationRate);
+					}
+					if (abs(transform.m_rotation) == 180.f)
+					{
+						//std::cout << "completed\n";
+						flag = true;
+						//introLocations.erase(introLocations.begin());
 					}
 
 				}
 
-				
+				if (!flag)
+				{
+					engineVelocity = direction;
+
+					physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
+						physics.m_velocityVector.y + engineVelocity.y };
+
+					Vector2 maxVelocityRotated = GetRotatedPoint(maxVelocity, { 0.f, 0.f }, -transform.m_rotation);
+
+					{
+						float newX = physics.m_velocityVector.x;
+						if (newX >= 0.f)
+						{
+							newX = min(newX, direction.x);
+						}
+						else
+						{
+							newX = max(newX, direction.x);
+						}
+						float newY = physics.m_velocityVector.y;
+						if (newY >= 0.f)
+						{
+							newY = min(newY, direction.y);
+						}
+						else
+						{
+							newY = max(newY, direction.y);
+						}
+						physics.m_velocityVector = { newX, newY };
+
+					}
+					if (physics.m_velocityVector.x != 0.f || physics.m_velocityVector.y != 0.f)
+					{
+						float newX = physics.m_velocityVector.x;
+						if (newX >= 0.f)
+						{
+							newX = min(newX, maxVelocityRotated.x);
+						}
+						else
+						{
+							newX = max(newX, maxVelocityRotated.x);
+						}
+						float newY = physics.m_velocityVector.y;
+						if (newY >= 0.f)
+						{
+							newY = min(newY, -maxVelocityRotated.y);
+						}
+						else
+						{
+							newY = max(newY, -maxVelocityRotated.y);
+						}
+						physics.m_velocityVector = { newX, newY };
+
+					}
+
+					transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,
+					transform.m_position.y + physics.m_velocityVector.y };
+
+
+
+				}
 
 
 			}
 		}
-		
-		
+
+
 		m_Properties.ChangeVariableByName("frameSpeed", (velocityScalar));
 		if (!(owner.HasComponent<AnimationComponent>())) return;
 		AnimationComponent& animation = owner.GetComponent<AnimationComponent>();
 
 		float value = (m_Properties.GetVariableT<float>("frameSpeed"));
 		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", value);
-		
+
 		//owner.GetComponent<CollisionComponent>().m_enabled = false;
 	}
 
-	EnemyBossScript() : BehaviourScript()
+	EnemyBomberScript() : BehaviourScript()
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
+		m_Properties.AddVariable("damage", 100.f);
 		//m_LinkedProperties.AddVariable("frameSpeed", std::make_shared<std::any>(0.f));
 
 		//if()
-		particleTexture = LoadedTextures::GetTexture("EnemyBoss_particle");
-		
+		particleTexture = LoadedTextures::GetTexture("EnemyBomber_particle");
 
-		//this->player = &player;
+
+		introLocations =
+		{
+			Vector2{(float)random(GetScreenWidth()/9.f, GetScreenWidth() * 8.f / 9.f), GetScreenHeight() / 9.f}
+		};
 	}
 
 
@@ -286,10 +355,10 @@ public:
 
 			float damage = base.m_Properties.GetVariableT<float>("damage");
 
-			
+
 
 			health -= damage;
-			if(health<=0.f)
+			if (health <= 0.f)
 			{
 				auto& script = player.GetComponent<BehaviourComponent>().GetScript();
 				int value = script->m_Properties.GetVariableT<int>("score") + 1;
@@ -301,19 +370,38 @@ public:
 				SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
 				AddParticle(owner.GetOwner(),
 					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
-					SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 1.f);
+					SpriteComponent(Sprite(particleTexture, { 8 }, sprite.GetSprite("base").m_textureScale)), 1.f);
 
 				owner.Destroy();
 			}
 
 		}
+		
 
 
 	}
 	void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		//if (!hit.HasTag("player"));
-		//	owner.Destroy();
+		if (hit.HasTag("player"))
+		{
+			float maxDistance = 0.f;
+			if (hit.HasComponent<SpriteComponent>())
+			{
+				Sprite& sprite = hit.GetComponent<SpriteComponent>().GetSprite("base");
+				maxDistance = sqrtf(sprite.m_texture.width * sprite.m_texture.height) * sprite.m_textureScale / 5.f;
+			}
+			if (collisionInfo.distance<=maxDistance)
+			{
+				if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
+				TransformComponent& transform = owner.GetComponent<TransformComponent>();
+				SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
+				AddParticle(owner.GetOwner(),
+					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
+					SpriteComponent(Sprite(particleTexture, { 8 }, sprite.GetSprite("base").m_textureScale)), 1.f);
+
+				owner.Destroy();
+			}
+		}
 	}
 	void On_Exit(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
@@ -328,24 +416,24 @@ public:
 		SpriteComponent& sprites = owner.GetComponent<SpriteComponent>();
 		Sprite& sprite = sprites.GetSprite("base");
 
-		const float size = 200.f;
+		const float size = 81.f;
 
-		DrawRectangle(transform.m_position.x - size/2.f,
-			transform.m_position.y - sprite.m_currentFrameRectangle.height * sprite.m_textureScale/2.f + 60.f ,
+		DrawRectangle(transform.m_position.x - size / 2.f,
+			transform.m_position.y - sprite.m_currentFrameRectangle.height * sprite.m_textureScale / 2.f,
 			size, 10.f, WHITE);
 		const float offsetX = 2.f;
 		const float offsetY = 2.f;
 		DrawRectangle(transform.m_position.x - size / 2.f + offsetX,
-			transform.m_position.y - sprite.m_currentFrameRectangle.height * sprite.m_textureScale / 2.f + 60.f + offsetY,
-			(size-offsetX*2.f)*(health/maxHealth),
-			10.f-offsetY*2.f,
+			transform.m_position.y - sprite.m_currentFrameRectangle.height * sprite.m_textureScale / 2.f  + offsetY,
+			(size - offsetX * 2.f) * (health / maxHealth),
+			10.f - offsetY * 2.f,
 			RED);
 	}
 
 
 };
 
-class EnemyBossAnimationScript : public AnimationScript
+class EnemyBomberAnimationScript : public AnimationScript
 {
 public:
 
@@ -358,7 +446,7 @@ public:
 
 	using AnimationScript::AnimationScript;
 
-	EnemyBossAnimationScript() : AnimationScript()
+	EnemyBomberAnimationScript() : AnimationScript()
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
 	}
@@ -370,7 +458,7 @@ public:
 			&sprites.GetSprite("engine"),
 			&sprites.GetSprite("shield")
 		};
-		for(auto &a: spritesToAnimate)
+		for (auto& a : spritesToAnimate)
 		{
 			Sprite& sprite = *a;
 			auto frameCountX = sprite.m_framesOnRow;
@@ -403,5 +491,5 @@ public:
 
 
 
-#endif // !ENEMY_BOSS_HPP
+#endif // !ENEMY_BOMBER_HPP
 

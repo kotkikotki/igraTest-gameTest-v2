@@ -67,6 +67,15 @@
     <Filter Include="Particles">
       <UniqueIdentifier>{a892952b-9362-41fb-a94f-64dde525edfa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\space assets\explosion">
+      <UniqueIdentifier>{48ade8af-dd16-443c-bf25-608ddaaf3b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\space assets\enemy2">
+      <UniqueIdentifier>{903499bd-67d2-4cb5-be75-6e355afd6818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\Enemy2">
+      <UniqueIdentifier>{2a094865-fb56-4400-87f1-db4ff607f05d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -190,6 +199,12 @@
     <ClInclude Include="ParticleHelper.hpp">
       <Filter>Particles</Filter>
     </ClInclude>
+    <ClInclude Include="LoadedTextures.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBomber.hpp">
+      <Filter>Entities\Enemy2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\res\assets\used\background\Blue_Nebula_02-1024x1024.png">
@@ -222,8 +237,23 @@
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Destruction.png">
       <Filter>Resource Files\space assets\enemy1</Filter>
     </Image>
-    <Image Include="..\..\res\assets\used\player-ship\projectile\Explosion-duplicate frames.png">
-      <Filter>Resource Files\space assets\space ship\projectile</Filter>
+    <Image Include="..\..\res\assets\used\explosion\Explosion-duplicate frames.png">
+      <Filter>Resource Files\space assets\explosion</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Shield.png">
+      <Filter>Resource Files\space assets\enemy1</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Base.png">
+      <Filter>Resource Files\space assets\enemy2</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Destruction.png">
+      <Filter>Resource Files\space assets\enemy2</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Engine.png">
+      <Filter>Resource Files\space assets\enemy2</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Shield.png">
+      <Filter>Resource Files\space assets\enemy2</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

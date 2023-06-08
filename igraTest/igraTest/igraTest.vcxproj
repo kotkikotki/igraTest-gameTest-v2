@@ -150,12 +150,14 @@
     <ClInclude Include="CollisionSystem.hpp" />
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="EnemyBomber.hpp" />
     <ClInclude Include="EnemyBoss.hpp" />
     <ClInclude Include="EnemyTest.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="EntityDrawer.hpp" />
     <ClInclude Include="InputComponent.hpp" />
     <ClInclude Include="InputSystem.hpp" />
+    <ClInclude Include="LoadedTextures.hpp" />
     <ClInclude Include="ParticleHelper.hpp" />
     <ClInclude Include="PhysicsComponent.hpp" />
     <ClInclude Include="PhysicsSystem.hpp" />
@@ -178,10 +180,15 @@
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Base.png" />
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Destruction.png" />
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Engine12.png" />
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Shield.png" />
+    <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Base.png" />
+    <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Destruction.png" />
+    <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Engine.png" />
+    <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Shield.png" />
+    <Image Include="..\..\res\assets\used\explosion\Explosion-duplicate frames.png" />
     <Image Include="..\..\res\assets\used\player-ship\base\Main Ship - Base - Full health.png" />
     <Image Include="..\..\res\assets\used\player-ship\engine effects\Main Ship - Engines - Base Engine - Spritesheet.png" />
     <Image Include="..\..\res\assets\used\player-ship\engine\Main Ship - Engines - Base Engine.png" />
-    <Image Include="..\..\res\assets\used\player-ship\projectile\Explosion-duplicate frames.png" />
     <Image Include="..\..\res\assets\used\player-ship\projectile\Main ship weapon - Projectile - Rocket.png" />
     <Image Include="..\..\res\assets\used\player-ship\weapons\Main Ship - Weapons - Auto Cannon.png" />
   </ItemGroup>

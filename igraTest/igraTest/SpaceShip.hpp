@@ -26,8 +26,12 @@ class SpaceShipScript : public BehaviourScript
 	float maxX = 7.f;
 
 	Texture2D projectileTexture = {0};
+	Texture2D particleTexture = {0};
 
 	bool shootingLeft = false;
+
+	float health = 1000.f;
+	const float maxHealth = 1000.f;
 
 public:
 
@@ -221,9 +225,8 @@ public:
 		m_actions.emplace("move_down", MoveDown);
 		m_actions.emplace("shoot", Shoot);
 
-		projectileTexture = LoadTexture
-		("..\\..\\res\\assets\\used\\player-ship\\projectile\\Main ship weapon - Projectile - Rocket.png");
-		SpriteTextureUnloadHelper::AddTexture(projectileTexture);
+		projectileTexture = LoadedTextures::GetTexture("SpaceShip_projectile");
+		particleTexture = LoadedTextures::GetTexture("SpaceShip_particle");
 	}
 
 	
@@ -242,6 +245,8 @@ public:
 			ownerPhysics.m_velocityVector.y = 2.f * collisionInfo.separation.y;
 		}
 
+
+
 		
 	}
 	void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
@@ -254,6 +259,36 @@ public:
 			ownerPhysics.m_velocityVector.x = 2.f * collisionInfo.separation.x;
 			ownerPhysics.m_velocityVector.y = 2.f * collisionInfo.separation.y;
 		}
+
+		if (hit.HasTag("enemyBomber"))
+		{
+			float maxDistance = 0.f;
+			if (owner.HasComponent<SpriteComponent>())
+			{
+				Sprite& sprite = owner.GetComponent<SpriteComponent>().GetSprite("base");
+				maxDistance = sqrtf(sprite.m_texture.width * sprite.m_texture.height) * sprite.m_textureScale / 5.f;
+			}
+			if (collisionInfo.distance > maxDistance) return;
+			
+			BehaviourScript& base = *hit.GetComponent<BehaviourComponent>().GetScript();
+			float damage = base.m_Properties.GetVariableT<float>("damage");
+
+
+
+			health -= damage;
+			if (health <= 0.f)
+			{
+				if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
+				TransformComponent& transform = owner.GetComponent<TransformComponent>();
+				SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
+				AddParticle(owner.GetOwner(),
+					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
+					SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 1.f);
+
+				owner.Destroy();
+			}
+
+		}
 		
 	}
 	void On_Exit(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
@@ -261,6 +296,22 @@ public:
 
 	}
 
+	void On_Draw(Entity& owner) override
+	{
+
+		const float size = 200.f;
+
+		DrawRectangle(GetScreenWidth()/8.f,
+			GetScreenHeight()*8.f/9.f,
+			size, size/10.f, WHITE);
+		const float offsetX = 2.f;
+		const float offsetY = 2.f;
+		DrawRectangle(GetScreenWidth() / 8.f + offsetX,
+			GetScreenHeight() * 8.f / 9.f + offsetY,
+			(size - offsetX * 2.f) * (health / maxHealth),
+			size/10.f - offsetY * 2.f,
+			RED);
+	}
 
 };
 

@@ -119,9 +119,7 @@ public:
 		player = &owner;
 		//projectileTexture = texture;
 
-		particleTexture = LoadTexture
-		("..\\..\\res\\assets\\used\\player-ship\\projectile\\Explosion-duplicate frames.png");
-		SpriteTextureUnloadHelper::AddTexture(particleTexture);
+		particleTexture = LoadedTextures::GetTexture("PlayerProjectile_particle");
 	}
 
 
@@ -129,7 +127,7 @@ public:
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		if (hit.HasTag("enemy"))
+		if (hit.HasTag("enemy")||hit.HasTag("enemyBomber"))
 		{
 			if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
 			TransformComponent& transform = owner.GetComponent<TransformComponent>();

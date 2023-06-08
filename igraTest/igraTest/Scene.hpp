@@ -12,6 +12,7 @@
 #include "Definitions.hpp"
 
 #include "Entity.hpp"
+#include "LoadedTextures.hpp"
 
 class Scene
 {

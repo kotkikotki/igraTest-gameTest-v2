@@ -15,9 +15,94 @@
 #include "UsedScripts.h"
 #include "UsedEntities.h"
 
+#include"LoadedTextures.hpp"
+
 int score = 0;
 float backgroundSpeed = 0.f;
 
+std::shared_ptr<InputMappings> mappings1 = std::make_shared<InputMappings>(InputMappings{});
+
+
+void LoadTextures()
+{
+	//SpaceShip
+	Texture2D SpaceShip_base = 
+		LoadTexture("..\\..\\res\\assets\\used\\player-ship\\base\\Main Ship - Base - Full health.png");
+	Texture2D SpaceShip_engineEffects =
+		LoadTexture("..\\..\\res\\assets\\used\\player-ship\\engine effects\\Main Ship - Engines - Base Engine - Spritesheet.png");
+	Texture2D SpaceShip_engine =
+		LoadTexture("..\\..\\res\\assets\\used\\player-ship\\engine\\Main Ship - Engines - Base Engine.png");
+	Texture2D SpaceShip_weapon =
+		LoadTexture("..\\..\\res\\assets\\used\\player-ship\\weapons\\Main Ship - Weapons - Auto Cannon.png");
+	Texture2D SpaceShip_projectile =
+		LoadTexture("..\\..\\res\\assets\\used\\player-ship\\projectile\\Main ship weapon - Projectile - Rocket.png");
+	//EnemyBoss
+	Texture2D EnemyBoss_base =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Base.png");
+	Texture2D EnemyBoss_engine =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Engine12.png");
+	Texture2D EnemyBoss_shield =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Shield.png");
+	Texture2D EnemyBoss_particle =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Destruction.png");
+	//enemybomber
+	Texture2D EnemyBomber_base =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy2\\Kla'ed - Bomber - Base.png");
+	Texture2D EnemyBomber_engine =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy2\\Kla'ed - Bomber - Engine.png");
+	Texture2D EnemyBomber_shield =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy2\\Kla'ed - Bomber - Shield.png");
+	Texture2D EnemyBomber_particle =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy2\\Kla'ed - Bomber - Destruction.png");
+	//PlayerProjectile
+	Texture2D Explosion_particle =
+		LoadTexture("..\\..\\res\\assets\\used\\explosion\\Explosion-duplicate frames.png");
+
+
+	LoadedTextures::loadedTextures =
+	{
+		//spaceship
+		{"SpaceShip_base",
+		SpaceShip_base},
+		{"SpaceShip_engineEffects",
+		SpaceShip_engineEffects},
+		{"SpaceShip_engine",
+		SpaceShip_engine},
+		{"SpaceShip_weapon",
+		SpaceShip_weapon},
+		{"SpaceShip_projectile",
+		SpaceShip_projectile},
+		{"SpaceShip_particle",
+		Explosion_particle},
+		//enemyboss
+		{"EnemyBoss_base",
+		EnemyBoss_base},
+		{"EnemyBoss_engine",
+		EnemyBoss_engine},
+		{"EnemyBoss_particle",
+		EnemyBoss_particle},
+		{"EnemyBoss_shield",
+		EnemyBoss_shield},
+		//enemybomber
+		{"EnemyBomber_base",
+		EnemyBomber_base},
+		{"EnemyBomber_engine",
+		EnemyBomber_engine},
+		{"EnemyBomber_particle",
+		EnemyBomber_particle},
+		{"EnemyBomber_shield",
+		EnemyBomber_shield},
+		//playerprojectile
+		{"PlayerProjectile_particle",
+		Explosion_particle}
+
+	};
+
+	for (auto& a : LoadedTextures::loadedTextures)
+	{
+		SpriteTextureUnloadHelper::AddTexture(a.second);
+	}
+}
 
 void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundManagerV, Scene &scene, 
 	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem,
@@ -44,23 +129,68 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		Entity& enemy = scene.AddEntity({ "enemy" });
 		enemy.AddComponent<TransformComponent>
 			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
-		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Base.png"), { 1 }, 3.f);
+		Sprite base1(LoadedTextures::GetTexture("EnemyBoss_base"), { 1 }, 3.f);
 		enemy.AddComponent<SpriteComponent>
 			(base1);
 		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Engine12.png"), {12}, 3.f }, "engine", 0);
+		(Sprite{ LoadedTextures::GetTexture("EnemyBoss_engine") , {12}, 3.f }, "engine", 0);
+		enemy.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("EnemyBoss_shield"), {16}, 3.f }, "shield", 0);
 		enemy.AddComponent<AnimationComponent>
-			(std::make_shared<EnemyTestAnimationScript>());
+			(std::make_shared<EnemyBossAnimationScript>());
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(scene.GetEntity(0)));
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>());
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 
 		//
 		
 	}
-	
+	if (IsKeyReleased(KEY_N))
+	{
+		Entity& enemy = scene.AddEntity({ "enemyBomber" });
+		enemy.AddComponent<TransformComponent>
+			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
+		Sprite base1(LoadedTextures::GetTexture("EnemyBomber_base"), { 1 }, 2.f);
+		enemy.AddComponent<SpriteComponent>
+			(base1);
+		enemy.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("EnemyBomber_engine"), {10}, 2.f }, "engine", 0);
+		enemy.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("EnemyBomber_shield"), {6}, 2.f }, "shield", 0);
+		enemy.AddComponent<AnimationComponent>
+			(std::make_shared<EnemyBomberAnimationScript>());
+		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
+			base1.m_textureScale, COLLISION_CIRCLE,
+			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBomberScript>());
+		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
+	}
+	if(IsKeyReleased(KEY_R)  && !scene.HasEntityByTag("player"))
+	{
+		Entity& e1 = scene.AddEntity({ "player" });
+
+		e1.AddComponent<TransformComponent>
+			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
+		Sprite base1(LoadedTextures::GetTexture("SpaceShip_base"), { 1 }, 3.f, 1);
+		e1.AddComponent<SpriteComponent>
+			(base1);
+		e1.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_engineEffects"), {3, 4}, 3.f }, "engineEffects", 0);
+		e1.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_engine"), {1}, 3.f }, "engine", 0);
+		e1.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_weapon"), {7}, 3.f }, "weapon", 0);
+		e1.AddComponent<AnimationComponent>
+			(std::make_shared<SpaceShipAnimationScript>());
+		e1.AddComponent<InputComponent>(std::make_shared<SpaceShipInputScript>(), mappings1);
+		e1.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
+			base1.m_textureScale, COLLISION_CIRCLE,
+			Vector2{ 0.f, 0.f }, 0.f, 0.77f);
+		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
+		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
+	}
 	
 	
 	//audio
@@ -116,6 +246,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 }
 
 
+
 int main()
 {
 	
@@ -153,14 +284,13 @@ int main()
 	//!background
 
 	//sprite
+	LoadTextures();
 
-	std::shared_ptr<InputMappings> mappings1 = std::make_shared<InputMappings>(InputMappings{});
 	mappings1->m_Map.AddAction("move_right", KEY_D, Down);
 	mappings1->m_Map.AddAction("move_left", KEY_A, Down);
 	mappings1->m_Map.AddAction("move_up", KEY_W, Down);
 	mappings1->m_Map.AddAction("move_down", KEY_S, Down);
 	mappings1->m_Map.AddAction("shoot", MOUSE_BUTTON_LEFT, Pressed);
-
 	
 	Scene s1;
 	
@@ -171,15 +301,15 @@ int main()
 		
 		e1.AddComponent<TransformComponent>
 			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
-		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\player-ship\\base\\Main Ship - Base - Full health.png"), {1}, 3.f, 1);
+		Sprite base1(LoadedTextures::GetTexture("SpaceShip_base"), {1}, 3.f, 1);
 		e1.AddComponent<SpriteComponent>
 			(base1);
 		e1.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\player-ship\\engine effects\\Main Ship - Engines - Base Engine - Spritesheet.png"), {3, 4}, 3.f }, "engineEffects", 0);
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_engineEffects"), {3, 4}, 3.f }, "engineEffects", 0);
 		e1.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\player-ship\\engine\\Main Ship - Engines - Base Engine.png"), {1}, 3.f }, "engine", 0);
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_engine"), {1}, 3.f }, "engine", 0);
 		e1.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\player-ship\\weapons\\Main Ship - Weapons - Auto Cannon.png"), {7}, 3.f }, "weapon", 0);
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_weapon"), {7}, 3.f }, "weapon", 0);
 		e1.AddComponent<AnimationComponent>
 			(std::make_shared<SpaceShipAnimationScript>());
 		e1.AddComponent<InputComponent>(std::make_shared<SpaceShipInputScript>(), mappings1);
@@ -210,22 +340,48 @@ int main()
 	}
 	
 	{
+		/*
 		Entity& enemy = s1.AddEntity({"enemy"});
 		enemy.AddComponent<TransformComponent>
 			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
-		Sprite base1(LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Base.png"), {1}, 3.f);
+		Sprite base1(LoadedTextures::GetTexture("EnemyBoss_base"), {1}, 3.f);
 		enemy.AddComponent<SpriteComponent>
 			(base1);
 		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Engine12.png"), {12}, 3.f }, "engine", 0);
+		(Sprite{ LoadedTextures::GetTexture("EnemyBoss_engine"), {12}, 3.f }, "engine", 0);
+		enemy.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("EnemyBoss_shield"), {16}, 3.f }, "shield", 0);
 		enemy.AddComponent<AnimationComponent>
-			(std::make_shared<EnemyTestAnimationScript>());
+			(std::make_shared<EnemyBossAnimationScript>());
 		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
 			base1.m_textureScale, COLLISION_CIRCLE,
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
 		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(s1.GetEntity(0)));
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
+		*/
+		//
 
+	}
+	{
+		
+		Entity& enemy = s1.AddEntity({"enemyBomber"});
+		enemy.AddComponent<TransformComponent>
+			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
+		Sprite base1(LoadedTextures::GetTexture("EnemyBomber_base"), {1}, 2.f);
+		enemy.AddComponent<SpriteComponent>
+			(base1);
+		enemy.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("EnemyBomber_engine"), {10}, 2.f }, "engine", 0);
+		enemy.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("EnemyBomber_shield"), {6}, 2.f }, "shield", 0);
+		enemy.AddComponent<AnimationComponent>
+			(std::make_shared<EnemyBomberAnimationScript>());
+		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
+			base1.m_textureScale, COLLISION_CIRCLE,
+			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
+		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBomberScript>());
+		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
+		
 		//
 
 	}
