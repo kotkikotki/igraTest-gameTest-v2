@@ -20,6 +20,16 @@
 #define G_CONST 0.00978033f
 #define GRAVITY_CONST 0.0420f
 
+#include<chrono>
+using namespace std::literals;
+using clock_type = std::chrono::steady_clock;
+using seconds_d = std::chrono::duration<double, std::chrono::seconds::period>;
+using timepoint = std::chrono::time_point<std::chrono::steady_clock>;
+timepoint GetCurrentTime()
+{
+	return clock_type::now();
+}
+
 template<typename T, typename ...Args>
 T Create(Args&& ...args)
 {

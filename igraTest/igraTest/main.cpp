@@ -124,6 +124,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	{
 		//collisionSystem.PrintCurrent();
 	}
+	/*
 	if (IsKeyReleased(KEY_M))
 	{
 		Entity& enemy = scene.AddEntity({ "enemy" });
@@ -167,6 +168,7 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBomberScript>());
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
 	}
+	*/
 	if(IsKeyReleased(KEY_R)  && !scene.HasEntityByTag("player"))
 	{
 		Entity& e1 = scene.AddEntity({ "player" });
@@ -338,7 +340,8 @@ int main()
 		//(e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("frameSpeed"));
 		//score = e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("score");
 	}
-	
+	Entity& enemySpawner = s1.AddEntity({ "enemySpawner" });
+	enemySpawner.AddComponent<BehaviourComponent>(std::make_shared<EnemySpawnerScript>());
 	{
 		/*
 		Entity& enemy = s1.AddEntity({"enemy"});
@@ -363,7 +366,7 @@ int main()
 
 	}
 	{
-		
+		/*
 		Entity& enemy = s1.AddEntity({"enemyBomber"});
 		enemy.AddComponent<TransformComponent>
 			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
@@ -381,7 +384,7 @@ int main()
 			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
 		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBomberScript>());
 		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
-		
+		*/
 		//
 
 	}

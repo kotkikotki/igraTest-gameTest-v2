@@ -127,7 +127,7 @@ public:
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		if (hit.HasTag("enemy")||hit.HasTag("enemyBomber"))
+		if (hit.HasTag("enemy"))
 		{
 			if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
 			TransformComponent& transform = owner.GetComponent<TransformComponent>();

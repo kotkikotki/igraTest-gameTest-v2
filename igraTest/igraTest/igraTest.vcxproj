@@ -152,6 +152,7 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="EnemyBomber.hpp" />
     <ClInclude Include="EnemyBoss.hpp" />
+    <ClInclude Include="EnemySpawner.hpp" />
     <ClInclude Include="EnemyTest.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="EntityDrawer.hpp" />

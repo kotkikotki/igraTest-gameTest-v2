@@ -76,6 +76,9 @@
     <Filter Include="Entities\Enemy2">
       <UniqueIdentifier>{2a094865-fb56-4400-87f1-db4ff607f05d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Entities\EnemySpawner">
+      <UniqueIdentifier>{820b660c-899f-4388-9d76-a9518588dbdc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -204,6 +207,9 @@
     </ClInclude>
     <ClInclude Include="EnemyBomber.hpp">
       <Filter>Entities\Enemy2</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySpawner.hpp">
+      <Filter>Entities\EnemySpawner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
