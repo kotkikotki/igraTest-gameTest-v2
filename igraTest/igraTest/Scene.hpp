@@ -106,7 +106,7 @@ public:
 		}
 	}
 
-	Entity& AddEntity(const std::unordered_set<std::string>& tags = {})
+	Entity& AddEntity(const std::unordered_set<std::string>& tags)
 	{
 		int id;
 		if (m_free_Ids.empty())

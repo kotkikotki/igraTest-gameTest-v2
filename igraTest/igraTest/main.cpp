@@ -21,7 +21,7 @@ int score = 0;
 float backgroundSpeed = 0.f;
 
 std::shared_ptr<InputMappings> mappings1 = std::make_shared<InputMappings>(InputMappings{});
-
+bool pause = false;
 
 void LoadTextures()
 {
@@ -108,6 +108,34 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem,
 	CollisionSystem &collisionSystem, BehaviourSystem &behaviourSystem, PhysicsSystem &physicsSystem)
 {	
+	if (IsKeyPressed(KEY_Q))
+	{
+		pause = !pause;
+	}
+	if (pause)
+	{
+		BeginDrawing();
+
+		ClearBackground(WHITE);
+
+		backgroundManagerV.UpdateTexturePositions();
+		//scene.GetEntity(0).GetComponent<TransformComponent>().m_position.x = GetMouseX();
+
+		//test
+
+		entityDrawer.On_Update_Draw();
+		//collisionSystem.On_UpdateDrawTest();
+		//DrawCircle((float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 0.75f / 1.25f / 2.f, 5.f, RED);
+		//!test
+
+		//DrawText("Hayo", GetScreenWidth() / 2, GetScreenHeight() / 2, 36, BLACK);
+		std::string output = "Kill count: " + std::to_string(score);
+		DrawText(output.c_str(), (float)GetScreenWidth() / 1.375f, (float)GetScreenHeight() / 1.125f, 36, WHITE);
+
+		EndDrawing();
+
+		return;
+	}
 	if(IsKeyPressed(KEY_P))
 	{
 		musicSystem.SetPause();
