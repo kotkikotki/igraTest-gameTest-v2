@@ -117,7 +117,6 @@ public:
 
 		//emplace functions
 		player = &owner;
-		//projectileTexture = texture;
 
 		particleTexture = LoadedTextures::GetTexture("EnemyBossProjectile_particle");
 	}
