@@ -24,7 +24,7 @@ class EnemyBossScript : public BehaviourScript
 	Vector2 engineVelocity = { 0.f, 0.f };
 	Vector2 maxVelocity = { 0.f, 7.f };
 
-	float rotationRate = 5.f;
+	float rotationRate = 1.f;
 	//
 	Entity* player;
 
