@@ -6,6 +6,7 @@
 #include "Definitions.hpp"
 #include "Components.h"
 #include "Scene.hpp"
+#include"EnemyBossProjectile.hpp"
 
 class EnemyBossScript : public BehaviourScript
 {
@@ -13,6 +14,7 @@ class EnemyBossScript : public BehaviourScript
 	float velocityScalar = 5.f;
 
 	Texture2D particleTexture = { 0 };
+	Texture2D projectileTexture = { 0 };
 
 	std::vector<Vector2> introLocations =
 	{ 
@@ -28,6 +30,12 @@ class EnemyBossScript : public BehaviourScript
 
 	float health = 400.f;
 	const float maxHealth = 400.f;
+
+	const double c_durationToSpawnProjectile = 3.f;
+	timepoint lastSpawnProjectile;
+
+
+
 
 public:
 
@@ -248,6 +256,16 @@ public:
 
 
 			}
+			timepoint now = GetCurrentTime();
+			if (std::chrono::duration_cast<seconds_d>(now - lastSpawnProjectile).count() >= c_durationToSpawnProjectile)
+			{
+
+				
+				//SpawnBomber(owner.GetOwner());
+				//lastSpawnBomber = GetCurrentTime();
+				Shoot(owner);
+				lastSpawnProjectile = GetCurrentTime();
+			}
 		}
 		
 		
@@ -268,11 +286,52 @@ public:
 
 		//if()
 		particleTexture = LoadedTextures::GetTexture("EnemyBoss_particle");
+		projectileTexture = LoadedTextures::GetTexture("EnemyBoss_projectile");
 		
-
+		lastSpawnProjectile = GetCurrentTime();
 		//this->player = &player;
 	}
 
+	void Shoot(Entity& entity)
+	{
+		if (!(entity.HasComponent<TransformComponent>())) return;
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+
+		Entity& projectile = entity.GetOwner().AddEntity({ "projectileEnemy" });
+
+		float offsetHeight = 0.f;
+		float offsetWidth = 0.f;
+		if (entity.HasComponent<SpriteComponent>())
+		{
+			Sprite& sprite = entity.GetComponent<SpriteComponent>().GetSprite("base");
+			offsetHeight = sprite.m_currentFrameRectangle.height * 0.75f;
+			//
+
+			//offsetWidth = sprite.m_currentFrameRectangle.width * 0.58f;
+			offsetWidth = 0.f;
+		}
+
+		projectile.AddComponent<TransformComponent>
+			(
+				GetRotatedPoint(Vector2{ transform.m_position.x + offsetWidth, transform.m_position.y - offsetHeight },
+					transform.m_position, transform.m_rotation),
+				transform.m_rotation, false, false, 1.f);
+		projectile.AddComponent<SpriteComponent>
+			(Sprite{ projectileTexture, {6}, 3.f });
+		projectile.AddComponent<AnimationComponent>
+			(std::make_shared<EnemyBossProjectileAnimationScript>());
+		//.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", 5.f);
+
+		projectile.AddComponent<CollisionComponent>(projectile.GetComponent<SpriteComponent>().GetSprite("base").m_currentFrameRectangle,
+			projectile.GetComponent<SpriteComponent>().GetSprite("base").m_textureScale, COLLISION_CIRCLE,
+			Vector2{ -1.f, 5.f }, 0.f, 0.42f);
+		projectile.AddComponent<BehaviourComponent>
+			(std::make_shared<EnemyBossProjectileScript>(entity));
+		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{ 0.f, 0.f }, false);
+
+
+		
+	}
 
 	//
 	//colision

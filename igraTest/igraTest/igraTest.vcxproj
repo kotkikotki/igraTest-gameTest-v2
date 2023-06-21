@@ -152,6 +152,7 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="EnemyBomber.hpp" />
     <ClInclude Include="EnemyBoss.hpp" />
+    <ClInclude Include="EnemyBossProjectile.hpp" />
     <ClInclude Include="EnemySpawner.hpp" />
     <ClInclude Include="EnemyTest.hpp" />
     <ClInclude Include="Entity.hpp" />
@@ -182,6 +183,7 @@
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Destruction.png" />
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Engine12.png" />
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Battlecruiser - Shield.png" />
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Wave.png" />
     <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Base.png" />
     <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Destruction.png" />
     <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Engine.png" />

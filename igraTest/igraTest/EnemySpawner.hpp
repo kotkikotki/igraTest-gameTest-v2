@@ -15,9 +15,11 @@ class EnemySpawnerScript : public BehaviourScript
 	
 	Entity* player;
 
-	const double c_durationToSpawnBomber = 3.f;
-	const double c_durationToSpawnBoss = 10.f;
-	int bomberMultiplier = 0;
+	const double c_durationToSpawnBomber = 3.0;
+	const double c_durationToSpawnBoss = 10.0;
+	int bomberMultiplier = -1;
+	double bomberDurationDifference = 0.2;
+	
 
 	timepoint lastSpawnBomber;
 	timepoint lastSpawnBoss;
@@ -45,13 +47,13 @@ public:
 		else
 		{
 			player = nullptr;
-			bomberMultiplier = 1;
+			bomberMultiplier = -1;
 		}
 		
 		if (player != nullptr)
 		{
 			bomberMultiplier = 
-				player->GetComponent<BehaviourComponent>().GetScript()->m_Properties.GetVariableT<int>("score")/10 + 1;
+				player->GetComponent<BehaviourComponent>().GetScript()->m_Properties.GetVariableT<int>("score")/10;
 		}
 		timepoint now = GetCurrentTime();
 		if (owner.GetOwner().HasEntityByTag("enemyBoss"))
@@ -59,11 +61,11 @@ public:
 			//std::cout << "lol";
 			lastSpawnBoss = now;
 		}
-		if (std::chrono::duration_cast<seconds_d>(now - lastSpawnBomber).count() >= c_durationToSpawnBomber)
+		if (std::chrono::duration_cast<seconds_d>(now - lastSpawnBomber).count() >= (c_durationToSpawnBomber - (double)min(bomberMultiplier, 10)  * bomberDurationDifference))
 		{
-			
-			for(int i = 0; i<min<int>(bomberMultiplier, 3); i++)
-				SpawnBomber(owner.GetOwner());
+			if (bomberMultiplier == -1) return;
+			//for(int i = 0; i<min<int>(bomberMultiplier, 3); i++)
+			SpawnBomber(owner.GetOwner());
 			lastSpawnBomber = GetCurrentTime();
 		}
 		if (std::chrono::duration_cast<seconds_d>(now - lastSpawnBoss).count() >= c_durationToSpawnBoss)

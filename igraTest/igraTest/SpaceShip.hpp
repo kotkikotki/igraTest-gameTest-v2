@@ -198,7 +198,7 @@ public:
 			projectile.GetComponent<SpriteComponent>().GetSprite("base").m_textureScale, COLLISION_CIRCLE,
 			Vector2{ -1.f, 5.f }, 0.f, 0.42f);
 		projectile.AddComponent<BehaviourComponent>
-			(std::make_shared<PlayerProjectileScript>(projectileTexture, entity));
+			(std::make_shared<PlayerProjectileScript>(entity));
 		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{0.f, 0.f}, false);
 		
 
@@ -260,7 +260,7 @@ public:
 			ownerPhysics.m_velocityVector.y = 2.f * collisionInfo.separation.y;
 		}
 
-		if (hit.HasTag("enemyBomber"))
+		if (hit.HasTag("enemyBomber") || hit.HasTag("projectileEnemy"))
 		{
 			float maxDistance = 0.f;
 			if (owner.HasComponent<SpriteComponent>())

@@ -45,6 +45,8 @@ void LoadTextures()
 		LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Shield.png");
 	Texture2D EnemyBoss_particle =
 		LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Battlecruiser - Destruction.png");
+	Texture2D EnemyBoss_projectile =
+		LoadTexture("..\\..\\res\\assets\\used\\enemy1\\Kla'ed - Wave.png");
 	//enemybomber
 	Texture2D EnemyBomber_base =
 		LoadTexture("..\\..\\res\\assets\\used\\enemy2\\Kla'ed - Bomber - Base.png");
@@ -83,6 +85,8 @@ void LoadTextures()
 		EnemyBoss_particle},
 		{"EnemyBoss_shield",
 		EnemyBoss_shield},
+		{"EnemyBoss_projectile",
+		EnemyBoss_projectile},
 		//enemybomber
 		{"EnemyBomber_base",
 		EnemyBomber_base},
@@ -94,6 +98,8 @@ void LoadTextures()
 		EnemyBomber_shield},
 		//playerprojectile
 		{"PlayerProjectile_particle",
+		Explosion_particle},
+		{"EnemyBossProjectile_particle",
 		Explosion_particle}
 
 	};

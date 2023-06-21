@@ -1,13 +1,13 @@
-#ifndef PLAYER_PROJECTILE_HPP
+#ifndef ENEMY_BOSS_PROJECTILE_HPP
 
-#define PLAYER_PROJECTILE_HPP
+#define ENEMY_BOSS_PROJECTILE_HPP
 
 #include<raylib.h>
 #include "Definitions.hpp"
 #include "Components.h"
 #include "Scene.hpp"
 
-class PlayerProjectileScript : public BehaviourScript
+class EnemyBossProjectileScript : public BehaviourScript
 {
 
 	float velocityScalar = 5.f;
@@ -23,10 +23,10 @@ class PlayerProjectileScript : public BehaviourScript
 	Vector2 minVelocity = { 7.f, 7.f };
 	*/
 	Vector2 maxVelocity = { 0.f, 7.f };
-	
+
 
 	//Texture2D projectileTexture = { 0 };
-	
+
 	Entity* player;
 
 public:
@@ -49,9 +49,9 @@ public:
 
 		float offsetX = 0.f;
 		float offsetY = 0.f;
-		
+
 		//if (owner.HasComponent<SpriteComponent>())
-		if(owner.HasComponent<SpriteComponent>())
+		if (owner.HasComponent<SpriteComponent>())
 		{
 			//SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
 			Sprite& sprite = owner.GetComponent<SpriteComponent>().GetSprite("base");
@@ -66,12 +66,12 @@ public:
 			return;
 		}
 
-		
+
 		engineVelocity = GetRotatedPoint(Vector2{ 0.f, -acceleration }, Vector2{ 0.f, 0.f }, transform.m_rotation);
 		physics.m_velocityVector = { physics.m_velocityVector.x + engineVelocity.x,
 			physics.m_velocityVector.y + engineVelocity.y };
 
-		
+
 		Vector2 maxVelocityRotated = GetRotatedPoint(maxVelocity, { 0.f, 0.f }, -transform.m_rotation);
 
 		float newX = physics.m_velocityVector.x;
@@ -92,12 +92,12 @@ public:
 		{
 			newY = max(newY, -maxVelocityRotated.y);
 		}
-		
+
 		physics.m_velocityVector = { newX, newY };
-		
+
 
 		transform.m_position = { transform.m_position.x + physics.m_velocityVector.x,
-			transform.m_position.y + physics.m_velocityVector.y};
+			transform.m_position.y + physics.m_velocityVector.y };
 
 		m_Properties.ChangeVariableByName("frameSpeed", (velocityScalar));
 		if (!(owner.HasComponent<AnimationComponent>())) return;
@@ -107,7 +107,7 @@ public:
 		animation.GetScript()->m_Properties.ChangeVariableByName("frameSpeed", value);
 	}
 
-	PlayerProjectileScript(Entity& owner) : BehaviourScript()
+	EnemyBossProjectileScript(Entity& owner) : BehaviourScript()
 	{
 
 		m_Properties.AddVariable("frameSpeed", 0.f);
@@ -119,7 +119,7 @@ public:
 		player = &owner;
 		//projectileTexture = texture;
 
-		particleTexture = LoadedTextures::GetTexture("PlayerProjectile_particle");
+		particleTexture = LoadedTextures::GetTexture("EnemyBossProjectile_particle");
 	}
 
 
@@ -127,23 +127,32 @@ public:
 	//colision
 	void On_Enter(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
-		if (hit.HasTag("enemy"))
-		{
-			if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
-			TransformComponent& transform = owner.GetComponent<TransformComponent>();
-			SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
-			AddParticle(owner.GetOwner(),
-				TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
-				SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale/2.f, 1)), 
-				0.5f);
-
-			owner.Destroy();
-		}
+		
 	}
 	void On_Stay(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
 		//if (!hit.HasTag("player"));
 		//	owner.Destroy();
+		if (hit.HasTag("player"))
+		{
+			float maxDistance = 0.f;
+			if (hit.HasComponent<SpriteComponent>())
+			{
+				Sprite& sprite = hit.GetComponent<SpriteComponent>().GetSprite("base");
+				maxDistance = sqrtf(sprite.m_texture.width * sprite.m_texture.height) * sprite.m_textureScale / 5.f;
+			}
+			if (collisionInfo.distance <= maxDistance)
+			{
+				if (!(owner.HasComponent<TransformComponent>() && owner.HasComponent<SpriteComponent>())) return;
+				TransformComponent& transform = owner.GetComponent<TransformComponent>();
+				SpriteComponent& sprite = owner.GetComponent<SpriteComponent>();
+				AddParticle(owner.GetOwner(),
+					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
+					SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale, 1)), 1.f);
+
+				owner.Destroy();
+			}
+		}
 	}
 	void On_Exit(Entity& owner, Entity& hit, const CollisionInfo& collisionInfo) override
 	{
@@ -158,7 +167,7 @@ public:
 
 };
 
-class PlayerProjectileAnimationScript : public AnimationScript
+class EnemyBossProjectileAnimationScript : public AnimationScript
 {
 public:
 
@@ -171,11 +180,13 @@ public:
 
 	using AnimationScript::AnimationScript;
 
-	PlayerProjectileAnimationScript() : AnimationScript()
+	EnemyBossProjectileAnimationScript() : AnimationScript()
 	{
 		m_Properties.AddVariable("frameSpeed", 0.f);
+		m_Properties.AddVariable("damage", 200.f);
+
 	}
-	
+
 	void Animate(SpriteComponent& sprites) override
 	{
 		Sprite& sprite = sprites.GetSprite("base");
@@ -206,5 +217,5 @@ public:
 
 
 
-#endif // !PLAYER_PROJECTILE_HPP
+#endif // !ENEMY_BOSS_PROJECTILE_HPP
 

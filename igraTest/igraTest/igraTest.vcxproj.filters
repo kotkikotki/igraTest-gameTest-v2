@@ -211,6 +211,9 @@
     <ClInclude Include="EnemySpawner.hpp">
       <Filter>Entities\EnemySpawner</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyBossProjectile.hpp">
+      <Filter>Entities\Enemy1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\res\assets\used\background\Blue_Nebula_02-1024x1024.png">
@@ -260,6 +263,9 @@
     </Image>
     <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Shield.png">
       <Filter>Resource Files\space assets\enemy2</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Wave.png">
+      <Filter>Resource Files\space assets\enemy1</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
