@@ -1,8 +1,14 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include<iostream>
 #include<vector>
 #include<cmath>
-
+#include<string>
 #include "raylib.h"
+
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
+
 #include "MusicSystem.hpp"
 #include "BackgroundManager_Horizontal.hpp"
 #include "BackgroundManager_Vertical.hpp"
@@ -17,11 +23,24 @@
 
 #include"LoadedTextures.hpp"
 
+int highScore = 0;
+std::string highscoreLabel = "";
 int score = 0;
 float backgroundSpeed = 0.f;
 
+
 std::shared_ptr<InputMappings> mappings1 = std::make_shared<InputMappings>(InputMappings{});
 bool pause = false;
+
+enum WINDOWSTATE
+{
+	MENU_WINDOWSTATE,
+	GAME_WINDOWSTATE,
+	CLOSE_WINDOWSTATE
+};
+
+WINDOWSTATE state = MENU_WINDOWSTATE;
+
 
 void LoadTextures()
 {
@@ -159,49 +178,6 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		//collisionSystem.PrintCurrent();
 	}
 	/*
-	if (IsKeyReleased(KEY_M))
-	{
-		Entity& enemy = scene.AddEntity({ "enemy" });
-		enemy.AddComponent<TransformComponent>
-			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
-		Sprite base1(LoadedTextures::GetTexture("EnemyBoss_base"), { 1 }, 3.f);
-		enemy.AddComponent<SpriteComponent>
-			(base1);
-		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("EnemyBoss_engine") , {12}, 3.f }, "engine", 0);
-		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("EnemyBoss_shield"), {16}, 3.f }, "shield", 0);
-		enemy.AddComponent<AnimationComponent>
-			(std::make_shared<EnemyBossAnimationScript>());
-		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
-			base1.m_textureScale, COLLISION_CIRCLE,
-			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>());
-		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
-
-		//
-		
-	}
-	if (IsKeyReleased(KEY_N))
-	{
-		Entity& enemy = scene.AddEntity({ "enemyBomber" });
-		enemy.AddComponent<TransformComponent>
-			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
-		Sprite base1(LoadedTextures::GetTexture("EnemyBomber_base"), { 1 }, 2.f);
-		enemy.AddComponent<SpriteComponent>
-			(base1);
-		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("EnemyBomber_engine"), {10}, 2.f }, "engine", 0);
-		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("EnemyBomber_shield"), {6}, 2.f }, "shield", 0);
-		enemy.AddComponent<AnimationComponent>
-			(std::make_shared<EnemyBomberAnimationScript>());
-		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
-			base1.m_textureScale, COLLISION_CIRCLE,
-			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBomberScript>());
-		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
-	}
 	*/
 	if(IsKeyReleased(KEY_R)  && !scene.HasEntityByTag("player"))
 	{
@@ -279,39 +255,162 @@ void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundMana
 		DrawText(output.c_str(), (float)GetScreenWidth() / 1.375f, (float)GetScreenHeight() / 1.125f, 36, WHITE);
 
 	EndDrawing();
+
 }
 
-
-
-int main()
+void SetSceneHelper(Scene& scene)
 {
+	{
+		scene = Scene();
+		Entity& e1 = scene.AddEntity({ "player" });
+
+		e1.AddComponent<TransformComponent>
+			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
+		Sprite base1(LoadedTextures::GetTexture("SpaceShip_base"), { 1 }, 3.f, 1);
+		e1.AddComponent<SpriteComponent>
+			(base1);
+		e1.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_engineEffects"), {3, 4}, 3.f }, "engineEffects", 0);
+		e1.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_engine"), {1}, 3.f }, "engine", 0);
+		e1.GetComponent<SpriteComponent>().AddSprite
+		(Sprite{ LoadedTextures::GetTexture("SpaceShip_weapon"), {7}, 3.f }, "weapon", 0);
+		e1.AddComponent<AnimationComponent>
+			(std::make_shared<SpaceShipAnimationScript>());
+		e1.AddComponent<InputComponent>(std::make_shared<SpaceShipInputScript>(), mappings1);
+		e1.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
+			base1.m_textureScale, COLLISION_CIRCLE,
+			Vector2{ 0.f, 0.f }, 0.f, 0.77f);
+		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
+		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
+
+		//
+
+
+
+		Entity& wall_l = scene.AddEntity({ "blocking" });
+
+		wall_l.AddComponent<TransformComponent>(Vector2{ -1.f, (float)GetScreenHeight() / 2.f }, 0.f, false, false, 1.f);
+		wall_l.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
+		Entity& wall_r = scene.AddEntity({ "blocking" });
+
+		wall_r.AddComponent<TransformComponent>(Vector2{ (float)GetScreenWidth() + 2.f, (float)GetScreenHeight() / 2.f }, 0.f, false, false, 1.f);
+		wall_r.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
+
+
+		Entity& enemySpawner = scene.AddEntity({ "enemySpawner" });
+		enemySpawner.AddComponent<BehaviourComponent>(std::make_shared<EnemySpawnerScript>());
+	}
+}
+
+static void ButtonStart();
+static void ButtonQuit();
+
+void Menu(MusicSystem& musicSystem)
+{
+	SetTargetFPS(60);
+	const char* WindowMenuText = "Space shooter menu";    // WINDOWBOX: WindowMenu
+	const char* ButtonStartText = "START GAME";    // BUTTON: ButtonStart
+	const char* ButtonQuitText = "QUIT GAME";    // BUTTON: ButtonQuit
+	const char* SPACESHOOOTERText = "    SPACE SHOOTER";    // LABEL: SPACE SHOOOTER
+	const char* LabelHighScoreText = "High score:";    // LABEL: LabelHighScore
+	const char* LabelHighScoreOutputText = "no high score";    // LABEL: LabelHighScoreOutput
+
+	if (highscoreLabel != "")
+	{
+		LabelHighScoreOutputText = highscoreLabel.c_str();
+	}
+	// Define anchors
+	Vector2 anchor01 = { 0, 0 };            // ANCHOR ID:1
+
+	// Define controls variables
+	bool WindowMenuActive = true;            // WindowBox: WindowMenu
+
+	// Define controls rectangles
+	Rectangle layoutRecs[6] = {
+		Rectangle{
+			anchor01.x + 0, anchor01.y + 0, 600, 600
+		},    // WindowBox: WindowMenu
+		Rectangle{
+			anchor01.x + 240, anchor01.y + 264, 120, 24
+		},    // Button: ButtonStart
+		Rectangle{
+			anchor01.x + 240, anchor01.y + 312, 120, 24
+		},    // Button: ButtonQuit
+		Rectangle{
+			anchor01.x + 240, anchor01.y + 216, 120, 24
+		},    // Label: SPACE SHOOOTER
+		Rectangle{
+			anchor01.x + 336, anchor01.y + 528, 120, 24
+		},    // Label: LabelHighScore
+		Rectangle{
+			anchor01.x + 416, anchor01.y + 528, 120, 24
+		},    // Label: LabelHighScoreOutput
+	};
+	//----------------------------------------------------------------------------------
+
+
+	//--------------------------------------------------------------------------------------
 	
-	//initialize
 
-	//window
-	const int screenWidth = GetScreenWidth();
-	const int screenHeight = GetScreenHeight();
+	// Main game loop
+	while (!WindowShouldClose())    // Detect window close button or ESC key
+	{
+		// Update
+		//----------------------------------------------------------------------------------
+		// TODO: Implement required update logic
+		//----------------------------------------------------------------------------------
+		if (state != MENU_WINDOWSTATE)
+		{
+			break;
+		}
+		// Draw
+		//----------------------------------------------------------------------------------
+		BeginDrawing();
 
-	int targetFPS = 60;
-	bool shouldBeFullscreen = true;
+		ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-	//InitWindow(screenWidth, screenHeight, "Game");
-	InitWindow(1200, 800, "Game");
-	SetTargetFPS(targetFPS);
-	//ToggleFullscreen();
-	//!window
+		// raygui: controls drawing
+		//----------------------------------------------------------------------------------
+		// Draw controls
+		if (WindowMenuActive)
+		{
+			//WindowMenuActive = !GuiWindowBox(layoutRecs[0], WindowMenuText);
+			if (GuiButton(layoutRecs[1], ButtonStartText)) ButtonStart();
+			if (GuiButton(layoutRecs[2], ButtonQuitText)) ButtonQuit();
+			GuiLabel(layoutRecs[4], LabelHighScoreText);
+			GuiLabel(layoutRecs[5], LabelHighScoreOutputText);
+		}
+		GuiLabel(layoutRecs[3], SPACESHOOOTERText);
+		//----------------------------------------------------------------------------------
 
-	//audio
-	InitAudioDevice();
-	std::vector<std::string> musicFilePaths = { "..\\..\\res\\as it was.wav", "..\\..\\res\\cinema.wav", "..\\..\\res\\daydreaming.wav" };
+		EndDrawing();
+	}
 
-	MusicSystem musicSystem;
-	musicSystem.LoadMusicFiles(musicFilePaths);
-	musicSystem.InitMusicStreams(0.f);
-	//!audio
+}
 
+//------------------------------------------------------------------------------------
+// Controls Functions Definitions (local)
+//------------------------------------------------------------------------------------
+// Button: ButtonStart logic
+static void ButtonStart()
+{
+	// TODO: Implement control logic
+	state = GAME_WINDOWSTATE;
+}
+// Button: ButtonQuit logic
+static void ButtonQuit()
+{
+	// TODO: Implement control logic
+	state = CLOSE_WINDOWSTATE;
+}
+
+void Game(MusicSystem& musicSystem)
+{
+	score = 0;
+	SetTargetFPS(60);
 	//background
-	std::vector<TextureFilePath_ScrollingSpeed_Tuple> backgroundTuples = 
+	std::vector<TextureFilePath_ScrollingSpeed_Tuple> backgroundTuples =
 	{ {"..\\..\\res\\assets\\used\\background\\Blue_Nebula_02-1024x1024.png", 1.f} };
 	BackgroundManager_Vertical backgorundManagerV;
 	backgorundManagerV.SetCurrentSpeed(3.f);
@@ -327,103 +426,14 @@ int main()
 	mappings1->m_Map.AddAction("move_up", KEY_W, Down);
 	mappings1->m_Map.AddAction("move_down", KEY_S, Down);
 	mappings1->m_Map.AddAction("shoot", MOUSE_BUTTON_LEFT, Pressed);
-	
+
 	Scene s1;
-	
-	
-	{
-		//Texture2D playerTexture = LoadTexture("..\\..\\res\\assets\\used\\edited\\base.png");
-		Entity& e1 = s1.AddEntity({ "player" });
-		
-		e1.AddComponent<TransformComponent>
-			(Vector2{ (float)GetScreenWidth() / 2.f, (float)GetScreenHeight() / 1.25f }, 0.f, false, false, 1.f);
-		Sprite base1(LoadedTextures::GetTexture("SpaceShip_base"), {1}, 3.f, 1);
-		e1.AddComponent<SpriteComponent>
-			(base1);
-		e1.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("SpaceShip_engineEffects"), {3, 4}, 3.f }, "engineEffects", 0);
-		e1.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("SpaceShip_engine"), {1}, 3.f }, "engine", 0);
-		e1.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("SpaceShip_weapon"), {7}, 3.f }, "weapon", 0);
-		e1.AddComponent<AnimationComponent>
-			(std::make_shared<SpaceShipAnimationScript>());
-		e1.AddComponent<InputComponent>(std::make_shared<SpaceShipInputScript>(), mappings1);
-		e1.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle, 
-			base1.m_textureScale, COLLISION_CIRCLE,
-			Vector2{0.f, 0.f}, 0.f, 0.77f);
-		e1.AddComponent<BehaviourComponent>(std::make_shared<SpaceShipScript>());
-		e1.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f}, false);
-		
-		//
-		
-		
-		
-		Entity& wall_l = s1.AddEntity({ "blocking" });
 
-		wall_l.AddComponent<TransformComponent>(Vector2{ -1.f, (float)GetScreenHeight()/2.f}, 0.f, false, false, 1.f);
-		wall_l.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
-		Entity& wall_r = s1.AddEntity({ "blocking" });
+	SetSceneHelper(s1);
+	//set player
 
-		wall_r.AddComponent<TransformComponent>(Vector2{ (float)GetScreenWidth() + 2.f, (float)GetScreenHeight() / 2.f}, 0.f, false, false, 1.f);
-		wall_r.AddComponent<CollisionComponent>(3.f, (float)GetScreenHeight(), Vector2{ 0.f, 0.f }, 0.f, 1.f);
-		
-
-
-		//backgorundManagerV.SetSpeedPtr
-		//(e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("frameSpeed"));
-		//score = e1.GetComponent<BehaviourComponent>().GetScript()->m_LinkedProperties.GetVariablePtr("score");
-	}
-	Entity& enemySpawner = s1.AddEntity({ "enemySpawner" });
-	enemySpawner.AddComponent<BehaviourComponent>(std::make_shared<EnemySpawnerScript>());
-	{
-		/*
-		Entity& enemy = s1.AddEntity({"enemy"});
-		enemy.AddComponent<TransformComponent>
-			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
-		Sprite base1(LoadedTextures::GetTexture("EnemyBoss_base"), {1}, 3.f);
-		enemy.AddComponent<SpriteComponent>
-			(base1);
-		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("EnemyBoss_engine"), {12}, 3.f }, "engine", 0);
-		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("EnemyBoss_shield"), {16}, 3.f }, "shield", 0);
-		enemy.AddComponent<AnimationComponent>
-			(std::make_shared<EnemyBossAnimationScript>());
-		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
-			base1.m_textureScale, COLLISION_CIRCLE,
-			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBossScript>(s1.GetEntity(0)));
-		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
-		*/
-		//
-
-	}
-	{
-		/*
-		Entity& enemy = s1.AddEntity({"enemyBomber"});
-		enemy.AddComponent<TransformComponent>
-			(Vector2{ (float)GetScreenWidth() / 2.f, -(float)GetScreenHeight() / 2.f }, 180.f, false, false, 1.f);
-		Sprite base1(LoadedTextures::GetTexture("EnemyBomber_base"), {1}, 2.f);
-		enemy.AddComponent<SpriteComponent>
-			(base1);
-		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("EnemyBomber_engine"), {10}, 2.f }, "engine", 0);
-		enemy.GetComponent<SpriteComponent>().AddSprite
-		(Sprite{ LoadedTextures::GetTexture("EnemyBomber_shield"), {6}, 2.f }, "shield", 0);
-		enemy.AddComponent<AnimationComponent>
-			(std::make_shared<EnemyBomberAnimationScript>());
-		enemy.AddComponent<CollisionComponent>(base1.m_currentFrameRectangle,
-			base1.m_textureScale, COLLISION_CIRCLE,
-			Vector2{ 0.f, 0.f }, 0.f, 0.56f);
-		enemy.AddComponent<BehaviourComponent>(std::make_shared<EnemyBomberScript>());
-		enemy.AddComponent<PhysicsComponent>(40000.f, Vector2{ 0.f , 0.f }, false);
-		*/
-		//
-
-	}
 	//TODO miniaudio.h exception
-	
+
 	EntityDrawer entityDrawer(s1);
 	entityDrawer.drawCollision = false;
 	AnimationSystem animationSystem(s1);
@@ -432,24 +442,94 @@ int main()
 	BehaviourSystem behaviourSystem(s1);
 	PhysicsSystem physicsSystem(s1);
 	//!sprite
+	//!GAME
+
+	//MENU
+
 
 	//!initialize
+	
 
 	//HideCursor();
 	//game loop
 	while (!WindowShouldClose())
 	{
+		if (state != GAME_WINDOWSTATE && !s1.HasEntityByTag("player"))
+		{
+			break;
+		}
 		//Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem, inputSystem);
+		//gameUpdate
+
 		Update(musicSystem, backgorundManagerV, s1, entityDrawer, animationSystem,
-			inputSystem, collisionSystem, behaviourSystem, physicsSystem);
+				inputSystem, collisionSystem, behaviourSystem, physicsSystem);
+	}
+
+	backgorundManagerV.De_init();
+	
+	state = MENU_WINDOWSTATE;
+	if (score > highScore)
+		highScore = score;
+
+}
+
+int main()
+{
+	bool play = false;
+	//initialize
+
+	//window
+	const int screenWidth = GetScreenWidth();
+	const int screenHeight = GetScreenHeight();
+
+	int targetFPS = 60;
+	bool shouldBeFullscreen = true;
+
+	//InitWindow(screenWidth, screenHeight, "Game");
+	//InitWindow(1200, 800, "Game");
+	SetTargetFPS(targetFPS);
+	//ToggleFullscreen();
+	//!window
+
+	//audio
+	InitAudioDevice();
+	std::vector<std::string> musicFilePaths = { "..\\..\\res\\as it was.wav", "..\\..\\res\\cinema.wav", "..\\..\\res\\daydreaming.wav" };
+
+	MusicSystem musicSystem;
+	musicSystem.LoadMusicFiles(musicFilePaths);
+	musicSystem.InitMusicStreams(0.f);
+	//!audio
+	InitWindow(600, 600, "");
+	//GAME
+	while (state != CLOSE_WINDOWSTATE)
+	{
+		if(state == MENU_WINDOWSTATE)
+		{
+			SetWindowTitle("Menu");
+			SetWindowSize(600, 600);
+			SetWindowPosition(GetMonitorWidth(0)/2 - 300, GetMonitorHeight(0) / 2 - 300);
+			Menu(musicSystem);
+
+		}
+		else if(state == GAME_WINDOWSTATE)
+		{
+			SetWindowTitle("Game");
+			SetWindowSize(1200, 800);
+			SetWindowPosition(GetMonitorWidth(0) / 2 - 600, GetMonitorHeight(0) / 2 - 400);
+			Game(musicSystem);
+			highscoreLabel = std::to_string(highScore);    // LABEL: LabelHighScoreOutput
+
+
+		}
+		CloseWindow();
 	}
 	//!game loop
 
 
 	//de-initialize
-	CloseWindow();
+	//CloseWindow();
 	
-	backgorundManagerV.De_init();
+	
 	
 	
 	//!de-initialize

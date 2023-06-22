@@ -22,7 +22,7 @@ class EnemyBomberScript : public BehaviourScript
 	Vector2 engineVelocity = { 0.f, 0.f };
 	Vector2 maxVelocity = { 0.f, 7.f };
 
-	float rotationRate = 1.f;
+	float rotationRate = 2.f;
 	//
 	Entity* player;
 
