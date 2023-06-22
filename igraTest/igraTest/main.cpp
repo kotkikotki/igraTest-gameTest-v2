@@ -320,13 +320,11 @@ void Menu(MusicSystem& musicSystem)
 	{
 		LabelHighScoreOutputText = highscoreLabel.c_str();
 	}
-	// Define anchors
-	Vector2 anchor01 = { 0, 0 };            // ANCHOR ID:1
 
-	// Define controls variables
-	bool WindowMenuActive = true;            // WindowBox: WindowMenu
+	Vector2 anchor01 = { 0, 0 };            
 
-	// Define controls rectangles
+	bool WindowMenuActive = true;            
+
 	Rectangle layoutRecs[6] = {
 		Rectangle{
 			anchor01.x + 0, anchor01.y + 0, 600, 600
@@ -347,32 +345,22 @@ void Menu(MusicSystem& musicSystem)
 			anchor01.x + 416, anchor01.y + 528, 120, 24
 		},    // Label: LabelHighScoreOutput
 	};
-	//----------------------------------------------------------------------------------
-
-
-	//--------------------------------------------------------------------------------------
 	
 
 	// Main game loop
-	while (!WindowShouldClose())    // Detect window close button or ESC key
+	while (!WindowShouldClose())    
 	{
-		// Update
-		//----------------------------------------------------------------------------------
-		// TODO: Implement required update logic
-		//----------------------------------------------------------------------------------
+		
 		if (state != MENU_WINDOWSTATE)
 		{
 			break;
 		}
-		// Draw
-		//----------------------------------------------------------------------------------
+		
 		BeginDrawing();
 
 		ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-		// raygui: controls drawing
-		//----------------------------------------------------------------------------------
-		// Draw controls
+		
 		if (WindowMenuActive)
 		{
 			//WindowMenuActive = !GuiWindowBox(layoutRecs[0], WindowMenuText);
@@ -382,26 +370,20 @@ void Menu(MusicSystem& musicSystem)
 			GuiLabel(layoutRecs[5], LabelHighScoreOutputText);
 		}
 		GuiLabel(layoutRecs[3], SPACESHOOOTERText);
-		//----------------------------------------------------------------------------------
 
 		EndDrawing();
 	}
 
 }
 
-//------------------------------------------------------------------------------------
-// Controls Functions Definitions (local)
-//------------------------------------------------------------------------------------
-// Button: ButtonStart logic
+
 static void ButtonStart()
 {
-	// TODO: Implement control logic
 	state = GAME_WINDOWSTATE;
 }
 // Button: ButtonQuit logic
 static void ButtonQuit()
 {
-	// TODO: Implement control logic
 	state = CLOSE_WINDOWSTATE;
 }
 
