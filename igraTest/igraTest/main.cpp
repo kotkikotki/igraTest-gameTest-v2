@@ -473,6 +473,7 @@ void Game(MusicSystem& musicSystem)
 
 int main()
 {
+
 	bool play = false;
 	//initialize
 
