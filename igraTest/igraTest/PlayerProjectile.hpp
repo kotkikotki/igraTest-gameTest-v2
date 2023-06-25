@@ -62,6 +62,7 @@ public:
 		if (transform.m_position.x > (float)GetScreenWidth() + offsetX || transform.m_position.x + offsetX < 0.f
 			|| transform.m_position.y >(float)GetScreenWidth() + offsetY || transform.m_position.y + offsetY < 0.f)
 		{
+			//PlaySound(LoadedSounds::GetSound("explosion"));
 			owner.Destroy();
 			return;
 		}
@@ -136,6 +137,7 @@ public:
 				SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale/2.f, 1)), 
 				0.5f);
 
+			//PlaySound(LoadedSounds::GetSound("explosion"));
 			owner.Destroy();
 		}
 	}

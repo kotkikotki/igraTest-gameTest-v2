@@ -128,6 +128,17 @@ void LoadTextures()
 		SpriteTextureUnloadHelper::AddTexture(a.second);
 	}
 }
+void LoadSounds()
+{
+	Sound explosion = LoadSound("..\\..\\res\\assets\\used\\sounds\\explosion.wav");
+	Sound laser = LoadSound("..\\..\\res\\assets\\used\\sounds\\laser.wav");
+
+	LoadedSounds::loadedSounds =
+	{
+		{"explosion", explosion},
+		{"laser", laser }
+	};
+}
 
 void Update(MusicSystem &musicSystem, BackgroundManager_Vertical &backgroundManagerV, Scene &scene, 
 	EntityDrawer &entityDrawer, AnimationSystem &animationSystem, InputSystem &inputSystem,
@@ -373,6 +384,8 @@ void Menu(MusicSystem& musicSystem)
 
 		EndDrawing();
 	}
+	if(state != GAME_WINDOWSTATE)
+		state = CLOSE_WINDOWSTATE;
 
 }
 
@@ -400,7 +413,6 @@ void Game(MusicSystem& musicSystem)
 	backgorundManagerV.LoadTextures(backgroundTuples);
 	//!background
 
-	//sprite
 	LoadTextures();
 
 	mappings1->m_Map.AddAction("move_right", KEY_D, Down);
@@ -453,6 +465,10 @@ void Game(MusicSystem& musicSystem)
 	if (score > highScore)
 		highScore = score;
 
+	for (auto& pair : LoadedSounds::loadedSounds)
+	{
+		if (IsSoundPlaying(pair.second)) StopSound(pair.second);
+	}
 }
 
 int main()
@@ -479,32 +495,47 @@ int main()
 
 	MusicSystem musicSystem;
 	musicSystem.LoadMusicFiles(musicFilePaths);
-	musicSystem.InitMusicStreams(0.f);
+	musicSystem.InitMusicStreams(1.f);
 	//!audio
+	//! 
+	LoadSounds();
+
+	//! 
+	Image icon =
+		LoadImage("..\\..\\res\\assets\\used\\ico\\baseico.png");
+	//! 
 	InitWindow(600, 600, "");
+	SetWindowIcon(icon);
 	//GAME
 	while (state != CLOSE_WINDOWSTATE)
 	{
 		if(state == MENU_WINDOWSTATE)
 		{
+			
 			SetWindowTitle("Menu");
 			SetWindowSize(600, 600);
 			SetWindowPosition(GetMonitorWidth(0)/2 - 300, GetMonitorHeight(0) / 2 - 300);
+			EnableCursor();
 			Menu(musicSystem);
-
+			
 		}
 		else if(state == GAME_WINDOWSTATE)
 		{
+
+			musicSystem.ResetMusicStream();
+
 			SetWindowTitle("Game");
 			SetWindowSize(1200, 800);
 			SetWindowPosition(GetMonitorWidth(0) / 2 - 600, GetMonitorHeight(0) / 2 - 400);
+			HideCursor();
 			Game(musicSystem);
 			highscoreLabel = std::to_string(highScore);    // LABEL: LabelHighScoreOutput
-
+			
 
 		}
-		CloseWindow();
+		
 	}
+	CloseWindow();
 	//!game loop
 
 
@@ -519,6 +550,10 @@ int main()
 	for (auto& texturePair : SpriteTextureUnloadHelper::textures)
 	{
 		UnloadTexture(*texturePair.second);
+	}
+	for (auto& pair : LoadedSounds::loadedSounds)
+	{
+		UnloadSound(pair.second);
 	}
 	musicSystem.De_initMusics();
 	CloseAudioDevice();

@@ -132,6 +132,8 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="..\..\res\as it was.wav" />
+    <Media Include="..\..\res\assets\used\sounds\explosion.wav" />
+    <Media Include="..\..\res\assets\used\sounds\laser.wav" />
     <Media Include="..\..\res\cinema.wav" />
     <Media Include="..\..\res\daydreaming.wav" />
     <Media Include="..\..\res\rec2.mp3" />
@@ -189,6 +191,7 @@
     <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Engine.png" />
     <Image Include="..\..\res\assets\used\enemy2\Kla%27ed - Bomber - Shield.png" />
     <Image Include="..\..\res\assets\used\explosion\Explosion-duplicate frames.png" />
+    <Image Include="..\..\res\assets\used\ico\baseico.png" />
     <Image Include="..\..\res\assets\used\player-ship\base\Main Ship - Base - Full health.png" />
     <Image Include="..\..\res\assets\used\player-ship\engine effects\Main Ship - Engines - Base Engine - Spritesheet.png" />
     <Image Include="..\..\res\assets\used\player-ship\engine\Main Ship - Engines - Base Engine.png" />

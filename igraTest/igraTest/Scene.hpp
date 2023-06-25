@@ -13,6 +13,7 @@
 
 #include "Entity.hpp"
 #include "LoadedTextures.hpp"
+#include "MusicSystem.hpp"
 
 class Scene
 {

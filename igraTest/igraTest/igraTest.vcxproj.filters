@@ -79,6 +79,12 @@
     <Filter Include="Entities\EnemySpawner">
       <UniqueIdentifier>{820b660c-899f-4388-9d76-a9518588dbdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\ico">
+      <UniqueIdentifier>{194ccb6a-5a03-4e4c-87f7-5f83e4ebbcd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\space assets\sounds">
+      <UniqueIdentifier>{92c4be18-bd2e-4f4d-b8c6-8dc9401864b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -100,6 +106,12 @@
     </Media>
     <Media Include="..\..\res\rec1.mp3">
       <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\..\res\assets\used\sounds\explosion.wav">
+      <Filter>Resource Files\space assets\sounds</Filter>
+    </Media>
+    <Media Include="..\..\res\assets\used\sounds\laser.wav">
+      <Filter>Resource Files\space assets\sounds</Filter>
     </Media>
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +278,9 @@
     </Image>
     <Image Include="..\..\res\assets\used\enemy1\Kla%27ed - Wave.png">
       <Filter>Resource Files\space assets\enemy1</Filter>
+    </Image>
+    <Image Include="..\..\res\assets\used\ico\baseico.png">
+      <Filter>Resource Files\ico</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

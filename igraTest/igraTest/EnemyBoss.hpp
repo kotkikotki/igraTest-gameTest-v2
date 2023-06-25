@@ -330,7 +330,8 @@ public:
 		projectile.AddComponent<PhysicsComponent>(3000.f, Vector2{ 0.f, 0.f }, false);
 
 
-		
+		PlaySound(LoadedSounds::GetSound("laser"));
+
 	}
 
 	//
@@ -362,6 +363,7 @@ public:
 					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
 					SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 1.f);
 
+				PlaySound(LoadedSounds::GetSound("explosion"));
 				owner.Destroy();
 			}
 

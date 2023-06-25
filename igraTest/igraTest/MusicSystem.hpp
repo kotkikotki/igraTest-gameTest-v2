@@ -5,6 +5,17 @@
 #include<raylib.h>
 #include<vector>
 #include<string>
+#include<map>
+
+namespace LoadedSounds
+{
+	static std::map<std::string, Sound> loadedSounds;
+
+	static Sound GetSound(const std::string& name)
+	{
+		return loadedSounds[name];
+	}
+}
 
 class MusicSystem
 {
@@ -40,6 +51,12 @@ public:
 	{
 		PlayMusicStream(musicStreams[index]);
 		SetMusicVolume(musicStreams[index], volume);
+	}
+
+	void ResetMusicStream()
+	{
+		StopMusicStream(musicStreams[currentIndex]);
+		PlayMusicStream(musicStreams[currentIndex]);
 	}
 
 	void UpdateMusic()

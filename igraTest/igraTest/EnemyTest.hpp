@@ -75,6 +75,8 @@ public:
 			int value = script->m_Properties.GetVariableT<int>("score") + 1;
 
 			script->m_Properties.ChangeVariableByName("score", (int)value);
+
+			PlaySound(LoadedSounds::GetSound("explosion"));
 			owner.Destroy();
 			
 		}

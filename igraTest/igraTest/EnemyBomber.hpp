@@ -372,6 +372,7 @@ public:
 					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
 					SpriteComponent(Sprite(particleTexture, { 8 }, sprite.GetSprite("base").m_textureScale)), 1.f);
 
+				PlaySound(LoadedSounds::GetSound("explosion"));
 				owner.Destroy();
 			}
 
@@ -399,6 +400,7 @@ public:
 					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
 					SpriteComponent(Sprite(particleTexture, { 8 }, sprite.GetSprite("base").m_textureScale)), 1.f);
 
+				PlaySound(LoadedSounds::GetSound("explosion"));
 				owner.Destroy();
 			}
 		}

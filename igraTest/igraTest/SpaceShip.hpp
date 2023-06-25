@@ -206,6 +206,8 @@ public:
 		weapon.AddSequence(entity.GetComponent<SpriteComponent>().GetSprite("weapon"), 0.3f);
 		//
 
+		//
+		PlaySound(LoadedSounds::GetSound("laser"));
 	};
 
 	SpaceShipScript() : BehaviourScript()
@@ -285,6 +287,7 @@ public:
 					TransformComponent(transform.m_position, transform.m_rotation, false, false, transform.m_scale),
 					SpriteComponent(Sprite(particleTexture, { 14 }, sprite.GetSprite("base").m_textureScale)), 1.f);
 
+				PlaySound(LoadedSounds::GetSound("explosion"));
 				owner.Destroy();
 			}
 
